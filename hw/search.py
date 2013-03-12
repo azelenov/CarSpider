@@ -6,10 +6,12 @@ import sys
 import random
 from selenium.webdriver.common.keys import Keys
 from time import asctime
+import engine
 
 
 
-class IntlSearch:
+
+class IntlSearch(engine.Engine):
     autocomplete = main_config['autocomplete']
     locations = main_config['loc_list']
     wait = main_config['wait']

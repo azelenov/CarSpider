@@ -18,42 +18,8 @@ import json
 import random
 import os
 from settings import browser_positions,intl_urls, main_config
-
-
-
-def show (params,num):
-    if params['browser'] == 'firefox':
-       fp = wb.FirefoxProfile()
-       exts = main_config.get("firefox_extentions")
-       if exts:
-          for e in exts:
-              fp.add_extension(extension=e)
-              parts = e.replace(".xpi","").split("-")
-              name = "extensions."+parts[0]+".currentVersion"
-              ver = parts[1]
-              print "Extention:",name,ver
-              fp.set_preference(name, ver) #Avoid startup screen
-       dr = wb.Firefox(firefox_profile=fp)
-       print "Firefox started"
-    elif params['browser'] == 'ie':
-       dr = wb.Ie()
-       print "Internet explorer started"
-    elif params['browser'] == 'chrome':
-       dr = wb.Chrome()
-       print "Chrome started"
-    move(dr,num)
-    return dr
-
-
-def move(browser,place):
-    if place == 0:
-       pos = browser_positions[0]
-    elif place == 1:
-       pos = browser_positions[1]
-    elif place == 2:
-       pos = browser_positions[2]
-    browser.set_window_size(pos["xsize"],pos["ysize"])
-    browser.set_window_position(pos["xpos"],pos["ypos"])
+from engine import Engine
+import search
 
 
 def main():
@@ -64,7 +30,9 @@ def main():
     parser.add_argument('mode',help='choose operation type start,search or book',
                       choices=['start','st', 'search','se',
                        'book','bo','details','de'])
-    parser.add_argument('domain',help='chose domain')
+    parser.add_argument('env',help='Chose enviroment, E.g. qa, preprod,prod')
+    parser.add_argument('-d','--domain',help='Work with other domain. E.g. US domestic',action='store', nargs = '?',choices = ['uk','us'])
+
     parser.add_argument('-f','--firefox',help='firefox webbrowser',action='store_true')
     parser.add_argument('-c','--chrome',help='chrome webbrowser',action='store_true')
     parser.add_argument('-i','--ie',help='Internet Explorer webbrowser',action='store_true')
@@ -87,11 +55,7 @@ def main():
 
     args=parser.parse_args()
 
-    urls = intl_urls
-    if args.domain not in intl_urls:
-       sys.exit("Domain "+args.domain+" in settings!")
-    else:
-       url = intl_urls[args.domain]
+
 
     drivers=[]
 
@@ -109,7 +73,10 @@ def main():
          if not args.firefox and not args.chrome and not args.ie:
             scenario.append({"browser":main_config["default_browser"]})
          for br in scenario:
-            #print args.air
+            if args.domain:
+               br["domain"] = 'us'
+            if args.env:
+               br["env"] = args.env
             if args.city:
                 br["pickup_loc"] = "city"
             elif args.zip:
@@ -150,32 +117,34 @@ def main():
 
     print scenario
     #sys.exit()
-
     i = 0
     for entity in scenario:
        if args.mode == 'book' and (not entity.has_key("email_type")  or
        not entity.has_key("card_vendor") ):
            sys.exit("Please specify email type and card vendor for booking!")
-       driver = show(entity,i)
+       driver = Engine(entity,i)
        i +=1
        drivers.append(driver)
 
     if args.mode == 'start' or args.mode == 'st':
-       find(url,drivers,scenario, False)
+       pass
     elif args.mode == 'search' or args.mode == 'se':
-       find(url,drivers,scenario, True)
-       results = IntlResults(drivers,scenario)
+         for driver in drivers:
+           d = driver.domain
+           p = driver.params
+           e = driver.engine
+           print d,p,e
+           sys.exit()
+           if driver.domain == 'intl':
+              s = search.IntlSearch(p,e)
+           elif driver.domain == 'domestic':
+              pass
+              #s = search.IntlSearch(p,e)
+
     elif args.mode == 'details' or args.mode == 'de':
-       find(url,drivers,scenario, True)
-       results = IntlResults(drivers,scenario)
-       results.rand_solution()
-       book = IntlBook(drivers,scenario)
-       book.fill()
+       pass
     elif args.mode == 'book' or args.mode == 'bo':
-       find(url,drivers,scenario, True)
-       results = IntlResults(drivers,scenario)
-       book = IntlBook(drivers,scenario)
-       book.fill(True)
+       pass
 
 
 if __name__ == '__main__':

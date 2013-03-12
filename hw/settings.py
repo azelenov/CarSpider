@@ -10,7 +10,7 @@ main_config = {
 "domain":"uk",
 "attempts":2,
 "currency":["AUD","NZD","GBP","NOK","CHF","DKK","SEK","EUR","USD"],
-"default_browser":"firefox",
+"default_browser":"chrome",
 "default_email":"gmail",
 "default_card":"visa",
 "autocomplete":True,
@@ -27,23 +27,30 @@ browser_positions = [
     "id":0,
     "xsize":960,
     "ysize":1050,
-    "xpos":0,
+    "xpos":960,
     "ypos":0
     },
     {
     "id":1,
     "xsize":960,
     "ysize":1050,
-    "xpos":960,
+    "xpos":1920,
     "ypos":0
     },
     {
     "id":2,
     "xsize":960,
     "ysize":1050,
-    "xpos":1920,
+    "xpos":2880,
     "ypos":0
-    }
+    },
+    {
+    "id":3,
+    "xsize":960,
+    "ysize":1050,
+    "xpos":0,
+    "ypos":0
+    },
 
 ]
 
