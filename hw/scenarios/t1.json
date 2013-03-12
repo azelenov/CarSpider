@@ -1,0 +1,30 @@
+{
+"scenario":[
+    {
+    "browser":"ie",
+    "pickup_loc":"city",
+    "dropoff_loc":"",
+    "currency":"usd",
+	"email_type":"gmail",
+	"card_vendor":"visa"
+    },
+	{
+    "browser":"chrome",
+    "pickup_loc":"air",
+    "dropoff_loc":"air",
+    "currency":"eur",
+	"email_type":"yahoo",
+	"card_vendor":"mc"
+    },
+	{
+    "browser":"firefox",
+    "pickup_loc":"zip",
+    "dropoff_loc":"",
+    "currency":"otr",
+	"email_type":"gmail",
+	"card_vendor":"visa"
+    }
+
+
+    ]
+}
