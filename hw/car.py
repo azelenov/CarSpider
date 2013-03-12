@@ -95,7 +95,7 @@ def main():
 
     drivers=[]
 
-    os.chdir('../hw')
+    #os.chdir('../hw')
     if args.json:
        path = main_config["scenarios_dir"] + "/" + args.json + ".json"
        with open (path) as js:
