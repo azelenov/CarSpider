@@ -32,10 +32,18 @@ class IntlSearch:
 
     def xfind(self,loc_name,element = None):
         if element:
-           res = element.find_element_by_xpath(locators.intl[loc_name])
+           try:
+               res = element.find_element_by_xpath(locators.intl[loc_name])
+               return res
+           except:
+               self.log(loc_name + " not found")
         else:
-           res = self.engine.find_element_by_xpath(locators.intl[loc_name])
-        return res
+           try:
+               res = self.engine.find_element_by_xpath(locators.intl[loc_name])
+               return res
+           except:
+               self.log(loc_name + " not found")
+
 
     def xclick(self,loc_name,element = None):
         self.xfind(loc_name,element).click()
