@@ -1,5 +1,11 @@
 from Tkinter import *
+import os
+
+
 root = Tk()
+os.chdir('hw')
+root.wm_title("HW CarSpider 2.0")
+root.wm_iconbitmap('static/spider.ico')
 
 menu = Menu(root)
 
