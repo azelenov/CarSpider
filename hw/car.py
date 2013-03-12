@@ -148,8 +148,10 @@ def main():
             if not args.visa and not args.mc:
                br["card_vendor"] = main_config["default_card"]
 
+    print "[HW CarSpider ver 1.0]"
     print scenario
     #sys.exit()
+
 
     i = 0
     for entity in scenario:

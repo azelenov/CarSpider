@@ -28,10 +28,8 @@ class IntlResults(search.IntlSearch):
 
 
     def verify_results(self):
-        time.sleep(2)
         try:
             self.cfind("seleniumResultItem")
-
         except NoSuchElementException:
             self.log("No results found!")
             self.log("Search attempts left:"+str(self.attempts))
@@ -47,9 +45,10 @@ class IntlResults(search.IntlSearch):
              self.log(self.cfind("searchResultsHeader").text)
 
     def refill (self):
-        self.autocomplete = False
+        self.autocomplete = True
         self.set_locations()
         self.type_date(True)
+        time.sleep(1)
         self.submit()
         self.load_test()
 

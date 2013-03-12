@@ -65,9 +65,9 @@ class IntlSearch:
 
     def load_test(self):
         mask = self.cfind("mask")
-        timer = 1
+        timer = 0
         self.log("Waiting ...")
-        time.sleep(timer)
+        #time.sleep(timer)
         flag = mask.is_displayed()
         while  flag:
             mask = self.cfind("mask")
@@ -156,7 +156,6 @@ class IntlSearch:
         else:
            self.xtype(elem_name,loc)
 
-
     def type_zip(self,elem_name):
         loc = self.random_location(self.locations['zip'])
         self.log("Zipcode: "+loc)
@@ -193,12 +192,10 @@ class IntlSearch:
            self.xtype("pickup_date",self.date_format(tomorrow),enter)
            self.xtype("dropoff_date",self.date_format(nextday),enter)
 
-
     def date_format(self,D):
         year,mon,day = D.timetuple()[:3]
         sdate = "/".join([str(day),str(mon),str(year)])
         return sdate
-
 
     def type_age(self,age=None):
         if not age:
