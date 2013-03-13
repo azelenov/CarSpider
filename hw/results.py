@@ -10,7 +10,7 @@ import time
 
 
 class IntlResults(search.IntlSearch):
-    def __init__(self,browsers,params):
+    def __init__(self,browsers,params,solution=None):
         self.locations = main_config['loc_list']
         self.wait = main_config['wait']
         self.attempts = main_config['attempts']
@@ -24,7 +24,8 @@ class IntlResults(search.IntlSearch):
           self.engine = driver
           self.load_test()
           self.verify_results()
-          self.rand_solution()
+          if solution:
+             self.rand_solution()
 
 
     def verify_results(self):
@@ -45,7 +46,7 @@ class IntlResults(search.IntlSearch):
              self.log(self.cfind("searchResultsHeader").text)
 
     def refill (self):
-        self.autocomplete = True
+        self.autocomplete = False
         self.set_locations()
         self.type_date(True)
         time.sleep(1)

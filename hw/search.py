@@ -197,8 +197,11 @@ class IntlSearch:
            cal.click()
            self.click_text(str(tomorrow.day))
         else:
-           self.xtype("pickup_date",self.date_format(tomorrow),enter)
+           self.xtype("pickup_date",self.date_format(tomorrow))
+           print self.date_format(tomorrow)
+           time.sleep(1/2)
            self.xtype("dropoff_date",self.date_format(nextday),enter)
+           print self.date_format(nextday)
 
     def date_format(self,D):
         year,mon,day = D.timetuple()[:3]

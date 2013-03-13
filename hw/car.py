@@ -169,13 +169,12 @@ def main():
        results = IntlResults(drivers,scenario)
     elif args.mode == 'details' or args.mode == 'de':
        find(url,drivers,scenario, True)
-       results = IntlResults(drivers,scenario)
-       results.rand_solution()
+       results = IntlResults(drivers,scenario,"rand")
        book = IntlBook(drivers,scenario)
        book.fill()
     elif args.mode == 'book' or args.mode == 'bo':
        find(url,drivers,scenario, True)
-       results = IntlResults(drivers,scenario)
+       results = IntlResults(drivers,scenario,"rand")
        book = IntlBook(drivers,scenario)
        book.fill(True)
 
