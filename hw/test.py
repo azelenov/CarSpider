@@ -1,21 +1,23 @@
-from selenium import webdriver as wb
+from Tkinter import *
 
-from locators import intl_loc
+def sel():
+   selection = "You selected the option " + str(var.get())
+   label.config(text = selection)
 
-f = wb.Firefox()
-#e = wb.Ie()
-#c = wb.Chrome()
+root = Tk()
+var = IntVar()
+R1 = Radiobutton(root, text="Option 1", variable=var, value=1,
+                  command=sel)
+R1.pack( anchor = W )
 
-url = 'http://www.hotwire.com/'
-print url
-f.set_window_size(960,1080)
-f.set_window_position(0,0)
-#c.set_window_size(960,1080)
-#c.set_window_position(960,0)
-#e.set_window_size(960,1080)
-#e.set_window_position(1920,0)
+R2 = Radiobutton(root, text="Option 2", variable=var, value=2,
+                  command=sel)
+R2.pack( anchor = W )
 
-#e.get(url)
-f.get(url)
-#c.get(url)
-print "I'm in"
+R3 = Radiobutton(root, text="Option 3", variable=var, value=3,
+                  command=sel)
+R3.pack( anchor = W)
+
+label = Label(root)
+label.pack()
+root.mainloop()

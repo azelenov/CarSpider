@@ -7,7 +7,8 @@ main_config = {
 "wait_on_page":1,
 "loc_list":lists.uk_list,
 "default_loc":"LHR",
-"domain":"uk",
+"domains":["International","Domestic"],
+"default_domain":"International",
 "attempts":2,
 "currency":["AUD","NZD","GBP","NOK","CHF","DKK","SEK","EUR","USD"],
 "default_browser":"chrome",
@@ -63,6 +64,9 @@ intl_urls = {
 'dev':'http://dev05.dev.hotwire.com:7001/intl/uk/car',
 'preprod':'http://www.preprod.hotwire.com/uk/car',
 'prod':'http://www.hotwire.com/uk/car',
+}
+dom_urls = {
+'qa':'http://www.qa.hotwire.com/car'
 }
 #refreshUtil urls
 ref_urls =  {
