@@ -66,7 +66,8 @@ intl_urls = {
 'prod':'http://www.hotwire.com/uk/car',
 }
 dom_urls = {
-'qa':'http://www.qa.hotwire.com/car'
+'qa':'http://www.qa.hotwire.com/car',
+'qaci':'http://www.qaci.hotwire.com/car'
 }
 #refreshUtil urls
 ref_urls =  {
