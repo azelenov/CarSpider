@@ -1,13 +1,15 @@
 from Tkinter import *
 import os
-from settings import main_config,intl_urls,dom_urls
+from settings import main_config
+import settings
+import sys
 
-class GUI:
+class CarSpider:
     scenario = []
     EnvFrame = None
     def __init__(self):
         self.root = Tk()
-        os.chdir('hw')
+        #os.chdir('hw')
         self.root.wm_title("HW CarSpider 2.0")
         self.root.wm_iconbitmap('static/spider.ico')
         self.create_widgets()
@@ -16,14 +18,13 @@ class GUI:
         self.browsers_widget()
         self.domains_widget()
         self.buttons_widget()
-        #self.options_widget()
+        self.options_widget()
         self.status_bar()
 
 
     def log(self,var):
         info = var.get()
         self.status.config(text=info)
-
 
     def make_radios(self,frame,args,var):
         buttons = []
@@ -63,12 +64,15 @@ class GUI:
         self.chrome = IntVar()
         self.ie = IntVar()
         browsers = {'Firefox':self.firefox,'Chrome':self.chrome,'IE':self.ie}
-        BrowTypeFrame = LabelFrame(self.root,relief = RAISED,borderwidth=1,text = "Browsers:",padx=5,pady=5)
+        BrowTypeFrame = LabelFrame(self.root,relief = RAISED,
+        borderwidth=1,text = "Browsers:",padx=5,pady=5)
         BrowTypeFrame.grid(row = 0,column = 0,columnspan=2)
         self.br_buttons = self.create_checks(BrowTypeFrame,browsers)
         print self.br_buttons
-        Button(BrowTypeFrame,text='All',command=self.select_browsers).pack(side="left")
-        Button(BrowTypeFrame,text='None',command=self.deselect_browsers).pack(side="left")
+        all_br = Button(BrowTypeFrame,text='All',command=self.select_browsers)
+        all_br.pack(side="left")
+        none_br = Button(BrowTypeFrame,text='None',command=self.deselect_browsers)
+        none_br.pack(side="left")
 
     def create_checks(self,frame,args):
         cbuts = []
@@ -92,6 +96,7 @@ class GUI:
         DomainFrame.grid(row = 1,column = 0,columnspan=2,padx=5,pady=5)
         Label(DomainFrame,text="Domain:").pack(side='left')
         domains = main_config['domains']
+        print "Domain",main_config['domains']
         self.d_var.set(main_config['default_domain'])
         self.show_domains(DomainFrame,domains,self.d_var)
         self.change_domain()
@@ -109,20 +114,21 @@ class GUI:
         self.e_var.set('qa')
         self.domain = self.d_var.get()
         if self.domain == 'International':
-           envs = intl_urls.keys()
+           self.urls = settings.intl_urls
         elif self.domain == 'Domestic':
-           envs = dom_urls.keys()
+           self.urls = settings.dom_urls
+        elif self.domain == 'CCF':
+           self.urls = settings.ccf_urls
+        envs = self.urls.keys()
         self.enviroment_widget()
-        #print "Env",envs
-        #print "Rads",env_rads
-        env_rads = self.make_radios(self.EnvFrame,envs,self.e_var)
+        self.make_radios(self.EnvFrame,envs,self.e_var)
 
-        #destroy_buts(env_rads)
 
     def enviroment_widget(self):
         #env = StringVar()
         if self.EnvFrame: self.EnvFrame.destroy()
-        self.EnvFrame =LabelFrame(self.root,relief=SUNKEN,borderwidth=1,text="Enviroment",labelanchor='n')
+        self.EnvFrame = LabelFrame(self.root,relief=SUNKEN,borderwidth=1,
+        text="Enviroment",labelanchor='n')
         self.EnvFrame.grid(row = 2,column = 0,columnspan=2,padx=5,pady=5)
 
 
@@ -130,69 +136,86 @@ class GUI:
         statusFrame = Frame(self.root,relief = GROOVE,borderwidth = 1)
         statusFrame.grid(row = 6,column = 0,columnspan=2,padx=5,pady=5)
         self.status = Label(statusFrame,text="Please choose options to start crawling",
-                     bd=1, relief=SUNKEN, anchor=W)
+                     bd=1, relief=SUNKEN, anchor=W, width =60)
         self.status.pack(expand=1, fill=X)
 
     def options_widget(self):
-        self.OptionsFrame = LabelFrame(self.root,relief = RAISED,borderwidth =2,text="Options",labelanchor='n')
+        self.OptionsFrame = LabelFrame(self.root,relief = RAISED,borderwidth =2,
+        text="Options",labelanchor='n')
         self.OptionsFrame.grid(row = 4,column = 0,columnspan=2)
         self.search_widget()
+        self.results_widget()
+        self.payment_widget()
+        self.email_widget()
+        #self.check_domain()
 
     def search_widget(self):
         SearchFrame = Frame(self.OptionsFrame)
-        SearchFrame.pack(side = 'top')
-        Label(SearchFrame,text = "Search").grid(row=0,column=0)
+        SearchFrame.pack(side = 'top',padx=5,pady=5)
+        Label(SearchFrame,text = "Search:").grid(row=0,column=0)
         self.s_var = StringVar()
         self.a_var = StringVar()
         self.s_var.set('air')
+        self.a_var.set('LHR')
         Radiobutton(SearchFrame,text='air',variable = self.s_var,value='air').grid(row = 0,column = 1)
-        Entry(SearchFrame,width=3,textvariable = self.a_var).grid(row = 0,column = 2)
-        Radiobutton(SearchFrame,text='city',variable = self.s_var,value='city').grid(row = 0,column = 3)
-        Radiobutton(SearchFrame,text='zip',variable = self.s_var,value='zip').grid(row = 0,column = 4)
-        Radiobutton(SearchFrame,text='random',variable = self.s_var,value='random').grid(row = 0,column = 5)
+        Radiobutton(SearchFrame,text='air code',variable = self.s_var,value='airCode').grid(row = 0,column = 2)
+        Entry(SearchFrame,width=4,textvariable = self.a_var).grid(row = 0,column = 3)
+        Radiobutton(SearchFrame,text='city',variable = self.s_var,value='city').grid(row = 1,column = 0)
+        Radiobutton(SearchFrame,text='zip',variable = self.s_var,value='zip').grid(row = 1,column = 1)
+        Radiobutton(SearchFrame,text='random',variable = self.s_var,value='random').grid(row = 1,column = 2)
+
+    def results_widget(self):
+        ResFrame = LabelFrame(self.OptionsFrame,relief = RAISED,borderwidth=1,text = "Solution",labelanchor='n')
+        ResFrame.pack(side = 'top',expand=1,padx=5,pady=5)
+        self.r_var = StringVar()
+        self.sipp_var = StringVar()
+        self.r_var.set('first')
+        self.sipp_var.set('EBMN')
+        Label(ResFrame,text = "Result:").grid(row=1,column=0)
+        f = Radiobutton(ResFrame,text='first',variable = self.r_var,value='first')
+        f.grid(row = 1,column = 1,sticky='W')
+        l = Radiobutton(ResFrame,text='last',variable = self.r_var,value='last')
+        l.grid(row = 1,column = 2,sticky='W')
+        Label(ResFrame,text = "Type:").grid(row=2,column=0)
+        self.o = Radiobutton(ResFrame,text='opaque',
+        variable = self.r_var,value='opaque')
+        self.o.grid(row = 2,column = 1,sticky='W')
+        self.r = Radiobutton(ResFrame,text='retail',
+        variable = self.r_var,value='retail')
+        self.r.grid(row = 2,column = 2,sticky='W')
+        sipp = Radiobutton(ResFrame,text='SIPP:',variable = self.r_var,value='sipp')
+        sipp.grid(row=3,column=0)
+        s_code = Entry(ResFrame,width=6,textvariable = self.sipp_var)
+        s_code.grid(row = 3,column = 1,sticky='W')
+        r = Radiobutton(ResFrame,text='random',variable = self.r_var,value='rand')
+        r.grid(row = 3,column = 2,sticky='W')
+
+    def check_domain(self):
+        if self.domain == 'International':
+           self.o.config(state=DISABLED)
+           self.r.config(state=DISABLED)
+        elif self.domain == 'Domestic':
+           self.o.config(state=ACTIVE )
+           self.r.config(state=ACTIVE )
+
+    def payment_widget(self):
+        PayFrame = Frame(self.OptionsFrame)
+        PayFrame.pack(side = 'top')
+        self.p_var = StringVar()
+        self.p_var.set('visa')
+        Label(PayFrame,text = "Pyment method:").grid(row=0,column=0)
+        Radiobutton(PayFrame,text='Visa',variable = self.p_var,value='visa').grid(row = 0,column = 1,sticky='W')
+        Radiobutton(PayFrame,text='MasterCard',variable = self.p_var,value='mc').grid(row = 0,column = 2,sticky='W')
+
+    def email_widget(self):
+        self.email = StringVar()
+        self.email.set('gmail')
+        EmailFrame = Frame(self.OptionsFrame)
+        EmailFrame.pack(side = 'top')
+        Label(EmailFrame,text = "Email type:").grid(row=0,column=0)
+        Radiobutton(EmailFrame,text='Gmail',variable = self.email,value='gmail').grid(row = 0,column = 1,sticky='W')
+        Radiobutton(EmailFrame,text='Yahoo',variable = self.email,value='yahoo').grid(row = 0,column = 2,sticky='W')
 
 
-
-
-
-app = GUI()
+app = CarSpider()
 app.root.mainloop()
-
-
-
-###search frame
-##SearchFrame = Frame(AllFrame)
-##SearchFrame.pack(side = 'top')
-##Label(SearchFrame,text = "Search").grid(row=0,column=0)
-##Radiobutton(SearchFrame,text='air').grid(row = 0,column = 1)
-##Entry(SearchFrame,width=3).grid(row = 0,column = 2)
-##Radiobutton(SearchFrame,text='city').grid(row = 0,column = 3)
-##Radiobutton(SearchFrame,text='zip').grid(row = 0,column = 4)
-##Radiobutton(SearchFrame,text='random').grid(row = 0,column = 5)
-##
-###Results frame
-##SolFrame = LabelFrame(AllFrame,relief = RAISED,borderwidth=1,text = "Solution",labelanchor='n')
-##SolFrame.pack(side = 'top',expand=1)
-###Label(SolFrame,text = "Solution").grid(row=0,column=1)
-##Label(SolFrame,text = "Result:").grid(row=1,column=0)
-##Radiobutton(SolFrame,text='first').grid(row = 1,column = 1,sticky='W')
-##Radiobutton(SolFrame,text='last').grid(row = 1,column = 2,sticky='W')
-##Label(SolFrame,text = "Type:").grid(row=2,column=0)
-##Radiobutton(SolFrame,text='opaque').grid(row = 2,column = 1,sticky='W')
-##Radiobutton(SolFrame,text='retail').grid(row = 2,column = 2,sticky='W')
-##Label(SolFrame,text = "SIPP:").grid(row=3,column=0)
-##Entry(SolFrame,width=4).grid(row = 3,column = 1,padx=5,pady=5,sticky='W')
-##
-###Payment method
-##PayFrame = Frame(AllFrame)
-##PayFrame.pack(side = 'top')
-##Label(PayFrame,text = "Pyment method:").grid(row=0,column=0)
-##Radiobutton(PayFrame,text='VISA').grid(row = 0,column = 1,sticky='W')
-##Radiobutton(PayFrame,text='MasterCard').grid(row = 0,column = 2,sticky='W')
-##
-###Email type
-##EmailFrame = Frame(AllFrame)
-##EmailFrame.pack(side = 'top')
-##Label(EmailFrame,text = "Email type:").grid(row=0,column=0)
-##Radiobutton(EmailFrame,text='Gmail').grid(row = 0,column = 1,sticky='W')
-##Radiobutton(EmailFrame,text='Yahoo').grid(row = 0,column = 2,sticky='W')

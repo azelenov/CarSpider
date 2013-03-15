@@ -7,7 +7,7 @@ main_config = {
 "wait_on_page":1,
 "loc_list":lists.uk_list,
 "default_loc":"LHR",
-"domains":["International","Domestic"],
+"domains":["International","Domestic","CCF"],
 "default_domain":"International",
 "attempts":2,
 "currency":["AUD","NZD","GBP","NOK","CHF","DKK","SEK","EUR","USD"],
@@ -65,10 +65,18 @@ intl_urls = {
 'preprod':'http://www.preprod.hotwire.com/uk/car',
 'prod':'http://www.hotwire.com/uk/car',
 }
+
 dom_urls = {
 'qa':'http://www.qa.hotwire.com/car',
-'qaci':'http://www.qaci.hotwire.com/car'
+'qaci':'http://www.qaci.hotwire.com/car',
+'dev':'http://dev05.dev.hotwire.com:7001/intl/uk/car'
 }
+
+ccf_urls = {
+'qa':'http://www.qa.hotwire.com/car?vt.CCF13=2',
+'dev':'http://dev05.dev.hotwire.com:7001/intl/uk/car?vt.CCF13=2'
+}
+
 #refreshUtil urls
 ref_urls =  {
 'qa':'http://www.qa.hotwire.com/test/refreshUtil.jsp',
