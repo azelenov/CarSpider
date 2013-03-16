@@ -29,9 +29,7 @@ class CarSpider:
     def make_radios(self,frame,args,var):
         buttons = []
         for d in args:
-            r = Radiobutton(frame,text=d,variable = var,
-            value=d,
-            command=(lambda: self.log(var)))
+            r = Radiobutton(frame,text=d,variable = var,value=d)
             buttons.append(r)
             r.pack(side='left')
         return buttons
@@ -96,7 +94,7 @@ class CarSpider:
         DomainFrame.grid(row = 1,column = 0,columnspan=2,padx=5,pady=5)
         Label(DomainFrame,text="Domain:").pack(side='left')
         domains = main_config['domains']
-        print "Domain",main_config['domains']
+        #print "Domain",main_config['domains']
         self.d_var.set(main_config['default_domain'])
         self.show_domains(DomainFrame,domains,self.d_var)
         self.change_domain()
@@ -136,18 +134,32 @@ class CarSpider:
         statusFrame = Frame(self.root,relief = GROOVE,borderwidth = 1)
         statusFrame.grid(row = 6,column = 0,columnspan=2,padx=5,pady=5)
         self.status = Label(statusFrame,text="Please choose options to start crawling",
-                     bd=1, relief=SUNKEN, anchor=W, width =60)
+                     bd=1, relief=SUNKEN, anchor=W)
         self.status.pack(expand=1, fill=X)
 
     def options_widget(self):
         self.OptionsFrame = LabelFrame(self.root,relief = RAISED,borderwidth =2,
         text="Options",labelanchor='n')
-        self.OptionsFrame.grid(row = 4,column = 0,columnspan=2)
+        self.OptionsFrame.grid(row = 4,column = 0,columnspan=4)
+        self.currency_widget()
         self.search_widget()
         self.results_widget()
         self.payment_widget()
         self.email_widget()
         #self.check_domain()
+
+    def currency_widget(self):
+        CurFrame = Frame(self.OptionsFrame,relief = GROOVE,borderwidth = 2)
+        CurFrame.pack(side = 'top',padx=5,pady=5)
+        Label(CurFrame,text = "Currency:").grid(row=0,column=0)
+        self.currency = StringVar()
+        self.currency.set('USD')
+        Radiobutton(CurFrame,text='USD',variable = self.currency,value='USD').grid(row = 0,column = 1)
+        Radiobutton(CurFrame,text='EUR',variable = self.currency,value='EUR').grid(row = 0,column = 2)
+        Radiobutton(CurFrame,text='GBP',variable = self.currency,value='GBP').grid(row = 0,column = 3)
+        Radiobutton(CurFrame,text='other',variable = self.currency,value='OTR').grid(row = 1,column = 0)
+        Radiobutton(CurFrame,text='random',variable = self.currency,value='rand').grid(row = 1,column = 1)
+
 
     def search_widget(self):
         SearchFrame = Frame(self.OptionsFrame)
@@ -176,6 +188,8 @@ class CarSpider:
         f.grid(row = 1,column = 1,sticky='W')
         l = Radiobutton(ResFrame,text='last',variable = self.r_var,value='last')
         l.grid(row = 1,column = 2,sticky='W')
+        r = Radiobutton(ResFrame,text='random',variable = self.r_var,value='rand')
+        r.grid(row = 1,column = 3,sticky='W')
         Label(ResFrame,text = "Type:").grid(row=2,column=0)
         self.o = Radiobutton(ResFrame,text='opaque',
         variable = self.r_var,value='opaque')
@@ -184,19 +198,9 @@ class CarSpider:
         variable = self.r_var,value='retail')
         self.r.grid(row = 2,column = 2,sticky='W')
         sipp = Radiobutton(ResFrame,text='SIPP:',variable = self.r_var,value='sipp')
-        sipp.grid(row=3,column=0)
+        sipp.grid(row=3,column=1,sticky='W')
         s_code = Entry(ResFrame,width=6,textvariable = self.sipp_var)
-        s_code.grid(row = 3,column = 1,sticky='W')
-        r = Radiobutton(ResFrame,text='random',variable = self.r_var,value='rand')
-        r.grid(row = 3,column = 2,sticky='W')
-
-    def check_domain(self):
-        if self.domain == 'International':
-           self.o.config(state=DISABLED)
-           self.r.config(state=DISABLED)
-        elif self.domain == 'Domestic':
-           self.o.config(state=ACTIVE )
-           self.r.config(state=ACTIVE )
+        s_code.grid(row = 3,column = 2,sticky='W')
 
     def payment_widget(self):
         PayFrame = Frame(self.OptionsFrame)
