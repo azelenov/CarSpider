@@ -138,9 +138,9 @@ class CarSpider:
         self.status.pack(expand=1, fill=X)
 
     def options_widget(self):
-        self.OptionsFrame = LabelFrame(self.root,relief = RAISED,borderwidth =2,
+        self.OptionsFrame = LabelFrame(self.root,
         text="Options",labelanchor='n')
-        self.OptionsFrame.grid(row = 4,column = 0,columnspan=4)
+        self.OptionsFrame.grid(row = 4,column = 0,columnspan=2)
         self.currency_widget()
         self.search_widget()
         self.results_widget()
@@ -159,6 +159,10 @@ class CarSpider:
         Radiobutton(CurFrame,text='GBP',variable = self.currency,value='GBP').grid(row = 0,column = 3)
         Radiobutton(CurFrame,text='other',variable = self.currency,value='OTR').grid(row = 1,column = 0)
         Radiobutton(CurFrame,text='random',variable = self.currency,value='rand').grid(row = 1,column = 1)
+        Radiobutton(CurFrame,text='code',variable = self.currency,value='code').grid(row = 1,column = 2)
+        List = Listbox(CurFrame)
+        List.grid(row = 1,column = 2)
+        List.insert(END, "USD")
 
 
     def search_widget(self):
@@ -177,7 +181,7 @@ class CarSpider:
         Radiobutton(SearchFrame,text='random',variable = self.s_var,value='random').grid(row = 1,column = 2)
 
     def results_widget(self):
-        ResFrame = LabelFrame(self.OptionsFrame,relief = RAISED,borderwidth=1,text = "Solution",labelanchor='n')
+        ResFrame = LabelFrame(self.OptionsFrame,relief = GROOVE,borderwidth=2,text = "Solution",labelanchor='n')
         ResFrame.pack(side = 'top',expand=1,padx=5,pady=5)
         self.r_var = StringVar()
         self.sipp_var = StringVar()
