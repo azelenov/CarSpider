@@ -19,6 +19,7 @@ class CarSpider:
         self.domains_widget()
         self.buttons_widget()
         self.options_widget()
+        self.buttons_widget(r=5)
         self.status_bar()
 
 
@@ -80,13 +81,15 @@ class CarSpider:
             cbuts.append(cb)
         return cbuts
 
-    def buttons_widget(self):
+    def buttons_widget(self,r=3):
         FuncFrame = Frame(self.root,relief = RAISED)
-        FuncFrame.grid(row = 3,column = 0,columnspan=2)
+        FuncFrame.grid(row = r,column = 0,columnspan=2)
         Button(FuncFrame, text="start",command=self.start).pack(side = 'left')
         Button(FuncFrame, text="search").pack(side = 'left')
         Button(FuncFrame, text="details").pack(side = 'left')
         Button(FuncFrame, text="book").pack(side = 'left')
+        Button(FuncFrame, text="full").pack(side = 'left')
+        Button(FuncFrame, text="loop").pack(side = 'left')
 
     def domains_widget(self):
         self.d_var = StringVar()
@@ -132,56 +135,75 @@ class CarSpider:
 
     def status_bar(self):
         statusFrame = Frame(self.root,relief = GROOVE,borderwidth = 1)
-        statusFrame.grid(row = 6,column = 0,columnspan=2,padx=5,pady=5)
+        statusFrame.grid(row = 7,column = 0,columnspan=2,padx=5,pady=5)
         self.status = Label(statusFrame,text="Please choose options to start crawling",
                      bd=1, relief=SUNKEN, anchor=W)
         self.status.pack(expand=1, fill=X)
 
     def options_widget(self):
         self.OptionsFrame = LabelFrame(self.root,
-        text="Options",labelanchor='n')
+        text="Options",labelanchor='n',relief = RIDGE,borderwidth=4)
         self.OptionsFrame.grid(row = 4,column = 0,columnspan=2)
+        self.days_widget()
         self.currency_widget()
         self.search_widget()
         self.results_widget()
         self.payment_widget()
         self.email_widget()
+        self.insurance_widget()
         #self.check_domain()
 
+    def days_widget(self):
+        DayFrame = Frame(self.OptionsFrame)
+        DayFrame.pack(side = 'top',padx=5,pady=5)
+        Label(DayFrame,text = "Number of days:").grid(row=0,column=0)
+        s = Spinbox(DayFrame, from_=3, to=350,width=3)
+        s.grid(row = 0,column = 1)
+
+
     def currency_widget(self):
-        CurFrame = Frame(self.OptionsFrame,relief = GROOVE,borderwidth = 2)
+        CurFrame = Frame(self.OptionsFrame)
         CurFrame.pack(side = 'top',padx=5,pady=5)
         Label(CurFrame,text = "Currency:").grid(row=0,column=0)
+        money = main_config['currency']
         self.currency = StringVar()
-        self.currency.set('USD')
+        self.currency.set('GBP')
         Radiobutton(CurFrame,text='USD',variable = self.currency,value='USD').grid(row = 0,column = 1)
         Radiobutton(CurFrame,text='EUR',variable = self.currency,value='EUR').grid(row = 0,column = 2)
         Radiobutton(CurFrame,text='GBP',variable = self.currency,value='GBP').grid(row = 0,column = 3)
         Radiobutton(CurFrame,text='other',variable = self.currency,value='OTR').grid(row = 1,column = 0)
         Radiobutton(CurFrame,text='random',variable = self.currency,value='rand').grid(row = 1,column = 1)
         Radiobutton(CurFrame,text='code',variable = self.currency,value='code').grid(row = 1,column = 2)
-        List = Listbox(CurFrame)
-        List.grid(row = 1,column = 2)
-        List.insert(END, "USD")
+        om = apply(OptionMenu, (CurFrame, self.currency) + tuple(money))
+        om.grid(row = 1,column = 2)
 
 
     def search_widget(self):
-        SearchFrame = Frame(self.OptionsFrame)
+        SearchFrame = LabelFrame(self.OptionsFrame,text = "Search:",
+                      labelanchor='n',relief = RAISED,borderwidth=1)
         SearchFrame.pack(side = 'top',padx=5,pady=5)
-        Label(SearchFrame,text = "Search:").grid(row=0,column=0)
+        #Label(SearchFrame,text = "Search:").grid(row=0,column=0)
         self.s_var = StringVar()
         self.a_var = StringVar()
         self.s_var.set('air')
         self.a_var.set('LHR')
-        Radiobutton(SearchFrame,text='air',variable = self.s_var,value='air').grid(row = 0,column = 1)
-        Radiobutton(SearchFrame,text='air code',variable = self.s_var,value='airCode').grid(row = 0,column = 2)
-        Entry(SearchFrame,width=4,textvariable = self.a_var).grid(row = 0,column = 3)
-        Radiobutton(SearchFrame,text='city',variable = self.s_var,value='city').grid(row = 1,column = 0)
-        Radiobutton(SearchFrame,text='zip',variable = self.s_var,value='zip').grid(row = 1,column = 1)
-        Radiobutton(SearchFrame,text='random',variable = self.s_var,value='random').grid(row = 1,column = 2)
+        Radiobutton(SearchFrame,text='air',variable = self.s_var,value='air').grid(row = 0,column = 0,sticky='W')
+        Radiobutton(SearchFrame,text='air code',variable = self.s_var,value='airCode').grid(row = 0,column = 1,sticky='W')
+        Entry(SearchFrame,width=4,textvariable = self.a_var).grid(row = 0,column = 2,sticky='W')
+        Radiobutton(SearchFrame,text='city',variable = self.s_var,value='city').grid(row = 1,column = 0,sticky='W')
+        Radiobutton(SearchFrame,text='zip',variable = self.s_var,value='zip').grid(row = 1,column = 1,sticky='W')
+        Radiobutton(SearchFrame,text='random',variable = self.s_var,value='random').grid(row = 1,column = 2,sticky='W')
+        Label(SearchFrame,text="Locations list:").grid(row = 3,column = 1)
+        locs = settings.locations.keys()
+        self.locations = StringVar()
+        self.locations.set(main_config["loc_list"])
+        om = apply(OptionMenu, (SearchFrame, self.locations) + tuple(locs))
+        om.grid(row = 3,column = 2,padx=3,pady=3)
+
 
     def results_widget(self):
-        ResFrame = LabelFrame(self.OptionsFrame,relief = GROOVE,borderwidth=2,text = "Solution",labelanchor='n')
+        ResFrame = LabelFrame(self.OptionsFrame,relief = RAISED,
+        borderwidth=1,text = "Solution",labelanchor='n')
         ResFrame.pack(side = 'top',expand=1,padx=5,pady=5)
         self.r_var = StringVar()
         self.sipp_var = StringVar()
@@ -204,7 +226,7 @@ class CarSpider:
         sipp = Radiobutton(ResFrame,text='SIPP:',variable = self.r_var,value='sipp')
         sipp.grid(row=3,column=1,sticky='W')
         s_code = Entry(ResFrame,width=6,textvariable = self.sipp_var)
-        s_code.grid(row = 3,column = 2,sticky='W')
+        s_code.grid(row = 3,column = 2,sticky='W',padx=3,pady=3)
 
     def payment_widget(self):
         PayFrame = Frame(self.OptionsFrame)
@@ -223,6 +245,17 @@ class CarSpider:
         Label(EmailFrame,text = "Email type:").grid(row=0,column=0)
         Radiobutton(EmailFrame,text='Gmail',variable = self.email,value='gmail').grid(row = 0,column = 1,sticky='W')
         Radiobutton(EmailFrame,text='Yahoo',variable = self.email,value='yahoo').grid(row = 0,column = 2,sticky='W')
+
+    def insurance_widget(self):
+        InsurFrame = Frame(self.OptionsFrame)
+        InsurFrame.pack(side = 'top')
+        self.insurance = BooleanVar()
+        self.insurance.set(False)
+        cb = Checkbutton(InsurFrame,text="Insurance",variable=self.insurance)
+        cb.pack(side='left')
+
+
+
 
 
 app = CarSpider()

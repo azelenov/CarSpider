@@ -1,11 +1,9 @@
-import lists
-
 #MAIN script configuration
 main_config = {
 "wait":1, #time in seconds for watching on ui elements
 "wait_element":5,
 "wait_on_page":1,
-"loc_list":lists.uk_list,
+"loc_list":"UK",
 "default_loc":"LHR",
 "domains":["International","Domestic","CCF"],
 "default_domain":"International",
@@ -87,6 +85,16 @@ ref_urls =  {
 'preprod':'http://www.preprod.hotwire.com/test/refreshUtil.jsp'
 }
 
+#List of location specified in search
+locations = {
+    'UK' : {
+            'air':'air_uk.txt',
+            'city':'city_uk.txt',
+            'zip':'zip_uk.txt'
+            }
+}
+
+
 #Driver info fields
 driver_info = {
 'first_name':'Tester',
@@ -114,5 +122,6 @@ intl_card ={
     'number':'5425232820001308'
     }
 }
+
 
 
