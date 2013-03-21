@@ -48,13 +48,13 @@ class IntlSearch:
     def xclick(self,loc_name,element = None):
         self.xfind(loc_name,element).click()
 
-    def xtype(self,elem_name,text,enter = False):
+    def xtype(self,elem_name,text):
         #print elem_name
         loc = self.xfind(elem_name)
         #print loc
         loc.clear()
         loc.send_keys(text)
-        if enter: loc.send_keys(Keys.ENTER)
+        loc.send_keys(Keys.TAB)
 
     def submit(self):
          self.xfind('submit').click()
@@ -190,18 +190,19 @@ class IntlSearch:
             time.sleep(self.wait*5)
 
     def type_date(self,enter = False):
-        tomorrow = date.today() + timedelta(days=1)
-        nextday = date.today() + timedelta(days=4)
+        tomorrow = date.today() + timedelta(days=0)
+        nextday = date.today() + timedelta(days=3)
         if self.autocomplete:
            cal = self.xfind("pickup_date")
            cal.click()
            self.click_text(str(tomorrow.day))
         else:
            self.xtype("pickup_date",self.date_format(tomorrow))
-           print self.date_format(tomorrow)
+           self.log(self.date_format(tomorrow))
            time.sleep(1/2)
-           self.xtype("dropoff_date",self.date_format(nextday),enter)
-           print self.date_format(nextday)
+           self.xtype("dropoff_date",self.date_format(nextday))
+           self.log(self.date_format(nextday))
+
 
     def date_format(self,D):
         year,mon,day = D.timetuple()[:3]
@@ -217,11 +218,10 @@ class IntlSearch:
            self.log("Driver age: "+dr_age)
            self.xtype('age',dr_age,False)
         else:
-           self.xtype('age',dr_age,True)
+           self.xtype('age',dr_age)
 
     def go(self):
-        if self.autocomplete:
-           self.submit()
+        self.submit()
         time.sleep(1)
 
     def verify(self):

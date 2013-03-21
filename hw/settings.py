@@ -15,8 +15,8 @@ main_config = {
 "default_card":"visa",
 "autocomplete":False,
 #"firefox_extentions":["firebug-1.11.1-fx.xpi"],
-"scenarios_dir":"scenarios",
-"lists_dir":"lists"
+"scenarios_dir":"hw/scenarios",
+"lists_dir":"hw/lists"
 
 
 }

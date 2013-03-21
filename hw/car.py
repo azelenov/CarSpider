@@ -58,6 +58,8 @@ def move(browser,place):
 
 def main():
 
+    print "[HW CarSpider ver 1.0]"
+
     parser=argparse.ArgumentParser()
 
 
@@ -84,8 +86,9 @@ def main():
     #parser.add_argument('--emul',help='Switch rest simulator',choices = ['on','off'])
 
 
-
     args=parser.parse_args()
+
+
 
     urls = intl_urls
     if args.domain not in intl_urls:
@@ -95,9 +98,10 @@ def main():
 
     drivers=[]
 
-    os.chdir('hw')
     if args.json:
        path = main_config["scenarios_dir"] + "/" + args.json + ".json"
+       print path
+       print os.listdir(os.curdir)
        with open (path) as js:
          row = json.load(js)
        scenario = row['scenario']
@@ -148,7 +152,7 @@ def main():
             if not args.visa and not args.mc:
                br["card_vendor"] = main_config["default_card"]
 
-    print "[HW CarSpider ver 1.0]"
+
     print scenario
     #sys.exit()
 
