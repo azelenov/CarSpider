@@ -17,9 +17,10 @@ class CarSpider:
     def create_widgets(self):
         self.browsers_widget()
         self.domains_widget()
+        self.scenario_widget()
         self.buttons_widget()
         self.options_widget()
-        self.buttons_widget(r=5)
+        self.buttons_widget(r=6)
         self.status_bar()
 
 
@@ -40,6 +41,7 @@ class CarSpider:
             b.destroy()
 
     def start(self):
+        print self.loop.get()
         scenario = []
         if self.firefox.get() == 1: scenario.append({"browser":"firefox"})
         if self.chrome.get() == 1: scenario.append({"browser":"chrome"})
@@ -81,7 +83,7 @@ class CarSpider:
             cbuts.append(cb)
         return cbuts
 
-    def buttons_widget(self,r=3):
+    def buttons_widget(self,r=4):
         FuncFrame = Frame(self.root,relief = RAISED)
         FuncFrame.grid(row = r,column = 0,columnspan=2)
         Button(FuncFrame, text="start",command=self.start).pack(side = 'left')
@@ -89,7 +91,12 @@ class CarSpider:
         Button(FuncFrame, text="details").pack(side = 'left')
         Button(FuncFrame, text="book").pack(side = 'left')
         Button(FuncFrame, text="full").pack(side = 'left')
-        Button(FuncFrame, text="loop").pack(side = 'left')
+        self.loop = BooleanVar()
+        self.loop.set(False)
+        self.loop_box = Checkbutton(FuncFrame, text="loop",
+                   variable=self.loop)
+        self.loop_box.pack(side = 'left')
+
 
     def domains_widget(self):
         self.d_var = StringVar()
@@ -132,6 +139,19 @@ class CarSpider:
         text="Enviroment",labelanchor='n')
         self.EnvFrame.grid(row = 2,column = 0,columnspan=2,padx=5,pady=5)
 
+    def scenario_widget(self):
+        ScenarioFrame = Frame(self.root)
+        ScenarioFrame.grid(row = 3,column = 0,columnspan=2)
+        self.scenario = BooleanVar()
+        self.scenario.set(False)
+        Checkbutton(ScenarioFrame,text = 'Scenario template',
+        variable=self.scenario).pack(side='left')
+        #self.json = StringVar()
+        #self.json.set('guest')
+        #jsons = settings.accounts.keys()
+        #om = apply(OptionMenu, (LoginFrame, self.account) + tuple(logins))
+        #om.grid(row = 0,column = 1,padx=3,pady=3)
+
 
     def status_bar(self):
         statusFrame = Frame(self.root,relief = GROOVE,borderwidth = 1)
@@ -142,8 +162,9 @@ class CarSpider:
 
     def options_widget(self):
         self.OptionsFrame = LabelFrame(self.root,
-        text="Options",labelanchor='n',relief = RIDGE,borderwidth=4)
-        self.OptionsFrame.grid(row = 4,column = 0,columnspan=2)
+        text="Options",labelanchor='n',relief = RIDGE,borderwidth=4,width=80)
+        self.OptionsFrame.grid(row = 5,column = 0,columnspan=2)
+        self.account_widget()
         self.days_widget()
         self.currency_widget()
         self.search_widget()
@@ -157,7 +178,7 @@ class CarSpider:
         DayFrame = Frame(self.OptionsFrame)
         DayFrame.pack(side = 'top',padx=5,pady=5)
         Label(DayFrame,text = "Number of days:").grid(row=0,column=0)
-        s = Spinbox(DayFrame, from_=3, to=350,width=3)
+        s = Spinbox(DayFrame, from_=1, to=351,width=3)
         s.grid(row = 0,column = 1)
 
 
@@ -254,6 +275,15 @@ class CarSpider:
         cb = Checkbutton(InsurFrame,text="Insurance",variable=self.insurance)
         cb.pack(side='left')
 
+    def account_widget(self):
+        LoginFrame = Frame(self.OptionsFrame)
+        LoginFrame.pack(side = 'top')
+        Label(LoginFrame,text='Account:').grid(row = 0,column = 0)
+        self.account = StringVar()
+        self.account.set('guest')
+        logins = settings.accounts.keys()
+        om = apply(OptionMenu, (LoginFrame, self.account) + tuple(logins))
+        om.grid(row = 0,column = 1,padx=3,pady=3)
 
 
 

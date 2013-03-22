@@ -20,7 +20,7 @@ main_config = {
 
 }
 
-#Specify browser positions according to your screen resolution
+#Browser positions according to screen resolution
 browser_positions = [
     {
     "id":0,
@@ -85,7 +85,28 @@ ref_urls =  {
 'preprod':'http://www.preprod.hotwire.com/test/refreshUtil.jsp'
 }
 
-#List of location specified in search
+
+#Login options
+accounts = {
+       'gmail': {
+                'login':'alex.hotwire@gmail.com',
+                'pass':'password'
+       },
+       'yahoo':{
+                'login':'alex.hotwire@yahoo.com',
+                'pass':'password'
+       },
+       'forC3':{
+                'login':'ozelenov@luxoft.com',
+                'pass':'password'
+       },
+       'guest':{
+                'login':None
+       }
+
+}
+
+#List of location used for search
 locations = {
     'UK' : {
             'air':'air_uk.txt',
