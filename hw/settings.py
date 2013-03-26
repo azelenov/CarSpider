@@ -67,7 +67,11 @@ intl_urls = {
 dom_urls = {
 'qa':'http://www.qa.hotwire.com/car',
 'qaci':'http://www.qaci.hotwire.com/car',
-'dev':'http://dev05.dev.hotwire.com:7001/intl/uk/car'
+#'sfo':'http://sfo-5ozelenov-v:7001/car',
+'local':'http://localhost:7001/car',
+'dev':'http://dev05.dev.hotwire.com:7001/car',
+'preprod':'http://www.preprod.hotwire.com/car',
+'prod':'http://www.hotwire.com/car',
 }
 
 ccf_urls = {
@@ -112,7 +116,11 @@ locations = {
             'air':'air_uk.txt',
             'city':'city_uk.txt',
             'zip':'zip_uk.txt'
-            }
+            },
+    'Pop Domestic':{
+                    'air':'air_pop_dom.txt',
+                    'city':'city_pop_dom.txt'
+                    }
 }
 
 

@@ -12,7 +12,16 @@ class CarSpider:
         #os.chdir('hw')
         self.root.wm_title("HW CarSpider 2.0")
         self.root.wm_iconbitmap('static/spider.ico')
+        #self.root.geometry("250x150+300+300")
+        self.menu_bar()
         self.create_widgets()
+
+    def menu_bar(self):
+        menubar = Menu(self.root)
+        menubar.add_command(label="File")
+        menubar.add_command(label="Help")
+        self.root.config(menu=menubar)
+
 
     def create_widgets(self):
         self.browsers_widget()
@@ -20,7 +29,7 @@ class CarSpider:
         self.scenario_widget()
         self.buttons_widget()
         self.options_widget()
-        self.buttons_widget(r=6)
+        #self.buttons_widget(r=6)
         self.status_bar()
 
 
@@ -66,7 +75,7 @@ class CarSpider:
         self.ie = IntVar()
         browsers = {'Firefox':self.firefox,'Chrome':self.chrome,'IE':self.ie}
         BrowTypeFrame = LabelFrame(self.root,relief = RAISED,
-        borderwidth=1,text = "Browsers:",padx=5,pady=5)
+        borderwidth=1,text = "Browsers:",padx=7,pady=7)
         BrowTypeFrame.grid(row = 0,column = 0,columnspan=2)
         self.br_buttons = self.create_checks(BrowTypeFrame,browsers)
         print self.br_buttons
@@ -140,17 +149,23 @@ class CarSpider:
         self.EnvFrame.grid(row = 2,column = 0,columnspan=2,padx=5,pady=5)
 
     def scenario_widget(self):
-        ScenarioFrame = Frame(self.root)
-        ScenarioFrame.grid(row = 3,column = 0,columnspan=2)
-        self.scenario = BooleanVar()
-        self.scenario.set(False)
+        ScenarioFrame = Frame(self.root,relief=RIDGE,borderwidth=1)
+        ScenarioFrame.grid(row = 3,column = 0,columnspan=2,padx = 40,pady=7)
+        self.template = BooleanVar()
+        self.template.set(False)
         Checkbutton(ScenarioFrame,text = 'Scenario template',
-        variable=self.scenario).pack(side='left')
-        #self.json = StringVar()
-        #self.json.set('guest')
-        #jsons = settings.accounts.keys()
-        #om = apply(OptionMenu, (LoginFrame, self.account) + tuple(logins))
-        #om.grid(row = 0,column = 1,padx=3,pady=3)
+        variable=self.template,command=self.hide_options).pack(side='left')
+        self.json =  StringVar()
+        temps = os.listdir(main_config['scenarios_dir'])
+        self.json.set(temps[0])
+        om = apply(OptionMenu, (ScenarioFrame, self.json) + tuple(temps))
+        om.pack(side='left')
+
+    def hide_options(self):
+        if self.template.get():
+           self.OptionsFrame.grid_forget()
+        else:
+             self.OptionsFrame.grid(row = 5,column = 0,columnspan=2,padx = 40)
 
 
     def status_bar(self):
@@ -163,7 +178,7 @@ class CarSpider:
     def options_widget(self):
         self.OptionsFrame = LabelFrame(self.root,
         text="Options",labelanchor='n',relief = RIDGE,borderwidth=4,width=80)
-        self.OptionsFrame.grid(row = 5,column = 0,columnspan=2)
+        self.OptionsFrame.grid(row = 5,column = 0,columnspan=2,padx = 40)
         self.account_widget()
         self.days_widget()
         self.currency_widget()
@@ -219,7 +234,7 @@ class CarSpider:
         self.locations = StringVar()
         self.locations.set(main_config["loc_list"])
         om = apply(OptionMenu, (SearchFrame, self.locations) + tuple(locs))
-        om.grid(row = 3,column = 2,padx=3,pady=3)
+        om.grid(row = 3,column = 2)
 
 
     def results_widget(self):
