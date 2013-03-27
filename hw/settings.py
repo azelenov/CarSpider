@@ -92,20 +92,28 @@ ref_urls =  {
 
 #Login options
 accounts = {
+       'no_account':{
+                     'login':None
+                     },
        'gmail': {
+                'type':'regular',
                 'login':'alex.hotwire@gmail.com',
                 'pass':'password'
        },
        'yahoo':{
+                'type':'regular',
                 'login':'alex.hotwire@yahoo.com',
                 'pass':'password'
        },
        'forC3':{
+                'type':'regular',
                 'login':'ozelenov@luxoft.com',
                 'pass':'password'
        },
-       'guest':{
-                'login':None
+       'guest_visa':{
+                'type':'guest',
+                'login':'alex.hotwire@gmail.com',
+                'pass':'01307'
        }
 
 }
