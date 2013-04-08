@@ -190,7 +190,7 @@ class IntlSearch:
             time.sleep(self.wait*5)
 
     def type_date(self,enter = False):
-        tomorrow = date.today() + timedelta(days=0)
+        tomorrow = date.today() + timedelta(days=1)
         nextday = date.today() + timedelta(days=3)
         if self.autocomplete:
            cal = self.xfind("pickup_date")
