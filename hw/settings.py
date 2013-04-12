@@ -8,7 +8,7 @@ main_config = {
 "loc_list":lists.uk_list,
 "default_loc":"LHR",
 "domain":"uk",
-"attempts":2,
+"attempts":5,
 "currency":["AUD","NZD","GBP","NOK","CHF","DKK","SEK","EUR","USD"],
 "default_browser":"chrome",
 "default_email":"gmail",

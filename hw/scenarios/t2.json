@@ -1,0 +1,22 @@
+{
+"scenario":[
+	{
+    "browser":"chrome",
+    "pickup_loc":"LHR",
+    "dropoff_loc":"LCY",
+    "currency":"eur",
+	"email_type":"yahoo",
+	"card_vendor":"mc"
+    },
+	{
+    "browser":"firefox",
+    "pickup_loc":"air",
+    "dropoff_loc":"",
+    "currency":"otr",
+	"email_type":"gmail",
+	"card_vendor":"visa"
+    }
+
+
+    ]
+}

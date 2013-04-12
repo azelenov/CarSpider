@@ -190,18 +190,25 @@ class IntlSearch:
             time.sleep(self.wait*5)
 
     def type_date(self,enter = False):
-        tomorrow = date.today() + timedelta(days=1)
-        nextday = date.today() + timedelta(days=3)
+        pickday =''
+        dropday=''
+        while True:
+              p =random.randint(1,330)
+              d =random.randint(2,330)
+              if d>p and d-p<60:
+                 pickday = date.today() + timedelta(days=p)
+                 dropday = date.today() + timedelta(days=d)
+                 break
         if self.autocomplete:
            cal = self.xfind("pickup_date")
            cal.click()
-           self.click_text(str(tomorrow.day))
+           self.click_text(str(pickday.day))
         else:
-           self.xtype("pickup_date",self.date_format(tomorrow))
-           self.log(self.date_format(tomorrow))
+           self.xtype("pickup_date",self.date_format(pickday))
+           self.log("Pickup date: "+self.date_format(pickday))
            time.sleep(1/2)
-           self.xtype("dropoff_date",self.date_format(nextday))
-           self.log(self.date_format(nextday))
+           self.xtype("dropoff_date",self.date_format(dropday))
+           self.log("Dropoff date: "+self.date_format(dropday))
 
 
     def date_format(self,D):
