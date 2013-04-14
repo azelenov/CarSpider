@@ -4,6 +4,7 @@ from settings import main_config
 import settings
 import sys
 import json
+import random
 
 class CarSpider:
     scenario = []
@@ -41,7 +42,6 @@ class CarSpider:
             b.destroy()
 
     def start(self):
-        #print self.loop.get()
         if self.template.get():
            path = main_config["scenarios_dir"] + "/" + self.json.get()
            with open (path) as js:
@@ -51,7 +51,6 @@ class CarSpider:
         else:
             scenario = self.make_scenario()
 
-
     def make_scenario(self):
         browsers = []
         if self.firefox.get() == 1: browsers.append({"browser":"firefox"})
@@ -59,20 +58,44 @@ class CarSpider:
         if self.ie.get() == 1: browsers.append({"browser":"ie"})
         if browsers:
            for browser in browsers:
-               browser['domain'] = self.domain
+               browser['domain'] = self.domain.get()
                browser['enviroment'] = self.env.get()
                browser['account'] = self.account.get()
-               browser['days_from_now'] = self.days_from_now.get()
-               browser['trip_duration'] = self.duration.get()
-               browser['driver_age'] = self.age.get()
-               browser['currency'] = self.currency.get()
-               if self.one_way.get():
-                  pass
+               if self.rand_dates.get():
+                  browser['days_left'] = random.randint(1,330)
+                  browser['trip_duration'] = random.randint(1,60)
                else:
-                  pass
-
+                  browser['days_left'] = self.days_left.get()
+                  browser['trip_duration'] = self.trip_duration.get()
+               if self.rand_age.get():
+                  browser['driver_age'] = random.randint(25,75)
+               else:
+                  browser['driver_age'] = self.age.get()
+               browser['currency'] = self.currency.get()
+               if self.search.get() == 'air_code':
+                  search = self.air_code.get()
+               else:
+                  search = self.search.get()
+               if self.one_way.get():
+                  browser['pick_location'] = search
+                  browser['drop_location'] = search
+               else:
+                  browser['pick_location'] = search
+                  browser['drop_location'] = ''
+               if self.solution.get() == 'sipp':
+                  browser['solution'] = self.sipp.get()
+               else:
+                  browser['solution'] =  self.solution.get()
+               if self.rand_payment.get():
+                  browser['payment'] = random.choice(self.cards.keys())
+               else:
+                  browser['payment'] = self.payment.get()
+               browser['insurance'] = self.insurance.get()
+               if self.rand_email.get():
+                  browser['email'] = random.choice(self.emails)
+               else:
+                  browser['email'] = self.email.get()
                print browser
-
         else:
            print "No browser selected"
 
@@ -84,7 +107,6 @@ class CarSpider:
         for a in self.br_buttons:
             a.deselect()
 
-    #Browser Frame
     def browsers_widget(self):
         self.firefox = IntVar()
         self.chrome = IntVar()
@@ -211,12 +233,12 @@ class CarSpider:
     def days_widget(self):
         DayFrame = Frame(self.OptionsFrame,relief = RAISED,borderwidth=1)
         DayFrame.pack(side = 'top',padx=5,pady=5)
-        Label(DayFrame,text = "Start day(today+):").grid(row=0,column=0)
-        self.days_from_now = Spinbox(DayFrame, from_=1, to=60,width=3)
-        self.days_from_now.grid(row = 0,column=1)
-        Label(DayFrame,text = "Duration:").grid(row=0,column=2)
-        self.duration = Spinbox(DayFrame, from_=1, to=351,width=3)
-        self.duration.grid(row = 0,column=3)
+        Label(DayFrame,text = "Days left:").grid(row=0,column=0)
+        self.days_left = Spinbox(DayFrame, from_=1, to=60,width=3)
+        self.days_left.grid(row = 0,column=1)
+        Label(DayFrame,text = "Trip duration:").grid(row=0,column=2)
+        self.trip_duration = Spinbox(DayFrame, from_=1, to=351,width=3)
+        self.trip_duration.grid(row = 0,column=3)
         self.rand_dates = BooleanVar()
         self.rand_dates.set(True)
         Checkbutton(DayFrame,text = 'Random dates',
@@ -233,7 +255,6 @@ class CarSpider:
         self.rand_age.set(True)
         Checkbutton(AgeFrame,text = 'Random age',
         variable=self.rand_age).grid(row = 0,column = 2,sticky='W')
-
 
     def currency_widget(self):
         CurFrame = LabelFrame(self.OptionsFrame,relief = RAISED,borderwidth=1,
@@ -252,7 +273,6 @@ class CarSpider:
         om = apply(OptionMenu, (CurFrame, self.currency) + tuple(money))
         om.grid(row = 1,column = 2)
 
-
     def search_widget(self):
         SearchFrame = LabelFrame(self.OptionsFrame,text = "Search",
                       labelanchor='n',relief = RAISED,borderwidth=1)
@@ -265,7 +285,7 @@ class CarSpider:
         Radiobutton(SearchFrame,text='air',variable = self.search,value='air').grid(row = 0,column = 0,sticky='W')
         airCodeFrame = Frame(SearchFrame)
         airCodeFrame.grid(row = 0,column = 1,sticky='W')
-        Radiobutton(airCodeFrame,text='air code:',variable = self.search,value='airCode').pack(side="left")
+        Radiobutton(airCodeFrame,text='air code:',variable = self.search,value='air_code').pack(side="left")
         Entry(airCodeFrame,width=4,textvariable = self.air_code).pack(side="left")
         Radiobutton(SearchFrame,text='city',variable = self.search,value='city').grid(row = 0,column = 2,sticky='W')
         Radiobutton(SearchFrame,text='zip',variable = self.search,value='zip').grid(row = 1,column = 0,sticky='W')
@@ -290,33 +310,32 @@ class CarSpider:
         Checkbutton(SearchFrame,text = 'All lists',
         variable=self.all_lists).grid(row = 3,column = 2,sticky='W')
 
-
     def results_widget(self):
         ResFrame = LabelFrame(self.OptionsFrame,relief = RAISED,
         borderwidth=1,text = "Solution",labelanchor='n')
         ResFrame.pack(side = 'top',expand=1,padx=10,pady=5)
-        self.r_var = StringVar()
-        self.sipp_var = StringVar()
-        self.r_var.set('first')
-        self.sipp_var.set('EBMN')
+        self.solution = StringVar()
+        self.sipp = StringVar()
+        self.solution.set('first')
+        self.sipp.set('EBMN')
         Label(ResFrame,text = "Result:").grid(row=1,column=0)
-        f = Radiobutton(ResFrame,text='first',variable = self.r_var,value='first')
+        f = Radiobutton(ResFrame,text='first',variable = self.solution,value='first')
         f.grid(row = 1,column = 1,sticky='W')
-        l = Radiobutton(ResFrame,text='last',variable = self.r_var,value='last')
+        l = Radiobutton(ResFrame,text='last',variable = self.solution,value='last')
         l.grid(row = 1,column = 2,sticky='W')
-        r = Radiobutton(ResFrame,text='random',variable = self.r_var,value='rand')
+        r = Radiobutton(ResFrame,text='random',variable = self.solution,value='rand')
         r.grid(row = 1,column = 3,sticky='W')
         Label(ResFrame,text = "Type:").grid(row=2,column=0)
         self.o = Radiobutton(ResFrame,text='opaque',
-        variable = self.r_var,value='opaque')
+        variable = self.solution,value='opaque')
         self.o.grid(row = 2,column = 1,sticky='W')
         self.r = Radiobutton(ResFrame,text='retail',
-        variable = self.r_var,value='retail')
+        variable = self.solution,value='retail')
         self.r.grid(row = 2,column = 2,sticky='W')
         SippFrame = Frame(ResFrame)
         SippFrame.grid(row=3,column=1,sticky='W')
-        Radiobutton(SippFrame,text='SIPP:',variable = self.r_var,value='sipp').pack(side='left')
-        Entry(SippFrame,width=6,textvariable = self.sipp_var).pack(side='left')
+        Radiobutton(SippFrame,text='SIPP:',variable = self.solution,value='sipp').pack(side='left')
+        Entry(SippFrame,width=6,textvariable = self.sipp).pack(side='left')
         self.policy = BooleanVar()
         self.policy.set(False)
         Checkbutton(ResFrame,text = 'policy',
@@ -335,10 +354,14 @@ class CarSpider:
         Label(PayFrame,text = "Pyment method:").grid(row=0,column=0,sticky='W')
         om = apply(OptionMenu, (PayFrame, self.payment) + tuple(money))
         om.grid(row=0,column=1,sticky='W')
+        self.rand_payment = BooleanVar()
+        self.rand_payment.set(True)
+        Checkbutton(PayFrame,text="Random",
+                    variable=self.rand_payment).grid(row=0,column=2,sticky='W')
         self.insurance = BooleanVar()
         self.insurance.set(False)
         Checkbutton(PayFrame,text="Insurance",
-                    variable=self.insurance).grid(row=0,column=2,sticky='W')
+                    variable=self.insurance).grid(row=1,column=0,sticky='W')
         self.all_cards = BooleanVar()
         self.all_cards.set(False)
         Checkbutton(PayFrame,text = 'Book with all',
@@ -347,14 +370,18 @@ class CarSpider:
     def email_widget(self):
         self.email = StringVar()
         self.email.set('gmail')
-        EmailFrame = Frame(self.OptionsFrame)
+        EmailFrame = Frame(self.OptionsFrame,relief = RAISED,borderwidth=1)
         EmailFrame.pack(side = 'top')
         self.email = StringVar()
-        emails = sorted(settings.conf_email.keys())
+        self.emails = sorted(settings.conf_email.keys())
         self.email.set('gmail')
         Label(EmailFrame,text = "Email type:").grid(row=0,column=0,sticky='W')
-        om = apply(OptionMenu, (EmailFrame, self.email) + tuple(emails))
+        om = apply(OptionMenu, (EmailFrame, self.email) + tuple(self.emails))
         om.grid(row=0,column=1,sticky='W')
+        self.rand_email = BooleanVar()
+        self.rand_email.set(True)
+        Checkbutton(EmailFrame,text="Random",
+                    variable=self.rand_email).grid(row=0,column=2,sticky='W')
 
     def status_bar(self):
         statusFrame = Frame(self.root,relief = GROOVE,borderwidth = 1)
