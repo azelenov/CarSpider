@@ -120,12 +120,12 @@ accounts = {
 
 #List of location used for search
 locations = {
-    'UK' : {
+    'United Kingdom' : {
             'air':'air_uk.txt',
             'city':'city_uk.txt',
             'zip':'zip_uk.txt'
             },
-    'Pop Domestic':{
+    'Popular Domestic':{
                     'air':'air_pop_dom.txt',
                     'city':'city_pop_dom.txt'
                     }
@@ -149,12 +149,12 @@ conf_email = {
 }
 
 #credit card types
-intl_card ={
-    'visa':{
+intl_cards ={
+    'Visa':{
     'name':['VISA','VISA DEBIT','VISA ELECTRON'],
     'number':'4263971921001307'
     },
-    'mc':{
+    'MC':{
     'name':['MASTER CARD'],
     'number':'5425232820001308'
     }
