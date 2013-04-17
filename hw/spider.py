@@ -20,8 +20,18 @@ class CarSpider:
 
     def menu_bar(self):
         menubar = Menu(self.root)
-        menubar.add_command(label="File")
-        menubar.add_command(label="Help")
+        filemenu = Menu(menubar, tearoff=0)
+        filemenu = Menu(menubar, tearoff=0)
+        filemenu.add_command(label="Open")
+        filemenu.add_command(label="Save")
+        filemenu.add_separator()
+        filemenu.add_command(label="Exit")
+        menubar.add_cascade(label="File", menu=filemenu)
+
+        helpmenu = Menu(menubar, tearoff=0)
+        helpmenu.add_command(label="About")
+        menubar.add_cascade(label="Help", menu=helpmenu)
+
         self.root.config(menu=menubar)
 
     def create_widgets(self):
@@ -319,31 +329,32 @@ class CarSpider:
         self.solution.set('first')
         self.sipp.set('EBMN')
         Label(ResFrame,text = "Result:").grid(row=1,column=0)
-        f = Radiobutton(ResFrame,text='first',variable = self.solution,value='first')
-        f.grid(row = 1,column = 1,sticky='W')
-        l = Radiobutton(ResFrame,text='last',variable = self.solution,value='last')
-        l.grid(row = 1,column = 2,sticky='W')
-        r = Radiobutton(ResFrame,text='random',variable = self.solution,value='rand')
-        r.grid(row = 1,column = 3,sticky='W')
+        Radiobutton(ResFrame,text='first',variable = self.solution,
+                        value='first').grid(row = 1,column = 1,sticky='W')
+        Radiobutton(ResFrame,text='last',variable = self.solution,
+                        value='last').grid(row = 1,column = 2,sticky='W')
+        Radiobutton(ResFrame,text='all',variable = self.solution,
+                        value='all').grid(row = 1,column = 3,sticky='W')
         Label(ResFrame,text = "Type:").grid(row=2,column=0)
-        self.o = Radiobutton(ResFrame,text='opaque',
-        variable = self.solution,value='opaque')
-        self.o.grid(row = 2,column = 1,sticky='W')
-        self.r = Radiobutton(ResFrame,text='retail',
-        variable = self.solution,value='retail')
-        self.r.grid(row = 2,column = 2,sticky='W')
+        Radiobutton(ResFrame,text='opaque',variable = self.solution,
+                    value='opaque').grid(row = 2,column = 1,sticky='W')
+        Radiobutton(ResFrame,text='retail',variable = self.solution,
+                    value='retail').grid(row = 2,column = 2,sticky='W')
+        Radiobutton(ResFrame,text='random',variable = self.solution,
+                    value='rand').grid(row = 2,column = 3,sticky='W')
+        Label(ResFrame,text = "SIPP:").grid(row = 3,column = 0,sticky='W')
         SippFrame = Frame(ResFrame)
         SippFrame.grid(row=3,column=1,sticky='W')
-        Radiobutton(SippFrame,text='SIPP:',variable = self.solution,value='sipp').pack(side='left')
+        Radiobutton(SippFrame,variable = self.solution,value='sipp').pack(side='left')
         Entry(SippFrame,width=6,textvariable = self.sipp).pack(side='left')
         self.policy = BooleanVar()
         self.policy.set(False)
         Checkbutton(ResFrame,text = 'policy',
-        variable=self.policy).grid(row=3,column=2,sticky='W')
+        variable=self.policy).grid(row=4,column=1,sticky='W')
         self.amenities = BooleanVar()
         self.amenities.set(False)
         Checkbutton(ResFrame,text = 'amenities',
-        variable=self.amenities).grid(row=3,column=3,sticky='W')
+        variable=self.amenities).grid(row=4,column=2,sticky='W')
 
     def payment_widget(self):
         PayFrame = Frame(self.OptionsFrame,relief = RAISED,borderwidth=1)
@@ -361,11 +372,11 @@ class CarSpider:
         self.insurance = BooleanVar()
         self.insurance.set(False)
         Checkbutton(PayFrame,text="Insurance",
-                    variable=self.insurance).grid(row=1,column=0,sticky='W')
+                    variable=self.insurance).grid(row=1,column=1,sticky='W')
         self.all_cards = BooleanVar()
         self.all_cards.set(False)
         Checkbutton(PayFrame,text = 'Book with all',
-                    variable=self.all_cards).grid(row=1,column=1,sticky='W')
+                    variable=self.all_cards).grid(row=1,column=2,sticky='W')
 
     def email_widget(self):
         self.email = StringVar()

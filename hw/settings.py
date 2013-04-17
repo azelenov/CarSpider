@@ -3,7 +3,7 @@ main_config = {
 "wait":1, #time in seconds for watching on ui elements
 "wait_element":5,
 "wait_on_page":1,
-"loc_list":"UK",
+"loc_list":"United Kingdom",
 "default_loc":"LHR",
 "domains":["International","Domestic","CCF"],
 "default_domain":"International",
