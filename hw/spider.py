@@ -1,4 +1,5 @@
 from Tkinter import *
+import tkFileDialog
 import os
 from settings import main_config
 import settings
@@ -23,7 +24,7 @@ class CarSpider:
         filemenu = Menu(menubar, tearoff=0)
         filemenu = Menu(menubar, tearoff=0)
         filemenu.add_command(label="Open")
-        filemenu.add_command(label="Save")
+        filemenu.add_command(label="Save scenario...",command=self.save_scenario)
         filemenu.add_separator()
         filemenu.add_command(label="Exit")
         menubar.add_cascade(label="File", menu=filemenu)
@@ -33,6 +34,22 @@ class CarSpider:
         menubar.add_cascade(label="Help", menu=helpmenu)
 
         self.root.config(menu=menubar)
+
+    def save_scenario(self):
+        scenario = '['
+        #scenario_order = ['browser','domain','enviroment','account',
+                         # 'days_left','trip_duration','driver_age',
+                          #'currency','pick_location','drop_location',
+                         # 'solution','payment','email','insurance']
+        scenario = self.make_scenario()
+        scenario = str(self.make_scenario()).replace(',',',\n').replace('},','},\n')
+        fileName = tkFileDialog.asksaveasfilename(parent=self.root,
+                   filetypes=[('JSON format','*.json')] ,
+                   title="Save the scenario as...",
+                   initialdir="scenarios/",
+                   defaultextension = '.json')
+        with open(fileName,'w') as f:
+             f.write(scenario)
 
     def create_widgets(self):
         self.browsers_widget()
@@ -59,7 +76,8 @@ class CarSpider:
                 scenario = row['scenario']
            print scenario
         else:
-            scenario = self.make_scenario()
+           scenario = self.make_scenario()
+           print scenario
 
     def make_scenario(self):
         browsers = []
@@ -105,7 +123,7 @@ class CarSpider:
                   browser['email'] = random.choice(self.emails)
                else:
                   browser['email'] = self.email.get()
-               print browser
+           return browsers
         else:
            print "No browser selected"
 
@@ -278,7 +296,7 @@ class CarSpider:
         Radiobutton(CurFrame,text='EUR',variable = self.currency,value='EUR').grid(row = 0,column = 1,sticky='W')
         Radiobutton(CurFrame,text='GBP',variable = self.currency,value='GBP').grid(row = 0,column = 2,sticky='W')
         Radiobutton(CurFrame,text='other',variable = self.currency,value='OTR').grid(row = 1,column = 0,sticky='W')
-        Radiobutton(CurFrame,text='random',variable = self.currency,value='rand').grid(row = 1,column = 1,sticky='W')
+        Radiobutton(CurFrame,text='random',variable = self.currency,value='random').grid(row = 1,column = 1,sticky='W')
         Radiobutton(CurFrame,text='code',variable = self.currency,value='code').grid(row = 1,column = 2,sticky='W')
         om = apply(OptionMenu, (CurFrame, self.currency) + tuple(money))
         om.grid(row = 1,column = 2)
@@ -341,7 +359,7 @@ class CarSpider:
         Radiobutton(ResFrame,text='retail',variable = self.solution,
                     value='retail').grid(row = 2,column = 2,sticky='W')
         Radiobutton(ResFrame,text='random',variable = self.solution,
-                    value='rand').grid(row = 2,column = 3,sticky='W')
+                    value='random').grid(row = 2,column = 3,sticky='W')
         Label(ResFrame,text = "SIPP:").grid(row = 3,column = 0,sticky='W')
         SippFrame = Frame(ResFrame)
         SippFrame.grid(row=3,column=1,sticky='W')
