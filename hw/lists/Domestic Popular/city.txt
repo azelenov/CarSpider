@@ -1,0 +1,100 @@
+New York City
+Las Vegas
+Orlando
+Chicago
+Washington
+Toronto
+San Francisco
+New Orleans
+San Diego
+Boston
+Fort Lauderdale
+Orlando,FL
+Miami
+San Antonio
+Montreal
+Atlanta
+New York City, NY
+Orlando, FL
+Seattle
+Las Vegas, NV
+Nashville
+Los Angeles
+Anaheim
+Vancouver
+Myrtle Beach
+Austin
+Niagara Falls
+Houston
+Las Vegas,NV
+Miami Beach
+Tampa
+Phoenix
+Dallas
+Chicago, IL
+Philadelphia
+Phoenix,AZ
+Savannah
+Fort Lauderdale,FL
+New York City,NY
+Saint Louis
+Los Angeles,CA
+Tampa,FL
+Denver
+Portland
+Maui
+Atlantic City
+Charleston
+Key West
+Panama City Beach
+Minneapolis
+Ottawa
+Honolulu, Oahu
+Charlotte
+Chicago,IL
+San Francisco, CA
+Denver,CO
+San Francisco,CA
+Atlanta,GA
+Baltimore
+Indianapolis
+Fort Myers,FL
+London
+Daytona Beach
+Scottsdale
+Washington, DC
+San Diego, CA
+Miami,FL
+Paris
+Boston, MA
+Calgary
+Pittsburgh
+Houston,TX
+Palm Springs
+Edmonton
+Kansas City
+Manhattan
+San Diego,CA
+Barcelona
+New Orleans, LA
+Memphis
+Reno
+Las Vegas, Nevada
+Seattle, WA
+Miami, FL
+Virginia Beach
+San Juan
+Columbus
+Louisville
+San Antonio, TX
+Destin
+Galveston
+Dallas,TX
+Nashville, TN
+Atlanta, GA
+Toronto, ON, Canada
+Oahu
+Buffalo
+Milwaukee
+Clearwater Beach
+Asheville

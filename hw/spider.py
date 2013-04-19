@@ -2,8 +2,9 @@ from Tkinter import *
 import tkFileDialog
 import os
 from settings import main_config
+from engine import Engine
 import settings
-import sys
+import search
 import json
 import random
 
@@ -73,11 +74,26 @@ class CarSpider:
            path = main_config["scenarios_dir"] + "/" + self.json.get()
            with open (path) as js:
                 row = json.load(js)
-                scenario = row['scenario']
-           print scenario
+                self.scenario = row['scenario']
+           print self.scenario
         else:
-           scenario = self.make_scenario()
-           print scenario
+           self.scenario = self.make_scenario()
+           for item in self.scenario:
+               e = Engine(item)
+               self.engine = e.run(self.scenario.index(item))
+               url = self.urls[item['enviroment']]
+               self.engine.get(url)
+
+    def search(self):
+        self.start()
+        for item in self.scenario:
+            if item['domain'] == 'International':
+               s = search.SearchIntl(item,self.engine)
+            elif item['domain'] == 'Domestic':
+               s = search.SearchDomestic(item,self.engine)
+            elif item['domain'] == 'CCF':
+               s = search.SearchCCF(item,self.engine)
+
 
     def make_scenario(self):
         browsers = []
@@ -101,15 +117,9 @@ class CarSpider:
                   browser['driver_age'] = self.age.get()
                browser['currency'] = self.currency.get()
                if self.search.get() == 'air_code':
-                  search = self.air_code.get()
-               else:
-                  search = self.search.get()
-               if self.one_way.get():
-                  browser['pick_location'] = search
-                  browser['drop_location'] = search
-               else:
-                  browser['pick_location'] = search
-                  browser['drop_location'] = ''
+                  self.pickup = self.air_code.get()
+               browser['pick_location'] = self.pickup.get()
+               browser['drop_location'] = self.dropoff.get()
                if self.solution.get() == 'sipp':
                   browser['solution'] = self.sipp.get()
                else:
@@ -166,7 +176,7 @@ class CarSpider:
            FuncFrame = Frame(self.OptionsFrame,relief = RAISED)
            FuncFrame.pack(side = 'top',pady=5)
         Button(FuncFrame, text="start",command=self.start).pack(side = 'left')
-        Button(FuncFrame, text="search").pack(side = 'left')
+        Button(FuncFrame, text="search",command=self.search).pack(side = 'left')
         Button(FuncFrame, text="details").pack(side = 'left')
         Button(FuncFrame, text="book").pack(side = 'left')
         Button(FuncFrame, text="full").pack(side = 'left')
@@ -192,10 +202,16 @@ class CarSpider:
         if self.domain.get() == 'International':
            self.urls = settings.intl_urls
            self.cards = settings.intl_cards
+           try:
+               self.locations.set('United Kingdom')
+           except:
+               pass
         elif self.domain.get() == 'Domestic':
            self.urls = settings.dom_urls
+           self.locations.set('Popular Domestic')
         elif self.domain.get() == 'CCF':
            self.urls = settings.ccf_urls
+           self.locations.set('Popular Domestic')
 
     def enviroment_widget(self):
         envs = sorted(self.urls.keys())
@@ -295,7 +311,7 @@ class CarSpider:
         Radiobutton(CurFrame,text='USD',variable = self.currency,value='USD').grid(row = 0,column = 0,sticky='W')
         Radiobutton(CurFrame,text='EUR',variable = self.currency,value='EUR').grid(row = 0,column = 1,sticky='W')
         Radiobutton(CurFrame,text='GBP',variable = self.currency,value='GBP').grid(row = 0,column = 2,sticky='W')
-        Radiobutton(CurFrame,text='other',variable = self.currency,value='OTR').grid(row = 1,column = 0,sticky='W')
+        Radiobutton(CurFrame,text='other',variable = self.currency,value='other').grid(row = 1,column = 0,sticky='W')
         Radiobutton(CurFrame,text='random',variable = self.currency,value='random').grid(row = 1,column = 1,sticky='W')
         Radiobutton(CurFrame,text='code',variable = self.currency,value='code').grid(row = 1,column = 2,sticky='W')
         om = apply(OptionMenu, (CurFrame, self.currency) + tuple(money))
@@ -306,37 +322,76 @@ class CarSpider:
                       labelanchor='n',relief = RAISED,borderwidth=1)
         SearchFrame.pack(side = 'top',padx=5,pady=5)
         #Label(SearchFrame,text = "Search:").grid(row=0,column=0)
-        self.search = StringVar()
+        self.search_type = StringVar()
+        self.search_type.set('air_code')
         self.air_code = StringVar()
-        self.search.set('air')
         self.air_code.set('LHR')
-        Radiobutton(SearchFrame,text='air',variable = self.search,value='air').grid(row = 0,column = 0,sticky='W')
-        airCodeFrame = Frame(SearchFrame)
-        airCodeFrame.grid(row = 0,column = 1,sticky='W')
-        Radiobutton(airCodeFrame,text='air code:',variable = self.search,value='air_code').pack(side="left")
-        Entry(airCodeFrame,width=4,textvariable = self.air_code).pack(side="left")
-        Radiobutton(SearchFrame,text='city',variable = self.search,value='city').grid(row = 0,column = 2,sticky='W')
-        Radiobutton(SearchFrame,text='zip',variable = self.search,value='zip').grid(row = 1,column = 0,sticky='W')
-        Radiobutton(SearchFrame,text='random location',
-        variable = self.search,value='random').grid(row = 1,column = 1,sticky='W')
+        self.pickup = StringVar()
+        ChoiceFrame = Frame(SearchFrame)
+        ChoiceFrame.grid(row=0)
+        airCodeFrame = LabelFrame(ChoiceFrame,text='air code:')
+        airCodeFrame.grid(row=0,column=0,sticky='W',padx=10,pady=5)
+        Radiobutton(airCodeFrame, variable = self.search_type,value='air_code').pack(side="left")
+        Entry(airCodeFrame,width=4,textvariable = self.air_code).pack(side="left",padx=1)
+
+        CityFrame = LabelFrame(ChoiceFrame,text='City:')
+        CityFrame.grid(row=0,column=1,padx=10,pady=5,sticky='W')
+        #Radiobutton(CityFrame, variable = self.search_type,value='city').pack(side="left")
+        with open('lists/United kingdom/city.txt') as c:
+             lines = c.readlines()
+             cities = [line.strip() for line in lines]
+
+        om = apply(OptionMenu, (CityFrame, self.pickup) + tuple(cities))
+        om.pack(side="left",padx=1)
+
+
+        self.ListFrame = LabelFrame(SearchFrame,text='Lists:')
+        self.ListFrame.grid(row=1,padx=1,pady=1,sticky='W')
+        Radiobutton(self.ListFrame,variable = self.search_type,value='lists').grid(row=0,sticky='W')
         self.one_way = BooleanVar()
         self.one_way.set(False)
-        ow = Checkbutton(SearchFrame,text = 'One way',variable=self.one_way)
-        ow.grid(row = 1,column = 2,sticky='W')
-        Label(SearchFrame,text="Locations list:").grid(row = 2,column = 0)
-        locs = settings.locations.keys()
-        self.locations = StringVar()
-        self.locations.set(main_config["loc_list"])
-        om = apply(OptionMenu, (SearchFrame, self.locations) + tuple(locs))
+        Checkbutton(self.ListFrame,text = 'One way',variable=self.one_way,
+                    command=self.show_dropoff).grid(row = 1,column = 0,sticky='W')
+        Label(self.ListFrame,text='Location list').grid(row = 1,column = 1,sticky='W')
+        Label(self.ListFrame,text='Location/Search type').grid(row = 1,column = 2,sticky='W')
+
+        Label(self.ListFrame,text='Pickup location:').grid(row = 2,column = 0,sticky='W')
+
+        self.pickup.set('random')
+        self.lists = os.listdir(main_config['lists_dir'])
+        self.list = StringVar()
+        self.list.set(self.lists[0])
+        om = apply(OptionMenu, (self.ListFrame, self.list) + tuple(self.lists))
         om.grid(row = 2,column = 1,sticky='W')
-        self.whole_list = BooleanVar()
-        self.whole_list.set(False)
-        Checkbutton(SearchFrame,text = 'All in a list',
-        variable=self.whole_list).grid(row = 3,column = 1,sticky='W')
-        self.all_lists = BooleanVar()
-        self.all_lists.set(False)
-        Checkbutton(SearchFrame,text = 'All lists',
-        variable=self.all_lists).grid(row = 3,column = 2,sticky='W')
+        fs = os.listdir(main_config['lists_dir']+"/"+self.list.get())
+        self.files = [a.replace('.txt','') for a in fs]
+        self.files.append('random')
+        om2 = apply(OptionMenu, (self.ListFrame, self.pickup) + tuple(self.files))
+        om2.grid(row = 2,column = 2,sticky='W')
+
+
+    def show_dropoff(self):
+        if self.one_way.get():
+            self.dropLabel = Label(self.ListFrame,text='Dropoff location:')
+            self.dropLabel.grid(row = 3,column = 0,sticky='W')
+            self.drop_off = StringVar()
+            self.drop_off.set('random')
+            self.lists = os.listdir(main_config['lists_dir'])
+            self.list = StringVar()
+            self.list.set(self.lists[0])
+            self.dropLists = apply(OptionMenu, (self.ListFrame, self.list) + tuple(self.lists))
+            self.dropLists.grid(row = 3,column = 1,sticky='W')
+            fs = os.listdir(main_config['lists_dir']+"/"+self.list.get())
+            self.files = [a.replace('.txt','') for a in fs]
+            self.files.append('random')
+            self.dropFile = apply(OptionMenu, (self.ListFrame, self.drop_off) + tuple(self.files))
+            self.dropFile.grid(row = 3,column = 2,sticky='W')
+        else:
+            self.dropLabel.grid_forget()
+            self.dropLists.grid_forget()
+            self.dropFile.grid_forget()
+            self.drop_off.set(None)
+
 
     def results_widget(self):
         ResFrame = LabelFrame(self.OptionsFrame,relief = RAISED,

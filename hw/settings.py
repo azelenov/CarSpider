@@ -65,18 +65,18 @@ intl_urls = {
 }
 
 dom_urls = {
-'qa':'http://www.qa.hotwire.com/car',
-'qaci':'http://www.qaci.hotwire.com/car',
-#'sfo':'http://sfo-5ozelenov-v:7001/car',
-'local':'http://localhost:7001/car',
-'dev':'http://dev05.dev.hotwire.com:7001/car',
-'preprod':'http://www.preprod.hotwire.com/car',
-'prod':'http://www.hotwire.com/car',
+'qa':'http://www.qa.hotwire.com/car/index.jsp?vt.CCF13=0',
+'qaci':'http://www.qaci.hotwire.com/car/index.jsp?vt.CCF13=0',
+'sfo':'http://sfo-5ozelenov-v:7001/car/index.jsp?vt.CCF13=0',
+'local':'http://localhost:7001/car/index.jsp?vt.CCF13=0',
+'dev':'http://dev05.dev.hotwire.com:7001/car/index.jsp?vt.CCF13=0',
+'preprod':'http://www.preprod.hotwire.com/car/index.jsp?vt.CCF13=0',
+'prod':'http://www.hotwire.com/car/index.jsp?vt.CCF13=0',
 }
 
 ccf_urls = {
-'qa':'http://www.qa.hotwire.com/car?vt.CCF13=2',
-'dev':'http://dev05.dev.hotwire.com:7001/intl/uk/car?vt.CCF13=2'
+'qa':'http://www.qa.hotwire.com/car/index.jsp?vt.CCF13=2',
+'dev':'http://dev05.dev.hotwire.com:7001/intl/uk/car/index.jsp?vt.CCF13=2'
 }
 
 #refreshUtil urls
@@ -116,19 +116,6 @@ accounts = {
                 'pass':'01307'
        }
 
-}
-
-#List of location used for search
-locations = {
-    'United Kingdom' : {
-            'air':'air_uk.txt',
-            'city':'city_uk.txt',
-            'zip':'zip_uk.txt'
-            },
-    'Popular Domestic':{
-                    'air':'air_pop_dom.txt',
-                    'city':'city_pop_dom.txt'
-                    }
 }
 
 
