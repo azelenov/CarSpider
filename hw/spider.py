@@ -321,7 +321,6 @@ class CarSpider:
         SearchFrame = LabelFrame(self.OptionsFrame,text = "Search",
                       labelanchor='n',relief = RAISED,borderwidth=1)
         SearchFrame.pack(side = 'top',padx=5,pady=5)
-        #Label(SearchFrame,text = "Search:").grid(row=0,column=0)
         self.air_code = BooleanVar()
         self.search = StringVar()
         self.search.set('LHR')
@@ -331,66 +330,63 @@ class CarSpider:
         airCodeFrame = LabelFrame(ChoiceFrame,text='air code:')
         airCodeFrame.grid(row=0,column=0,sticky='W',padx=10,pady=5)
         Checkbutton(airCodeFrame,variable=self.air_code).pack(side="left")
-        #Radiobutton(airCodeFrame, variable = self.search_type,value='air_code').pack(side="left")
         Entry(airCodeFrame,width=4,textvariable = self.search).pack(side="left",padx=2)
-
         CityFrame = LabelFrame(ChoiceFrame,text='City:')
         CityFrame.grid(row=0,column=1,padx=10,pady=5,sticky='W')
-        #Radiobutton(CityFrame, variable = self.search_type,value='city').pack(side="left")
         with open('lists/United kingdom/city_uk.txt') as c:
              lines = c.readlines()
              cities = [line.strip() for line in lines]
-
         om = apply(OptionMenu, (CityFrame, self.pickup) + tuple(cities))
         om.pack(side="left",padx=1)
-
-
         self.ListFrame = LabelFrame(SearchFrame,text='Lists:')
         self.ListFrame.grid(row=1,padx=1,pady=1,sticky='W')
-
         self.one_way = BooleanVar()
         self.one_way.set(False)
         Checkbutton(self.ListFrame,text = 'One way',variable=self.one_way,
                     command=self.show_dropoff).grid(row = 1,column = 0,sticky='W')
         Label(self.ListFrame,text='Location list').grid(row = 1,column = 1,sticky='W')
         Label(self.ListFrame,text='Location/Search type').grid(row = 1,column = 2,sticky='W')
-
         Label(self.ListFrame,text='Pickup location:').grid(row = 2,column = 0,sticky='W')
-
         self.pickup.set('random')
         self.lists = os.listdir(main_config['lists_dir'])
-        self.pick_list = StringVar()
-        self.pick_list.set(self.lists[0])
-        OptionMenu(self.ListFrame,self.pick_list,*self.lists,
-                  command=self.change_pickup).grid(row = 2,column = 1,sticky='W')
+        self.list = StringVar()
+        self.list.set(self.lists[0])
+        OptionMenu(self.ListFrame,self.list,*self.lists,
+                  command=self.change_list).grid(row = 2,column = 1,sticky='W')
+        OptionMenu(self.ListFrame, self.pickup,*self.get_lists()).grid(row = 2,column = 2,sticky='W')
+        self.all_lists = BooleanVar()
+        self.all_lists.set(False)
+        Checkbutton(self.ListFrame,text = 'All lists',
+                   variable=self.all_lists).grid(row = 4,column = 1,sticky='W')
+        self.whole_list = BooleanVar()
+        self.whole_list.set(False)
+        Checkbutton(self.ListFrame,text = 'Whole list',
+                   variable=self.whole_list).grid(row = 4,column = 2,sticky='W')
 
-    def change_pickup(self,choice):
-        fs = os.listdir(main_config['lists_dir']+"/"+self.pick_list.get())
-        self.pick_files = [f.replace('.txt','') for f in fs]
-        self.pick_files.append('random')
-        OptionMenu(self.ListFrame, self.pickup,*self.pick_files).grid(row = 2,column = 2,sticky='W')
+    def change_list(self,choice):
+        OptionMenu(self.ListFrame, self.pickup,*self.get_lists()).grid(row = 2,column = 2,sticky='W')
+        print self.one_way.get()
+        if self.one_way.get():
+           self.dropFile = OptionMenu(self.ListFrame, self.dropoff,*self.get_lists())
+           self.dropFile.grid(row = 3,column = 2,sticky='W')
 
+    def get_lists(self):
+        _files = os.listdir(main_config['lists_dir']+"/"+self.list.get())
+        _files = [f.replace('.txt','') for f in _files]
+        _files.append('random')
+        return _files
 
     def show_dropoff(self):
         if self.one_way.get():
             self.dropLabel = Label(self.ListFrame,text='Dropoff location:')
             self.dropLabel.grid(row = 3,column = 0,sticky='W')
-            self.drop_off = StringVar()
-            self.drop_off.set('random')
-            self.lists = os.listdir(main_config['lists_dir'])
-            drop_list = StringVar()
-            drop_list.set(self.lists[0])
-            self.dropLists = apply(OptionMenu, (self.ListFrame, drop_list) + tuple(self.lists))
-            self.dropLists.grid(row = 3,column = 1,sticky='W')
-            _files = self.change_dir(drop_list)
-            self.dropFile = apply(OptionMenu, (self.ListFrame, self.drop_off) + tuple(self.files2))
+            self.dropoff = StringVar()
+            self.dropoff.set('random')
+            self.dropFile = OptionMenu(self.ListFrame, self.dropoff,*self.get_lists())
             self.dropFile.grid(row = 3,column = 2,sticky='W')
         else:
             self.dropLabel.grid_forget()
-            self.dropLists.grid_forget()
             self.dropFile.grid_forget()
-            self.drop_off.set(None)
-
 
     def results_widget(self):
         ResFrame = LabelFrame(self.OptionsFrame,relief = RAISED,
