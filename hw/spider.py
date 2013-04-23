@@ -79,21 +79,23 @@ class CarSpider:
     def start(self):
        self.scenario = self.make_scenario()
        for item in self.scenario:
-           self.home_page(item)
+           self.engine = self.home_page(item)
 
     def search(self):
         self.scenario = self.make_scenario()
         for item in self.scenario:
             print item
+            #self.engine = self.home_page(item)
             if item['domain'] == 'International':
-               engine = self.home_page(item)
-               s = search.SearchIntl(item,engine)
+               self.engine = self.home_page(item)
+               s = search.SearchIntl(item,self.engine)
             elif item['domain'] == 'Domestic':
-               engine = self.home_page(item)
-               s = search.SearchDomestic(item,engine)
+               self.engine = self.home_page(item)
+               s = search.SearchDomestic(item,self.engine)
             elif item['domain'] == 'CCF':
-               engine = self.home_page(item)
-               s = search.SearchCCF(item,engine)
+               self.engine.delete_all_cookies()
+               self.engine = self.home_page(item)
+               s = search.SearchCCF(item,self.engine)
 
     def make_scenario(self):
        if self.template.get():
