@@ -53,30 +53,44 @@ browser_positions = [
 
 ]
 
+default_lists = {
+'International':'United Kingdom',
+'Domestic':'Domestic Popular',
+'CCF':'CCF'
+}
+
+
 #Specify testing eviroments urls
-intl_urls = {
-'qa':'http://www.qa.hotwire.com/uk/car',
-'qaci':'http://www.qaci.hotwire.com/intl/car',
-'sfo':'http://sfo-5ozelenov-v:7001/intl/car',
-'local':'http://localhost:7001/intl/car',
-'dev':'http://dev05.dev.hotwire.com:7001/intl/uk/car',
-'preprod':'http://www.preprod.hotwire.com/uk/car',
-'prod':'http://www.hotwire.com/uk/car',
-}
 
-dom_urls = {
-'qa':'http://www.qa.hotwire.com/car/index.jsp?vt.CCF13=0',
-'qaci':'http://www.qaci.hotwire.com/car/index.jsp?vt.CCF13=0',
-'sfo':'http://sfo-5ozelenov-v:7001/car/index.jsp?vt.CCF13=0',
-'local':'http://localhost:7001/car/index.jsp?vt.CCF13=0',
-'dev':'http://dev05.dev.hotwire.com:7001/car/index.jsp?vt.CCF13=0',
-'preprod':'http://www.preprod.hotwire.com/car/index.jsp?vt.CCF13=0',
-'prod':'http://www.hotwire.com/car/index.jsp?vt.CCF13=0',
-}
+urls = {
+     'International':
+    {
+    'qa':'http://www.qa.hotwire.com/uk/car',
+    'qaci':'http://www.qaci.hotwire.com/intl/car',
+    #'sfo':'http://sfo-5ozelenov-v:7001/intl/car',
+    #'local':'http://localhost:7001/intl/car',
+    'dev':'http://dev05.dev.hotwire.com:7001/intl/uk/car',
+    'preprod':'http://www.preprod.hotwire.com/uk/car',
+    'prod':'http://www.hotwire.com/uk/car',
+    },
 
-ccf_urls = {
-'qa':'http://www.qa.hotwire.com/car/index.jsp?vt.CCF13=2',
-'dev':'http://dev05.dev.hotwire.com:7001/car/index.jsp?vt.CCF13=2'
+    'Domestic':{
+    'qa':'http://www.qa.hotwire.com/car/index.jsp?vt.CCF13=0',
+    'qaci':'http://www.qaci.hotwire.com/car/index.jsp?vt.CCF13=0',
+    #'sfo':'http://sfo-5ozelenov-v:7001/car/index.jsp?vt.CCF13=0',
+    #'local':'http://localhost:7001/car/index.jsp?vt.CCF13=0',
+    'dev':'http://dev05.dev.hotwire.com:7001/car/index.jsp?vt.CCF13=0',
+    'preprod':'http://www.preprod.hotwire.com/car/index.jsp?vt.CCF13=0',
+    'prod':'http://www.hotwire.com/car/index.jsp?vt.CCF13=0',
+    },
+
+    'CCF': {
+    'qa':'http://www.qa.hotwire.com/car/index.jsp?vt.CCF13=2',
+    'dev':'http://dev05.dev.hotwire.com:7001/car/index.jsp?vt.CCF13=2',
+    'qaci':'http://www.qaci.hotwire.com/car/index.jsp?vt.CCF13=0',
+    'preprod':'http://www.preprod.hotwire.com/car/index.jsp?vt.CCF13=0',
+    'prod':'http://www.hotwire.com/car/index.jsp?vt.CCF13=0'
+    }
 }
 
 #refreshUtil urls
@@ -136,7 +150,8 @@ conf_email = {
 }
 
 #credit card types
-intl_cards ={
+cards = {
+    'International':{
     'Visa':{
     'name':['VISA','VISA DEBIT','VISA ELECTRON'],
     'number':'4263971921001307'
@@ -144,8 +159,19 @@ intl_cards ={
     'MC':{
     'name':['MASTER CARD'],
     'number':'5425232820001308'
-    }
-}
+         }
+     },
+     'Domestic':{
+     'Visa':{
+     'name':['VISA'],
+     'number':''
+     }},
+     'CCF':{
+     'Visa':{
+     'name':['VISA'],
+     'number':''
+            }}
+     }
 
 
 

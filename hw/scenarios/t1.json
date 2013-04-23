@@ -1,30 +1,47 @@
-{
-"scenario":[
-    {
-    "browser":"ie",
-    "pickup_loc":"city",
-    "dropoff_loc":"",
-    "currency":"usd",
-	"email_type":"gmail",
-	"card_vendor":"visa"
-    },
-	{
-    "browser":"chrome",
-    "pickup_loc":"air",
-    "dropoff_loc":"air",
-    "currency":"eur",
-	"email_type":"yahoo",
-	"card_vendor":"mc"
-    },
-	{
-    "browser":"firefox",
-    "pickup_loc":"zip",
-    "dropoff_loc":"",
-    "currency":"otr",
-	"email_type":"gmail",
-	"card_vendor":"visa"
-    }
+[{"insurance": 0,
+ "trip_duration": "random",
+ "account": "no_account",
+ "pick_location": "air",
+ "days_left": "random",
+ "payment": "MC",
+ "solution": "first",
+ "driver_age": "random",
+ "domain": "CCF",
+ "enviroment": "qa",
+ "currency": "GBP",
+ "email": "gmail",
+ "location_list": "United Kingdom",
+ "drop_location": "",
+ "browser": "firefox"},
 
+ {"insurance": 0,
+ "trip_duration": "1",
+ "account": "no_account",
+ "pick_location": "city",
+ "days_left": "300",
+ "payment": "Visa",
+ "solution": "first",
+ "driver_age": "25",
+ "domain": "Domestic",
+ "enviroment": "dev",
+ "currency": "GBP",
+ "email": "outlook",
+ "location_list": "United Kingdom",
+ "drop_location": "",
+ "browser": "chrome"},
 
-    ]
-}
+ {"insurance": 0,
+ "trip_duration": "59",
+ "account": "no_account",
+ "pick_location": "zip",
+ "days_left": "random",
+ "payment": "Visa",
+ "solution": "first",
+ "driver_age": "random",
+ "domain": "International",
+ "enviroment": "preprod",
+ "currency": "GBP",
+ "email": "yahoo",
+ "location_list": "United Kingdom",
+ "drop_location": "",
+ "browser": "ie"}]

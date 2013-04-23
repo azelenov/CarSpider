@@ -118,13 +118,14 @@ class Search(threading.Thread):
     def type_city(self):
         _list = self.params['location_list']+'/'+'city.txt'
         loc = self.random_location(_list)
-        print loc
-        #self.log("City: "+loc)
-        city,country = loc.split(', ')
-        self.locator.clear().send_keys(city)
-        time.sleep(main_config['ui_wait'])
-        self.locator.send_keys(', '+country)
-        time.sleep(main_config['ui_wait'])
+        self.log("City: "+loc)
+        self.locator.clear().send_keys(loc)
+
+##        city,country = loc.split(', ')
+##        self.locator.clear().send_keys(city)
+##        time.sleep(main_config['ui_wait'])
+##        self.locator.send_keys(', '+country)
+##        time.sleep(main_config['ui_wait'])
 
 
 class SearchIntl(Search):
@@ -199,6 +200,7 @@ class SearchDomestic(Search):
           form.click()
           self.engine.find(value=cur).click()
           form.submit()
+          #time.sleep(1)
 
       def set_locations(self):
           Search.locator = self.engine.find(name='startLocation')
@@ -218,7 +220,7 @@ class SearchDomestic(Search):
       def find(self):
           try:
               self.engine.find(name='selectedPartners').uncheck()
-          except TimeoutException:
+          except:
               self.log("no partners on page")
           finally:
               self.engine.find(type='submit').click()

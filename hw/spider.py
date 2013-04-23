@@ -1,3 +1,5 @@
+#! ../App/python.exe
+
 from Tkinter import *
 import tkFileDialog
 import os
@@ -11,7 +13,9 @@ import random
 class CarSpider:
     def __init__(self):
         self.root = Tk()
-        #os.chdir('hw')
+        self.list = StringVar()
+        print os.listdir(os.curdir)
+        #os.chdir('../hw')
         self.root.wm_title("HW CarSpider 2.0")
         self.root.wm_iconbitmap('static/spider.ico')
         self.root.geometry("+200+200")
@@ -23,10 +27,10 @@ class CarSpider:
         menubar = Menu(self.root)
         filemenu = Menu(menubar, tearoff=0)
         filemenu = Menu(menubar, tearoff=0)
-        filemenu.add_command(label="Open")
+        #filemenu.add_command(label="Open")
         filemenu.add_command(label="Save scenario...",command=self.save_scenario)
         filemenu.add_separator()
-        filemenu.add_command(label="Exit")
+        #filemenu.add_command(label="Exit")
         menubar.add_cascade(label="File", menu=filemenu)
 
         helpmenu = Menu(menubar, tearoff=0)
@@ -43,7 +47,7 @@ class CarSpider:
                           #'currency','pick_location','drop_location',
                          # 'solution','payment','email','insurance']
         scenario = self.make_scenario()
-        scenario = str(self.make_scenario()).replace(',',',\n').replace('},','},\n')
+        scenario = str(self.make_scenario()).replace(',',',\n').replace('},','},\n').replace("'",'"')
         fileName = tkFileDialog.asksaveasfilename(parent=self.root,
                    filetypes=[('JSON format','*.json')] ,
                    title="Save the scenario as...",
@@ -79,12 +83,14 @@ class CarSpider:
     def start(self):
        self.scenario = self.make_scenario()
        for item in self.scenario:
+           self.urls = settings.urls[item['domain']]
            self.engine = self.home_page(item)
 
     def search(self):
         self.scenario = self.make_scenario()
         for item in self.scenario:
             print item
+            self.urls = settings.urls[item['domain']]
             #self.engine = self.home_page(item)
             if item['domain'] == 'International':
                self.engine = self.home_page(item)
@@ -93,7 +99,6 @@ class CarSpider:
                self.engine = self.home_page(item)
                s = search.SearchDomestic(item,self.engine)
             elif item['domain'] == 'CCF':
-               self.engine.delete_all_cookies()
                self.engine = self.home_page(item)
                s = search.SearchCCF(item,self.engine)
 
@@ -101,8 +106,9 @@ class CarSpider:
        if self.template.get():
            path = main_config["scenarios_dir"] + "/" + self.json.get()
            with open (path) as js:
-                row = json.load(js)
-                self.scenario = row['scenario']
+                scenario = json.load(js)
+                #scenario = row['scenario']
+                return scenario
        else:
             browsers = []
             if self.firefox.get() == 1: browsers.append({"browser":"firefox"})
@@ -113,8 +119,12 @@ class CarSpider:
                    browser['domain'] = self.domain.get()
                    browser['enviroment'] = self.env.get()
                    browser['account'] = self.account.get()
-                   browser['days_left'] = self.days_left.get()
-                   browser['trip_duration'] = self.trip_duration.get()
+                   if self.rand_dates:
+                      browser['days_left'] = 'random'
+                      browser['trip_duration'] = 'random'
+                   else:
+                      browser['days_left'] = self.days_left.get()
+                      browser['trip_duration'] = self.trip_duration.get()
                    if self.rand_age.get():
                       browser['driver_age'] = 'random'
                    else:
@@ -184,9 +194,9 @@ class CarSpider:
            FuncFrame.pack(side = 'top',pady=5)
         Button(FuncFrame, text="start",command=self.start).pack(side = 'left')
         Button(FuncFrame, text="search",command=self.search).pack(side = 'left')
-        Button(FuncFrame, text="details").pack(side = 'left')
-        Button(FuncFrame, text="book").pack(side = 'left')
-        Button(FuncFrame, text="full").pack(side = 'left')
+        Button(FuncFrame, text="details",state=DISABLED).pack(side = 'left')
+        Button(FuncFrame, text="book",state=DISABLED).pack(side = 'left')
+        Button(FuncFrame, text="full",state=DISABLED).pack(side = 'left')
 
     def domains_widget(self):
         self.domain = StringVar()
@@ -195,8 +205,10 @@ class CarSpider:
         Label(DomainFrame,text="Domain:").pack(side='left')
         domains = main_config['domains']
         self.domain.set(main_config['default_domain'])
+        self.urls = settings.urls[self.domain.get()]
+        self.list.set(settings.default_lists[self.domain.get()])
         self.show_domains(DomainFrame,domains,self.domain)
-        self.change_domain()
+        #self.change_domain()
 
     def show_domains(self,frame,args,var):
         for d in args:
@@ -205,20 +217,16 @@ class CarSpider:
             command=self.change_domain).pack(side='left')
 
     def change_domain(self):
-        envs = []
-        if self.domain.get() == 'International':
-           self.urls = settings.intl_urls
-           self.cards = settings.intl_cards
+        if self.domain.get() == 'CCF':
            try:
-               self.list.set('United Kingdom')
+               self.engine.delete_all_cookies()
            except:
-               pass
-        elif self.domain.get() == 'Domestic':
-           self.urls = settings.dom_urls
-           self.list.set('Domestic Popular')
-        elif self.domain.get() == 'CCF':
-           self.urls = settings.ccf_urls
-           self.list.set('Domestic Popular')
+               print "new session"
+        self.list.set(settings.default_lists[self.domain.get()])
+        OptionMenu(self.ListFrame,self.list,*self.lists,
+                  command=self.change_list).grid(row = 2,column = 1,sticky='W')
+        OptionMenu(self.ListFrame, self.pickup,*self.get_lists()).grid(row = 2,column = 2,sticky='W')
+        #self.change_list(None)
         self.enviroment_widget()
 
     def enviroment_widget(self):
@@ -357,8 +365,6 @@ class CarSpider:
         Label(self.ListFrame,text='Pickup location:').grid(row = 2,column = 0,sticky='W')
         self.pickup.set('random')
         self.lists = os.listdir(main_config['lists_dir'])
-        self.list = StringVar()
-        self.list.set(self.lists[0])
         OptionMenu(self.ListFrame,self.list,*self.lists,
                   command=self.change_list).grid(row = 2,column = 1,sticky='W')
         OptionMenu(self.ListFrame, self.pickup,*self.get_lists()).grid(row = 2,column = 2,sticky='W')
@@ -373,7 +379,7 @@ class CarSpider:
         Checkbutton(self.ListFrame,text = 'Whole list',
                    variable=self.whole_list).grid(row = 4,column = 2,sticky='W')
 
-    def change_list(self,choice):
+    def change_list(self,event):
         OptionMenu(self.ListFrame, self.pickup,*self.get_lists()).grid(row = 2,column = 2,sticky='W')
         print self.one_way.get()
         if self.one_way.get():
@@ -381,6 +387,7 @@ class CarSpider:
            self.dropFile.grid(row = 3,column = 2,sticky='W')
 
     def get_lists(self):
+        #self.list.set(settings.default_lists[self.domain.get()])
         _files = os.listdir(main_config['lists_dir']+"/"+self.list.get())
         _files = [f.replace('.txt','') for f in _files]
         _files.append('random')
@@ -437,7 +444,7 @@ class CarSpider:
         PayFrame = Frame(self.OptionsFrame,relief = RAISED,borderwidth=1)
         PayFrame.pack(side = 'top',pady=5)
         self.payment = StringVar()
-        money = self.cards.keys()
+        money = settings.cards[self.domain.get()].keys()
         self.payment.set(money[0])
         Label(PayFrame,text = "Pyment method:").grid(row=0,column=0,sticky='W')
         om = apply(OptionMenu, (PayFrame, self.payment) + tuple(money))

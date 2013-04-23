@@ -1,100 +1,66 @@
-New York City
-Las Vegas
-Orlando
-Chicago
-Washington
-Toronto
-San Francisco
-New Orleans
-San Diego
-Boston
-Fort Lauderdale
-Orlando,FL
-Miami
-San Antonio
-Montreal
-Atlanta
-New York City, NY
-Orlando, FL
-Seattle
-Las Vegas, NV
-Nashville
-Los Angeles
 Anaheim
-Vancouver
-Myrtle Beach
-Austin
-Niagara Falls
-Houston
-Las Vegas,NV
-Miami Beach
-Tampa
-Phoenix
-Dallas
-Chicago, IL
-Philadelphia
-Phoenix,AZ
-Savannah
-Fort Lauderdale,FL
-New York City,NY
-Saint Louis
-Los Angeles,CA
-Tampa,FL
-Denver
-Portland
-Maui
+Asheville
+Atlanta,GA
 Atlantic City
+Austin
+Baltimore
+Barcelona
+Boston, MA
+Buffalo
+Calgary
 Charleston
-Key West
-Panama City Beach
-Minneapolis
-Ottawa
-Honolulu, Oahu
 Charlotte
 Chicago,IL
-San Francisco, CA
-Denver,CO
-San Francisco,CA
-Atlanta,GA
-Baltimore
-Indianapolis
-Fort Myers,FL
-London
-Daytona Beach
-Scottsdale
-Washington, DC
-San Diego, CA
-Miami,FL
-Paris
-Boston, MA
-Calgary
-Pittsburgh
-Houston,TX
-Palm Springs
-Edmonton
-Kansas City
-Manhattan
-San Diego,CA
-Barcelona
-New Orleans, LA
-Memphis
-Reno
-Las Vegas, Nevada
-Seattle, WA
-Miami, FL
-Virginia Beach
-San Juan
-Columbus
-Louisville
-San Antonio, TX
-Destin
-Galveston
-Dallas,TX
-Nashville, TN
-Atlanta, GA
-Toronto, ON, Canada
-Oahu
-Buffalo
-Milwaukee
 Clearwater Beach
-Asheville
+Columbus
+Dallas,TX
+Daytona Beach
+Denver,CO
+Destin
+Edmonton
+Fort Lauderdale, FL
+Fort Myers,FL
+Galveston
+Honolulu, Oahu
+Houston,TX
+Indianapolis
+Kansas City
+Key West
+Las Vegas, NV
+Los Angeles,CA
+Louisville
+Manhattan
+Maui
+Memphis
+Miami, FL
+Milwaukee
+Minneapolis
+Montreal
+Myrtle Beach
+Nashville, TN
+New Orleans, LA
+New York City, NY
+Niagara Falls
+Oahu
+Orlando, FL
+Ottawa
+Palm Springs
+Panama City Beach
+Philadelphia
+Phoenix, AZ
+Pittsburgh
+Portland
+Reno
+Saint Louis
+San Antonio, TX
+San Diego, CA
+San Francisco, CA
+San Juan
+Savannah
+Scottsdale
+Seattle, WA
+Tampa,FL
+Toronto, ON, Canada
+Vancouver
+Virginia Beach
+Washington, DC

@@ -1,7 +1,7 @@
 from webdriverplus import WebDriver
 
 from time import asctime
-from settings import browser_positions,intl_urls, main_config
+from settings import browser_positions, main_config
 import os
 from webdriverplus import WebDriver
 import psutil
