@@ -4,10 +4,22 @@ import time
 import random
 from selenium.webdriver.common.keys import Keys
 from time import asctime
+import os
+import threading
 
 
-class Search:
-      def get_currency(self,cur):
+class Search(threading.Thread):
+    def __init__(self,queue):
+        threading.Thread.__init__(self)
+        self.queue = queue
+
+
+    def log(self,message):
+        t = asctime()
+        name = self.engine.name
+        print "[{}]<{}> {}".format(t,name,message)
+
+    def get_currency(self,cur):
         currencies = main_config['currency']
         if cur:
             if cur == 'random': cur = random.choice(currencies)
@@ -19,142 +31,204 @@ class Search:
             cur = cur.upper()
             if cur in currencies:
                 return cur
-                #self.log("Currency: "+cur)
+                self.log("Currency: "+cur)
             else:
                  print "Currency "+cur+" not available!"
         else:
              print "Default currency"
 
-        def type_location(locator,search):
-            locator = self.locator
-            if search == 'random': search = random.choice('air','city','zip')
-            if mode == 'air':
-               self.type_air(field)
-            elif mode == 'city':
-               self.type_city(field)
-            elif mode == 'zip':
-               self.type_zip(field)
-            else:
-               self.locator.send_keys(search)
+    def get_dates(self):
+        start = self.params['days_left']
+        long = self.params['trip_duration']
+        while True:
+              self.log("Randomizing dates")
+              if start == 'random':
+                 s = random.randint(1,330)
+              else:
+                 s = int(start)
+              if long == 'random':
+                 l = random.randint(1,60)
+              else:
+                 l = int(long)
+              d = s + l
+              if d < 330: break
+        pick = date.today() + timedelta(days=s)
+        drop = date.today() + timedelta(days=d)
+        return self.date_format(pick),self.date_format(drop)
 
-        def random_location (self,list_name):
-            path = main_config['lists_dir']+"/"+list_name
-            with open(path) as l:
-                 vars = l.readlines()
-                 random.shuffle(vars)
-                 loc = vars[0].strip()
-            return loc
+    def date_format(self,D):
+        year,mon,day = D.timetuple()[:3]
+        sdate = "/".join([str(mon),str(day),str(year)[2:]])
+        return sdate
 
-        def type_air(self,elem_name):
-            loc = self.random_location(self.locations['air'])
-            #self.log("Airport: "+loc)
-            if self.autocomplete:
-               self.xtype(elem_name,loc)
-               time.sleep(self.wait/4)
-               a = self.cfind('airplane')
-               a.click()
-            else:
-               self.xtype(elem_name,loc)
+    def type_date(self):
+         pick_day,drop_day = self.get_dates()
+         p_date = self.engine.find(name='startDate')
+         p_date.clear()
+         p_date.send_keys(pick_day)
+         p_date.send_keys(Keys.TAB)
+         d_date = self.engine.find(name='endDate')
+         d_date.clear()
+         d_date.send_keys(drop_day)
+         d_date.send_keys(Keys.TAB)
 
-        def type_zip(self,elem_name):
-            loc = self.random_location(self.locations['zip'])
-            self.log("Zipcode: "+loc)
-            self.xtype(elem_name,loc)
-            time.sleep(self.wait)
+    def type_location(self,search_type):
+        if search_type == 'random':
+           _files = os.listdir(main_config['lists_dir']
+             +"/"+self.params['location_list'])
+           _files = [f.replace('.txt','') for f in _files]
+           search_type = random.choice(_files)
+        if search_type == 'air':
+           self.type_air()
+        elif search_type == 'city':
+           self.type_city()
+        elif search_type == 'zip':
+           self.type_zip()
+        else:
+           self.locator.clear().send_keys(search_type)
 
-        def type_city(self,elem_name):
-            loc = self.random_location(self.locations['city'])
-            self.log("City: "+loc)
-            city,country = loc.split(', ')
-            self.xtype(elem_name,city)
-            time.sleep(self.wait)
-            self.xfind(elem_name).send_keys(', '+country)
-            time.sleep(self.wait)
+    def random_location (self,list_name):
+        path = main_config['lists_dir']+"/"+list_name
+        with open(path) as l:
+             vars = l.readlines()
+             random.shuffle(vars)
+             loc = vars[0].strip()
+        return loc
 
+    def type_air(self):
+        _list = self.params['location_list']+'/'+'air.txt'
+        loc = self.random_location(_list)
+        print loc
+        self.locator.clear().send_keys(loc)
+        #self.log("Airport: "+loc)
+        #if self.autocomplete:
+           #self.xtype(elem_name,loc)
+           #time.sleep(self.wait/4)
+           #a = self.cfind('airplane')
+           #a.click()
+        #else:
+           #self.xtype(elem_name,loc)
+
+    def type_zip(self):
+        _list = self.params['location_list']+'/'+'zip.txt'
+        loc = self.random_location(_list)
+        print loc
+        self.locator.clear().send_keys(loc)
+
+    def type_city(self):
+        _list = self.params['location_list']+'/'+'city.txt'
+        loc = self.random_location(_list)
+        print loc
+        #self.log("City: "+loc)
+        city,country = loc.split(', ')
+        self.locator.clear().send_keys(city)
+        time.sleep(main_config['ui_wait'])
+        self.locator.send_keys(', '+country)
+        time.sleep(main_config['ui_wait'])
 
 
 class SearchIntl(Search):
       def __init__(self,params,engine):
-          print "Intl search"
-          self.engine = engine
-          self.params = params
+          print "International search"
+          Search.engine = engine
+          Search.params = params
           assert "Car Hire" in self.engine.title
           self.fill()
 
-      def fill (self,age = None,cur = None):
+      def fill (self):
           self.set_currency()
           self.set_locations()
-          #self.type_date()
-          #self.type_date("dropoff_date",nextdate)
-          #if age: self.type_age()
-          #self.go()
+          self.type_date()
+          self.type_age()
+          self.find()
 
       def set_currency(self):
+          self.log('Setting currency')
           cur = self.get_currency(self.params['currency'])
           self.engine.find(id='currencyCode-button').click()
           self.engine.find(class_name=cur).click()
 
       def set_locations(self):
+          Search.locator = self.engine.find(class_name='seleniumPickupLocation')
           if self.params['drop_location']:
              self.oneway()
-             self.type_location(self.engine,'locator',self.params['pick_location'])
-             self.type_location(self.engine,'locator',self.params['drop_location'])
+             self.type_location(self.params['pick_location'])
+             Search.locator = self.engine.find(class_name='seleniumDropoffLocation')
+             self.type_location(self.params['drop_location'])
           else:
-             self.type_location(self.engine,locator,self.params['pick_location'])
+             self.type_location(self.params['pick_location'])
 
       def oneway(self):
-           print "Switch to one way trip"
+           self.log("Switch to one way trip")
            self.engine.find(class_name='seleniumCarOneWay').click()
 
+      def date_format(self,D):
+           year,mon,day = D.timetuple()[:3]
+           sdate = "/".join([str(day),str(mon),str(year)[2:]])
+           return sdate
 
+      def type_age(self):
+           if self.params['driver_age'] == 'random':
+              age = str(random.randint(25,75))
+           else:
+              age = self.params['driver_age']
+           self.engine.find(name='driverAge').clear().send_keys(age)
 
-
-
-
+      def find(self):
+           self.log("Searching...")
+           self.engine.find(class_name='seleniumContinueButton').click()
 
 class SearchDomestic(Search):
       def __init__(self,params,engine):
           print "Domestic search"
-          self.engine = engine
-          self.params = params
-          assert "Hotwire.com" in self.engine.title
+          Search.engine = engine
+          Search.params = params
+          assert "Cheap" in self.engine.title
           self.fill()
 
-      def fill (self,age = None,cur = None):
+      def fill (self):
           self.set_currency()
           cur = self.get_currency(self.params['currency'])
           self.set_locations()
-
-          #self.type_date()
-          #self.type_date("dropoff_date",nextdate)
-          #if age: self.type_age()
-          #self.go()
+          self.type_date()
+          self.find()
 
       def set_currency(self):
           cur = self.get_currency(self.params['currency'])
-          self.engine.find(name='selectedCurrencyCode').click()
+          form = self.engine.find(name='selectCurrencyForm')
+          form.click()
           self.engine.find(value=cur).click()
+          form.submit()
 
       def set_locations(self):
-          if self.params['drop_location']: self.oneway()
-##        params = self.params
-##        if params.has_key("dropoff_loc") and params["dropoff_loc"]:
-##           self.oneway()
-##           self.type_location("pickup_loc")
-##           self.type_location("dropoff_loc")
-##        else:
-##           self.type_location("pickup_loc")
-##
+          Search.locator = self.engine.find(name='startLocation')
+          print Search.locator.is_displayed
+          if self.params['drop_location']:
+             self.oneway()
+             self.type_location(self.params['pick_location'])
+             Search.locator = self.engine.find(name='endLocation')
+             self.type_location(self.params['drop_location'])
+          else:
+             self.type_location(self.params['pick_location'])
+
       def oneway(self):
-           #self.log("Switch to one way trip")
+           self.log("Switch to one way trip")
            self.engine.find(id='carOneWay').click()
+
+      def find(self):
+          try:
+              self.engine.find(name='selectedPartners').uncheck()
+          except TimeoutException:
+              self.log("no partners on page")
+          finally:
+              self.engine.find(type='submit').click()
 
 class SearchCCF(SearchDomestic):
       def __init__(self,params,engine):
           print "CCF search"
-          self.engine = engine
-          self.params = params
-          assert "Hotwire.com" in self.engine.title
+          Search.engine = engine
+          Search.params = params
+          assert "Cheap" in self.engine.title
           self.fill()
 
 

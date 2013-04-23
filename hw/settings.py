@@ -1,6 +1,6 @@
 #MAIN script configuration
 main_config = {
-"wait":1, #time in seconds for watching on ui elements
+"ui_wait":1, #time in seconds for watching on ui elements
 "wait_element":5,
 "wait_on_page":1,
 "loc_list":"United Kingdom",
@@ -9,7 +9,7 @@ main_config = {
 "default_domain":"International",
 "attempts":2,
 "currency":["AUD","NZD","GBP","NOK","CHF","DKK","SEK","EUR","USD"],
-"default_browser":"chrome",
+"default_browser":"firefox",
 "default_email":"gmail",
 "default_card":"visa",
 "autocomplete":True,
@@ -76,7 +76,7 @@ dom_urls = {
 
 ccf_urls = {
 'qa':'http://www.qa.hotwire.com/car/index.jsp?vt.CCF13=2',
-'dev':'http://dev05.dev.hotwire.com:7001/intl/uk/car/index.jsp?vt.CCF13=2'
+'dev':'http://dev05.dev.hotwire.com:7001/car/index.jsp?vt.CCF13=2'
 }
 
 #refreshUtil urls

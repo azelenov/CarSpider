@@ -9,13 +9,12 @@ import json
 import random
 
 class CarSpider:
-    scenario = []
-    EnvFrame = None
     def __init__(self):
         self.root = Tk()
         #os.chdir('hw')
         self.root.wm_title("HW CarSpider 2.0")
         self.root.wm_iconbitmap('static/spider.ico')
+        self.root.geometry("+200+200")
         #self.root.geometry("250x150+300+300")
         self.menu_bar()
         self.create_widgets()
@@ -35,6 +34,7 @@ class CarSpider:
         menubar.add_cascade(label="Help", menu=helpmenu)
 
         self.root.config(menu=menubar)
+        #self.root.protocol("WM_DELETE_WINDOW", self.quit)
 
     def save_scenario(self):
         scenario = '['
@@ -69,73 +69,78 @@ class CarSpider:
         for b in buts:
             b.destroy()
 
+    def home_page(self,params):
+        e = Engine(params)
+        e = e.run(self.scenario.index(params))
+        url = self.urls[params['enviroment']]
+        e.get(url)
+        return e
+
     def start(self):
-        if self.template.get():
+       self.scenario = self.make_scenario()
+       for item in self.scenario:
+           self.home_page(item)
+
+    def search(self):
+        self.scenario = self.make_scenario()
+        for item in self.scenario:
+            print item
+            if item['domain'] == 'International':
+               engine = self.home_page(item)
+               s = search.SearchIntl(item,engine)
+            elif item['domain'] == 'Domestic':
+               engine = self.home_page(item)
+               s = search.SearchDomestic(item,engine)
+            elif item['domain'] == 'CCF':
+               engine = self.home_page(item)
+               s = search.SearchCCF(item,engine)
+
+    def make_scenario(self):
+       if self.template.get():
            path = main_config["scenarios_dir"] + "/" + self.json.get()
            with open (path) as js:
                 row = json.load(js)
                 self.scenario = row['scenario']
-           print self.scenario
-        else:
-           self.scenario = self.make_scenario()
-           for item in self.scenario:
-               e = Engine(item)
-               self.engine = e.run(self.scenario.index(item))
-               url = self.urls[item['enviroment']]
-               self.engine.get(url)
-
-    def search(self):
-        self.start()
-        for item in self.scenario:
-            if item['domain'] == 'International':
-               s = search.SearchIntl(item,self.engine)
-            elif item['domain'] == 'Domestic':
-               s = search.SearchDomestic(item,self.engine)
-            elif item['domain'] == 'CCF':
-               s = search.SearchCCF(item,self.engine)
-
-
-    def make_scenario(self):
-        browsers = []
-        if self.firefox.get() == 1: browsers.append({"browser":"firefox"})
-        if self.chrome.get() == 1: browsers.append({"browser":"chrome"})
-        if self.ie.get() == 1: browsers.append({"browser":"ie"})
-        if browsers:
-           for browser in browsers:
-               browser['domain'] = self.domain.get()
-               browser['enviroment'] = self.env.get()
-               browser['account'] = self.account.get()
-               if self.rand_dates.get():
-                  browser['days_left'] = random.randint(1,330)
-                  browser['trip_duration'] = random.randint(1,60)
-               else:
-                  browser['days_left'] = self.days_left.get()
-                  browser['trip_duration'] = self.trip_duration.get()
-               if self.rand_age.get():
-                  browser['driver_age'] = random.randint(25,75)
-               else:
-                  browser['driver_age'] = self.age.get()
-               browser['currency'] = self.currency.get()
-               if self.search.get() == 'air_code':
-                  self.pickup = self.air_code.get()
-               browser['pick_location'] = self.pickup.get()
-               browser['drop_location'] = self.dropoff.get()
-               if self.solution.get() == 'sipp':
-                  browser['solution'] = self.sipp.get()
-               else:
-                  browser['solution'] =  self.solution.get()
-               if self.rand_payment.get():
-                  browser['payment'] = random.choice(self.cards.keys())
-               else:
-                  browser['payment'] = self.payment.get()
-               browser['insurance'] = self.insurance.get()
-               if self.rand_email.get():
-                  browser['email'] = random.choice(self.emails)
-               else:
-                  browser['email'] = self.email.get()
-           return browsers
-        else:
-           print "No browser selected"
+       else:
+            browsers = []
+            if self.firefox.get() == 1: browsers.append({"browser":"firefox"})
+            if self.chrome.get() == 1: browsers.append({"browser":"chrome"})
+            if self.ie.get() == 1: browsers.append({"browser":"ie"})
+            if browsers:
+               for browser in browsers:
+                   browser['domain'] = self.domain.get()
+                   browser['enviroment'] = self.env.get()
+                   browser['account'] = self.account.get()
+                   browser['days_left'] = self.days_left.get()
+                   browser['trip_duration'] = self.trip_duration.get()
+                   if self.rand_age.get():
+                      browser['driver_age'] = 'random'
+                   else:
+                      browser['driver_age'] = self.age.get()
+                   browser['currency'] = self.currency.get()
+                   if self.air_code.get():
+                      browser['pick_location'] = self.air_field.get()
+                   else:
+                      browser['pick_location'] = self.pickup.get()
+                   browser['drop_location'] = self.dropoff.get()
+                   browser['location_list'] = self.list.get()
+                   if self.solution.get() == 'sipp':
+                      browser['solution'] = self.sipp.get()
+                   else:
+                      browser['solution'] =  self.solution.get()
+                   if self.rand_payment.get():
+                      browser['payment'] = random.choice(self.cards.keys())
+                   else:
+                      browser['payment'] = self.payment.get()
+                   browser['insurance'] = self.insurance.get()
+                   if self.rand_email.get():
+                      browser['email'] = random.choice(self.emails)
+                   else:
+                      browser['email'] = self.email.get()
+                   print browser
+               return browsers
+            else:
+               print "No browser selected"
 
     def select_browsers(self):
         for a in self.br_buttons:
@@ -203,28 +208,29 @@ class CarSpider:
            self.urls = settings.intl_urls
            self.cards = settings.intl_cards
            try:
-               self.locations.set('United Kingdom')
+               self.list.set('United Kingdom')
            except:
                pass
         elif self.domain.get() == 'Domestic':
            self.urls = settings.dom_urls
-           self.locations.set('Popular Domestic')
+           self.list.set('Domestic Popular')
         elif self.domain.get() == 'CCF':
            self.urls = settings.ccf_urls
-           self.locations.set('Popular Domestic')
+           self.list.set('Domestic Popular')
+        self.enviroment_widget()
 
     def enviroment_widget(self):
         envs = sorted(self.urls.keys())
         self.env = StringVar()
         self.env.set('qa')
-        EnvFrame = Frame(self.root)
-        EnvFrame.grid(row = 2,column = 0,columnspan=2,padx=5,pady=5)
-        Label(EnvFrame,text="Enviroment:").pack(side='left')
-        om = apply(OptionMenu, (EnvFrame, self.env) + tuple(envs))
-        om.pack(side='left')
+        self.EnvFrame = Frame(self.root)
+        self.EnvFrame.grid(row = 2,column = 0,columnspan=2,padx=5,pady=5)
+        Label(self.EnvFrame,text="Enviroment:").pack(side='left')
+        self.env_menu = apply(OptionMenu, (self.EnvFrame, self.env) + tuple(envs))
+        self.env_menu.pack(side='left')
         self.all_env = BooleanVar()
         self.all_env.set(False)
-        Checkbutton(EnvFrame,text = 'All',
+        Checkbutton(self.EnvFrame,text = 'All',
         variable=self.all_env).pack(side='left')
 
     def scenario_widget(self):
@@ -322,18 +328,18 @@ class CarSpider:
                       labelanchor='n',relief = RAISED,borderwidth=1)
         SearchFrame.pack(side = 'top',padx=5,pady=5)
         self.air_code = BooleanVar()
-        self.search = StringVar()
-        self.search.set('LHR')
+        self.air_field = StringVar()
+        self.air_field.set('LHR')
         self.pickup = StringVar()
         ChoiceFrame = Frame(SearchFrame)
         ChoiceFrame.grid(row=0)
         airCodeFrame = LabelFrame(ChoiceFrame,text='air code:')
         airCodeFrame.grid(row=0,column=0,sticky='W',padx=10,pady=5)
         Checkbutton(airCodeFrame,variable=self.air_code).pack(side="left")
-        Entry(airCodeFrame,width=4,textvariable = self.search).pack(side="left",padx=2)
+        Entry(airCodeFrame,width=4,textvariable = self.air_field).pack(side="left",padx=2)
         CityFrame = LabelFrame(ChoiceFrame,text='City:')
         CityFrame.grid(row=0,column=1,padx=10,pady=5,sticky='W')
-        with open('lists/United kingdom/city_uk.txt') as c:
+        with open('lists/United kingdom/city.txt') as c:
              lines = c.readlines()
              cities = [line.strip() for line in lines]
         om = apply(OptionMenu, (CityFrame, self.pickup) + tuple(cities))
@@ -354,6 +360,8 @@ class CarSpider:
         OptionMenu(self.ListFrame,self.list,*self.lists,
                   command=self.change_list).grid(row = 2,column = 1,sticky='W')
         OptionMenu(self.ListFrame, self.pickup,*self.get_lists()).grid(row = 2,column = 2,sticky='W')
+        self.dropoff = StringVar()
+        self.dropoff.set('')
         self.all_lists = BooleanVar()
         self.all_lists.set(False)
         Checkbutton(self.ListFrame,text = 'All lists',
@@ -380,7 +388,6 @@ class CarSpider:
         if self.one_way.get():
             self.dropLabel = Label(self.ListFrame,text='Dropoff location:')
             self.dropLabel.grid(row = 3,column = 0,sticky='W')
-            self.dropoff = StringVar()
             self.dropoff.set('random')
             self.dropFile = OptionMenu(self.ListFrame, self.dropoff,*self.get_lists())
             self.dropFile.grid(row = 3,column = 2,sticky='W')

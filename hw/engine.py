@@ -19,9 +19,11 @@ class Engine():
             wait=main_config["wait_element"],
             quit_on_exit=True)
             self.move(engine,num)
+            print
         except Exception  as e:
             print "ERROR:"+str(e)
             print self.br_name+" was closed. Reopening..."
+            print "You should relaunch app for reusing browser"
             self.kill_driver()
             engine = WebDriver(self.br_name,
             reuse_browser=False,
@@ -40,8 +42,9 @@ class Engine():
         engine.set_window_size(pos["xsize"],pos["ysize"])
         engine.set_window_position(pos["xpos"],pos["ypos"])
 
+
     def kill_driver(self):
-        print "kill"
+        print "kill the browser driver"
         if self.br_name == 'chrome':
            process = 'chromedriver.exe'
         elif self.br_name == 'ie':
