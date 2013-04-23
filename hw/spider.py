@@ -15,7 +15,7 @@ class CarSpider:
         self.root = Tk()
         self.list = StringVar()
         print os.listdir(os.curdir)
-        #os.chdir('../hw')
+        os.chdir('../hw')
         self.root.wm_title("HW CarSpider 2.0")
         self.root.wm_iconbitmap('static/spider.ico')
         self.root.geometry("+200+200")
@@ -141,7 +141,7 @@ class CarSpider:
                    else:
                       browser['solution'] =  self.solution.get()
                    if self.rand_payment.get():
-                      browser['payment'] = random.choice(self.cards.keys())
+                      browser['payment'] = random.choice(self.money)
                    else:
                       browser['payment'] = self.payment.get()
                    browser['insurance'] = self.insurance.get()
@@ -444,10 +444,10 @@ class CarSpider:
         PayFrame = Frame(self.OptionsFrame,relief = RAISED,borderwidth=1)
         PayFrame.pack(side = 'top',pady=5)
         self.payment = StringVar()
-        money = settings.cards[self.domain.get()].keys()
-        self.payment.set(money[0])
+        self.money = settings.cards[self.domain.get()].keys()
+        self.payment.set(self.money[0])
         Label(PayFrame,text = "Pyment method:").grid(row=0,column=0,sticky='W')
-        om = apply(OptionMenu, (PayFrame, self.payment) + tuple(money))
+        om = apply(OptionMenu, (PayFrame, self.payment) + tuple(self.money))
         om.grid(row=0,column=1,sticky='W')
         self.rand_payment = BooleanVar()
         self.rand_payment.set(True)
