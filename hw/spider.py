@@ -15,7 +15,7 @@ class CarSpider:
         self.root = Tk()
         self.list = StringVar()
         print os.listdir(os.curdir)
-        os.chdir('../hw')
+        os.chdir('hw')
         self.root.wm_title("HW CarSpider 2.0")
         self.root.wm_iconbitmap('static/spider.ico')
         self.root.geometry("+200+200")

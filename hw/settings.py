@@ -87,9 +87,9 @@ urls = {
     'CCF': {
     'qa':'http://www.qa.hotwire.com/car/index.jsp?vt.CCF13=2',
     'dev':'http://dev05.dev.hotwire.com:7001/car/index.jsp?vt.CCF13=2',
-    'qaci':'http://www.qaci.hotwire.com/car/index.jsp?vt.CCF13=0',
-    'preprod':'http://www.preprod.hotwire.com/car/index.jsp?vt.CCF13=0',
-    'prod':'http://www.hotwire.com/car/index.jsp?vt.CCF13=0'
+    'qaci':'http://www.qaci.hotwire.com/car/index.jsp?vt.CCF13=2',
+    'preprod':'http://www.preprod.hotwire.com/car/index.jsp?vt.CCF13=2',
+    'prod':'http://www.hotwire.com/car/index.jsp?vt.CCF13=2'
     }
 }
 
