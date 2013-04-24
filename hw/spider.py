@@ -134,7 +134,10 @@ class CarSpider:
                       browser['pick_location'] = self.air_field.get()
                    else:
                       browser['pick_location'] = self.pickup.get()
-                   browser['drop_location'] = self.dropoff.get()
+                   if self.one_way.get():
+                      browser['drop_location'] = self.dropoff.get()
+                   else:
+                      browser['drop_location'] = ''
                    browser['location_list'] = self.list.get()
                    if self.solution.get() == 'sipp':
                       browser['solution'] = self.sipp.get()
@@ -240,7 +243,7 @@ class CarSpider:
         self.env_menu.pack(side='left')
         self.all_env = BooleanVar()
         self.all_env.set(False)
-        Checkbutton(self.EnvFrame,text = 'All',
+        Checkbutton(self.EnvFrame,text = 'Check all servers in tabs',
         variable=self.all_env).pack(side='left')
 
     def scenario_widget(self):

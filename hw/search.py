@@ -157,11 +157,16 @@ class SearchIntl(Search):
              Search.locator = self.engine.find(class_name='seleniumDropoffLocation')
              self.type_location(self.params['drop_location'])
           else:
+             self.round_trip()
              self.type_location(self.params['pick_location'])
 
       def oneway(self):
            self.log("Switch to one way trip")
            self.engine.find(class_name='seleniumCarOneWay').click()
+
+      def round_trip(self):
+           self.log("Switch to roundtrip")
+           self.engine.find(class_name='seleniumCarRoundTrip').click()
 
       def date_format(self,D):
            year,mon,day = D.timetuple()[:3]
@@ -211,11 +216,16 @@ class SearchDomestic(Search):
              Search.locator = self.engine.find(name='endLocation')
              self.type_location(self.params['drop_location'])
           else:
+             self.round_trip()
              self.type_location(self.params['pick_location'])
 
       def oneway(self):
            self.log("Switch to one way trip")
            self.engine.find(id='carOneWay').click()
+
+      def round_trip(self):
+           self.log("Switch to roundtrip")
+           self.engine.find(id='carRoundTrip').click()
 
       def find(self):
           try:
