@@ -67,8 +67,8 @@ urls = {
     {
     'qa':'http://www.qa.hotwire.com/uk/car',
     'qaci':'http://www.qaci.hotwire.com/intl/car',
-    #'sfo':'http://sfo-5ozelenov-v:7001/intl/car',
-    #'local':'http://localhost:7001/intl/car',
+    'sfo':'http://sfo-5ozelenov-v:7001/intl/car',
+    'local':'http://localhost:7001/intl/car',
     'dev':'http://dev05.dev.hotwire.com:7001/intl/uk/car',
     'preprod':'http://www.preprod.hotwire.com/uk/car',
     'prod':'http://www.hotwire.com/uk/car',
@@ -152,20 +152,30 @@ conf_email = {
 #credit card types
 cards = {
     'International':{
-    'Visa':{
+    'Visa INTL':{
     'name':['VISA','VISA DEBIT','VISA ELECTRON'],
     'number':'4263971921001307'
     },
-    'MC':{
+    'Mastercard INTL':{
     'name':['MASTER CARD'],
     'number':'5425232820001308'
          }
      },
      'Domestic':{
      'Visa':{
-     'name':['VISA'],
-     'number':''
-     }},
+     'number':'4111111111111111'
+     },
+     'Mastercard':{
+     'number':'5555555555554444'
+     },
+     'American Express':{
+     'number':'',
+     'code':'1111'
+     }
+
+
+
+     },
      'CCF':{
      'Visa':{
      'name':['VISA'],

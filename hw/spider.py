@@ -14,7 +14,7 @@ class CarSpider:
     def __init__(self):
         self.root = Tk()
         self.list = StringVar()
-        print os.listdir(os.curdir)
+        #print os.listdir(os.curdir)
         os.chdir('hw')
         self.root.wm_title("HW CarSpider 2.0")
         self.root.wm_iconbitmap('static/spider.ico')
@@ -119,7 +119,7 @@ class CarSpider:
                    browser['domain'] = self.domain.get()
                    browser['enviroment'] = self.env.get()
                    browser['account'] = self.account.get()
-                   if self.rand_dates:
+                   if self.rand_dates.get():
                       browser['days_left'] = 'random'
                       browser['trip_duration'] = 'random'
                    else:
@@ -244,7 +244,7 @@ class CarSpider:
         self.all_env = BooleanVar()
         self.all_env.set(False)
         Checkbutton(self.EnvFrame,text = 'Check all servers in tabs',
-        variable=self.all_env).pack(side='left')
+        variable=self.all_env,state=DISABLED).pack(side='left')
 
     def scenario_widget(self):
         ScenarioFrame = Frame(self.root,relief = RIDGE,borderwidth=2)
@@ -283,15 +283,25 @@ class CarSpider:
         self.email_widget()
         self.buttons_widget("options")
 
+    def disable_widget(self,widget):
+        try:
+            widget.config(state='DISABLED')
+        except TclError:
+            for child in widget:
+                self.disable_widget(child)
+
+
     def account_widget(self):
         LoginFrame = Frame(self.OptionsFrame)
         LoginFrame.pack(side = 'top')
-        Label(LoginFrame,text='Account:').grid(row = 0,column = 0)
+        Label(LoginFrame,text='Account:',state=DISABLED).grid(row = 0,column = 0)
         self.account = StringVar()
         self.account.set('no_account')
         logins = settings.accounts.keys()
         om = apply(OptionMenu, (LoginFrame, self.account) + tuple(logins))
         om.grid(row = 0,column = 1,padx=3,pady=3)
+
+        #self.disable_widget(LoginFrame)
 
     def days_widget(self):
         DayFrame = Frame(self.OptionsFrame,relief = RAISED,borderwidth=1)
@@ -306,6 +316,10 @@ class CarSpider:
         self.rand_dates.set(True)
         Checkbutton(DayFrame,text = 'Random dates',
         variable=self.rand_dates).grid(row = 0,column = 4,sticky='W')
+
+
+
+
 
     def age_widget(self):
         AgeFrame = Frame(self.OptionsFrame,relief = RAISED,borderwidth=1)

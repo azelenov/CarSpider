@@ -5,25 +5,22 @@ import random
 from selenium.webdriver.common.keys import Keys
 from time import asctime
 import os
-import threading
 
 
-class Search(threading.Thread):
-    def __init__(self,queue):
-        threading.Thread.__init__(self)
-        self.queue = queue
-
-
+class Search():
     def log(self,message):
         t = asctime()
         name = self.engine.name
         print "[{}]<{}> {}".format(t,name,message)
 
     def get_currency(self,cur):
+        print main_config['currency']
         currencies = main_config['currency']
         if cur:
-            if cur == 'random': cur = random.choice(currencies)
+            if cur == 'random':
+               cur = random.choice(currencies)
             elif cur == 'other':
+                  #print currencies
                   currencies.remove('USD')
                   currencies.remove('GBP')
                   currencies.remove('EUR')
@@ -100,6 +97,7 @@ class Search(threading.Thread):
         loc = self.random_location(_list)
         print loc
         self.locator.clear().send_keys(loc)
+        #.send_keys(Keys.TAB)
         #self.log("Airport: "+loc)
         #if self.autocomplete:
            #self.xtype(elem_name,loc)
