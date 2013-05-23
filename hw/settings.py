@@ -9,7 +9,7 @@ main_config = {
 "default_domain":"International",
 "attempts":2,
 "currency":["AUD","NZD","GBP","NOK","CHF","DKK","SEK","EUR","USD"],
-"default_browser":"firefox",
+"default_browser":"chrome",
 "default_email":"gmail",
 "default_card":"visa",
 "autocomplete":True,
@@ -104,6 +104,24 @@ ref_urls =  {
 }
 
 
+solutions = {
+        'International':{
+        'result':['first'],
+        #'check':['none','policy','amenities','all_policy','all_amenities']
+        'check':['none']
+        },
+        'Domestic':{
+        'result':['first'],
+        #'result':['first','last','random','opaque','retail'],
+
+        'check':['none']},
+        'CCF':{
+        'result':['first'],
+        #'result':['first','last','random','opaque','retail'],
+        'check':['none']
+        }
+}
+
 #Login options
 accounts = {
        'no_account':{
@@ -129,59 +147,74 @@ accounts = {
                 'login':'alex.hotwire@gmail.com',
                 'pass':'01307'
        }
-
 }
 
 
 #Driver info fields
-driver_info = {
-'first_name':'Tester',
-'last_name':'Selenium',
-'phone':'44-20-8203-6420',
-'address':'44a Albert Rd',
-'city':'London'
+driver_info =  {
+    'International':{
+    'first_name':'Selenium',
+    'last_name':'Hotwire',
+    'phone':'44-20-8203-6420',
+    'address':'44a Albert Rd',
+    'city':'London'
+    },
+    'Domestic':{
+    'first_name':'Selenium',
+    'last_name':'Hotwire',
+    'phone':'2525252500',
+    'address':'655 Montgomery Street Suite 600',
+    'city':'San Francisco',
+    'state':'CA',
+    'zip':'94111'
+    },
+    'CCF':{
+    'first_name':'Selenium',
+    'last_name':'Hotwire',
+    'phone':'2525252500',
+    'address':'655 Montgomery Street Suite 600',
+    'city':'San Francisco',
+    'state':'CA',
+    'zip':'94111'
+    }
 }
 
 #emails types
 conf_email = {
-    'gmail':'alex.hotwire@gmail.com',
-    'yahoo':'alex.hotwire@yahoo.com',
+    'gmail':'carspider1@gmail.com',
+    'yahoo':'carspider1@yahoo.com',
     'outlook':'v-ozelenov@hotwire.com'
 }
 
 #credit card types
 cards = {
     'International':{
-    'Visa INTL':{
+    'Visa':{
     'name':['VISA','VISA DEBIT','VISA ELECTRON'],
-    'number':'4263971921001307'
-    },
-    'Mastercard INTL':{
+    'number':'4263971921001307'},
+    'Mastercard':{
     'name':['MASTER CARD'],
-    'number':'5425232820001308'
-         }
+    'number':'5425232820001308'}
      },
      'Domestic':{
-     'Visa':{
-     'number':'4111111111111111'
-     },
-     'Mastercard':{
-     'number':'5555555555554444'
-     },
+     'Visa':{'number':'4111111111111111'},
+     'Mastercard':{'number':'5555555555554444'},
      'American Express':{
-     'number':'',
-     'code':'1111'
-     }
-
-
-
+     'number':'373235387881007',
+     'code':'1111'},
+     'Discover':{'number':'6011000990139424'},
+     'JCB Card':{'number':'3566111111111113'}
      },
      'CCF':{
-     'Visa':{
-     'name':['VISA'],
-     'number':''
-            }}
+     'Visa':{'number':'4111111111111111'},
+     'Mastercard':{'number':'5555555555554444'},
+     'American Express':{
+     'number':'373235387881007',
+     'code':'1111'},
+     'Discover':{'number':'6011000990139424'},
+     'JCB Card':{'number':'3566111111111113'}
      }
+}
 
 
 

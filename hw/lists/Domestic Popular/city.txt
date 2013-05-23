@@ -1,66 +1,63 @@
-Anaheim
-Asheville
+Anaheim, CA
+Asheville, NC
 Atlanta,GA
-Atlantic City
-Austin
-Baltimore
-Barcelona
+Atlantic City, NJ
+Austin, TX
+Baltimore, MD
 Boston, MA
-Buffalo
-Calgary
-Charleston
-Charlotte
+Buffalo, NY
+Charleston, SC
+Charlotte, NC
 Chicago,IL
-Clearwater Beach
-Columbus
+Clearwater Beach, FL
+Columbus, OH
 Dallas,TX
-Daytona Beach
+Daytona Beach, FL
 Denver,CO
-Destin
-Edmonton
+Destin, FL
+Edmonton, KY
 Fort Lauderdale, FL
 Fort Myers,FL
-Galveston
+Galveston, TX
 Honolulu, Oahu
 Houston,TX
-Indianapolis
-Kansas City
-Key West
+Indianapolis, IN
+Kansas City, KS
+Key West, FL
 Las Vegas, NV
 Los Angeles,CA
-Louisville
-Manhattan
-Maui
-Memphis
+Louisville, KY
+Manhattan, NY
+Maui, HI
+Memphis, TN
 Miami, FL
-Milwaukee
-Minneapolis
-Montreal
-Myrtle Beach
+Milwaukee, WI
+Minneapolis, MN
+Montreal, MO
+Myrtle Beach, SC
 Nashville, TN
 New Orleans, LA
 New York City, NY
-Niagara Falls
-Oahu
+Niagara Falls, NY
+Oahu, HI
 Orlando, FL
-Ottawa
-Palm Springs
-Panama City Beach
-Philadelphia
+Ottawa Lake, MI
+Palm Springs, CA
+Panama City Beach, FL
+Philadelphia, PA
 Phoenix, AZ
-Pittsburgh
-Portland
-Reno
-Saint Louis
+Pittsburgh, PA
+Portland, OR
+Reno, NV
+Saint Louis, MO
 San Antonio, TX
 San Diego, CA
 San Francisco, CA
-San Juan
-Savannah
-Scottsdale
+San Juan Capistrano, CA
+Savannah, GA
+Scottsdale, AZ
 Seattle, WA
 Tampa,FL
-Toronto, ON, Canada
-Vancouver
-Virginia Beach
+Vancouver, WA
+Virginia Beach, VA
 Washington, DC
