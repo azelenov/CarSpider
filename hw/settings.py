@@ -16,8 +16,6 @@ main_config = {
 #"firefox_extentions":["firebug-1.11.1-fx.xpi"],
 "scenarios_dir":"scenarios",
 "lists_dir":"lists"
-
-
 }
 
 #Browser positions according to screen resolution
@@ -67,7 +65,7 @@ urls = {
     {
     'qa':'http://www.qa.hotwire.com/uk/car',
     'qaci':'http://www.qaci.hotwire.com/intl/car',
-    'sfo':'http://sfo-5ozelenov-v:7001/intl/car',
+    'myVM':'http://sfo-5ozelenov-v:7001/intl/car',
     'local':'http://localhost:7001/intl/car',
     'dev':'http://dev05.dev.hotwire.com:7001/intl/uk/car',
     'preprod':'http://www.preprod.hotwire.com/uk/car',
@@ -77,8 +75,8 @@ urls = {
     'Domestic':{
     'qa':'http://www.qa.hotwire.com/car/index.jsp?vt.CCF13=0',
     'qaci':'http://www.qaci.hotwire.com/car/index.jsp?vt.CCF13=0',
-    #'sfo':'http://sfo-5ozelenov-v:7001/car/index.jsp?vt.CCF13=0',
-    #'local':'http://localhost:7001/car/index.jsp?vt.CCF13=0',
+    'myVM':'http://sfo-5ozelenov-v:7001/car/index.jsp?vt.CCF13=0',
+    'local':'http://localhost:7001/car/index.jsp?vt.CCF13=0',
     'dev':'http://dev05.dev.hotwire.com:7001/car/index.jsp?vt.CCF13=0',
     'preprod':'http://www.preprod.hotwire.com/car/index.jsp?vt.CCF13=0',
     'prod':'http://www.hotwire.com/car/index.jsp?vt.CCF13=0',
@@ -88,6 +86,8 @@ urls = {
     'qa':'http://www.qa.hotwire.com/car/index.jsp?vt.CCF13=2',
     'dev':'http://dev05.dev.hotwire.com:7001/car/index.jsp?vt.CCF13=2',
     'qaci':'http://www.qaci.hotwire.com/car/index.jsp?vt.CCF13=2',
+    'myVM':'http://sfo-5ozelenov-v:7001/car/index.jsp?vt.CCF13=2',
+    'local':'http://localhost:7001/car/index.jsp?vt.CCF13=2',
     'preprod':'http://www.preprod.hotwire.com/car/index.jsp?vt.CCF13=2',
     'prod':'http://www.hotwire.com/car/index.jsp?vt.CCF13=2'
     }
@@ -106,18 +106,16 @@ ref_urls =  {
 
 solutions = {
         'International':{
-        'result':['first'],
+        'result':['first','last','random'],
         #'check':['none','policy','amenities','all_policy','all_amenities']
         'check':['none']
         },
         'Domestic':{
-        'result':['first'],
-        #'result':['first','last','random','opaque','retail'],
+        'result':['first','last','random','opaque','retail'],
 
         'check':['none']},
         'CCF':{
-        'result':['first'],
-        #'result':['first','last','random','opaque','retail'],
+        'result':['first','last','random','opaque','retail'],
         'check':['none']
         }
 }

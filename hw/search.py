@@ -1,10 +1,12 @@
-from settings import main_config
+from settings import main_config,urls
+
 from datetime import date,timedelta
 import time
 import random
 from selenium.webdriver.common.keys import Keys
 from time import asctime
 import os
+import sys
 
 class Search():
     def log(self,message):
@@ -12,38 +14,56 @@ class Search():
         name = self.engine.name
         print "[{}]<{}> {}".format(t,name,message)
 
+    def load_test(self,timer=0):
+        if timer == 0: self.log("Waiting...")
+        mask = self.engine.find(class_name="mask")
+        flag = mask.is_displayed
+        if flag:
+            time.sleep(1)
+            timer += 1
+            self.load_test(timer=timer)
+        else:
+            self.log("Page loaded. Load time: ~"+str(timer)+" seconds")
+
+    def retry(self):
+        if self.attemps >0:
+             self.attemps -= 1
+             self.log("Retring search. Attemps left: "+str(self.attemps))
+             self.update()
+             self.get_details()
+        else:
+             self.log("Can't find results. No attemps left")
+
     def get_currency(self,cur):
-        print main_config['currency']
         currencies = main_config['currency']
         if cur:
             if cur == 'random':
                cur = random.choice(currencies)
-            elif cur == 'other':
-                  #print currencies
-                  currencies.remove('USD')
-                  currencies.remove('GBP')
-                  currencies.remove('EUR')
-                  cur = random.choice(currencies)
             cur = cur.upper()
             if cur in currencies:
                 return cur
                 self.log("Currency: "+cur)
             else:
-                 print "Currency "+cur+" not available!"
+                self.log("Currency "+cur+" not available!")
         else:
-             print "Default currency"
+             self.log("Default currency")
 
     def get_dates(self):
         start = self.params['days_left']
         long = self.params['trip_duration']
         while True:
-              self.log("Randomizing dates")
               if start == 'random':
-                 s = random.randint(1,330)
+                 if self.params['solution'] == 'opaque':
+                    s = random.randint(1,14)
+                 else:
+                    s = random.randint(1,330)
               else:
                  s = int(start)
               if long == 'random':
-                 l = random.randint(1,60)
+                 if self.params['solution'] == 'opaque':
+                    l = random.randint(1,10)
+                 else:
+                    l = random.randint(1,60)
               else:
                  l = int(long)
               d = s + l
@@ -61,27 +81,34 @@ class Search():
          pick_day,drop_day = self.get_dates()
          p_date = self.engine.find(name='startDate')
          p_date.clear()
+         self.log("Start date: "+pick_day)
          p_date.send_keys(pick_day)
          p_date.send_keys(Keys.TAB)
          d_date = self.engine.find(name='endDate')
+         self.log("Start date: "+drop_day)
          d_date.clear()
          d_date.send_keys(drop_day)
          d_date.send_keys(Keys.TAB)
 
     def type_location(self,search_type):
-        if search_type == 'random':
-           _files = os.listdir(main_config['lists_dir']
-             +"/"+self.params['location_list'])
-           _files = [f.replace('.txt','') for f in _files]
-           search_type = random.choice(_files)
+        if search_type == 'random': search_type = self.rand_type()
         if search_type == 'air':
-           self.type_air()
+           place = self.type_air()
         elif search_type == 'city':
-           self.type_city()
+           place = self.type_city()
         elif search_type == 'zip':
-           self.type_zip()
+           place = self.type_zip()
         else:
-           self.locator.clear().send_keys(search_type)
+           place = search_type
+           self.locator.clear().send_keys(place)
+        return place
+
+    def rand_type(self):
+       _files = os.listdir(main_config['lists_dir']
+         +"/"+self.params['location_list'])
+       _files = [f.replace('.txt','') for f in _files]
+       _search_type = random.choice(_files)
+       return _search_type
 
     def random_location (self,list_name):
         path = main_config['lists_dir']+"/"+list_name
@@ -94,39 +121,56 @@ class Search():
     def type_air(self):
         _list = self.params['location_list']+'/'+'air.txt'
         loc = self.random_location(_list)
-        print loc
+        self.log("Airport: "+loc)
         self.locator.clear().send_keys(loc)
+        return loc
 
     def type_zip(self):
         _list = self.params['location_list']+'/'+'zip.txt'
         loc = self.random_location(_list)
-        print loc
+        self.log("Zip code: "+loc)
         self.locator.clear().send_keys(loc)
+        return loc
 
     def type_city(self):
         _list = self.params['location_list']+'/'+'city.txt'
         loc = self.random_location(_list)
         self.log("City: "+loc)
         self.locator.clear().send_keys(loc)
+        return loc
 
 class SearchIntl(Search):
       def __init__(self,params,engine):
-          print "International search"
           Search.engine = engine
           Search.params = params
-          assert "Car Hire" in self.engine.title
+          self.log("International search")
+          self.home_page()
           self.fill()
 
-      def fill (self):
+      def home_page(self):
+          #if not self.engine.current_url.endswith("/car"):
+          home = urls["International"][self.params['enviroment']]
+          self.engine.get(home)
+          self.log("Geting home page")
+          try:
+              assert "Car Hire" in self.engine.title
+          except AssertionError:
+              self.log("Site is down or timeout error")
+
+      def fill (self,rs_flag = False):
           self.set_currency()
           self.set_locations()
           self.type_date()
-          self.type_age()
+          if not rs_flag:
+             self.type_age()
+          else:
+             time.sleep(0.5)
           self.find()
 
       def set_currency(self):
           self.log('Setting currency')
           cur = self.get_currency(self.params['currency'])
+          self.log('Currency: '+cur)
           self.engine.find(id='currencyCode-button').click()
           self.engine.find(class_name=cur).click()
 
@@ -159,6 +203,7 @@ class SearchIntl(Search):
               age = str(random.randint(25,75))
            else:
               age = self.params['driver_age']
+           self.log("Driver age: "+str(age))
            self.engine.find(name='driverAge').clear().send_keys(age)
 
       def find(self):
@@ -167,28 +212,38 @@ class SearchIntl(Search):
 
 class SearchDomestic(Search):
       def __init__(self,params,engine):
-          print "Domestic search"
           Search.engine = engine
           Search.params = params
-          assert "Cheap" in self.engine.title
+          self.log("Domestic search")
+          self.home_page()
           self.fill()
 
-      def fill (self):
+      def home_page(self):
+          #if not 'index.jsp' in self.engine.current_url:
+          home = urls["Domestic"][self.params['enviroment']]
+          self.engine.get(home)
+          self.log("Geting home page")
+          try:
+              assert "Cheap" in self.engine.title
+          except AssertionError:
+              self.log("Site is down or timeout error")
+
+      def fill (self,rs_flag=False):
           self.set_currency()
-          cur = self.get_currency(self.params['currency'])
           self.set_locations()
           self.type_date()
-          self.find()
+          self.find(rs_flag)
 
       def set_currency(self):
+          self.log('Setting currency')
           cur = self.get_currency(self.params['currency'])
+          self.log('Currency: '+cur)
           x = "//select[@name='selectedCurrencyCode']/option[text()='"+cur+"']"
           self.engine.find(xpath = x).click()
           time.sleep(0.5)
 
       def set_locations(self):
           Search.locator = self.engine.find(name='startLocation')
-          print Search.locator.is_displayed
           if self.params['drop_location']:
              self.oneway()
              self.type_location(self.params['pick_location'])
@@ -206,18 +261,52 @@ class SearchDomestic(Search):
            self.log("Switch to roundtrip")
            self.engine.find(id='carRoundTrip').click()
 
-      def find(self):
-          try:
-              self.engine.find(name='selectedPartners').uncheck()
-          except:
-              self.log("no partners on page")
-          finally:
-              self.engine.find(type='submit').click()
+      def find(self,rs_flag=False):
+          if "Compare with " in self.engine.page_source \
+          and not rs_flag:
+             self.engine.find(name='selectedPartners').uncheck()
+          self.engine.find(xpath='//form[@name="carIndexForm"]//button[@type="submit"]').click()
 
 class SearchCCF(SearchDomestic):
       def __init__(self,params,engine):
-          print "CCF search"
-          Search.engine = engine
-          Search.params = params
-          assert "Cheap" in self.engine.title
-          self.fill()
+        Search.engine = engine
+        Search.params = params
+        self.log("CCF search")
+        self.home_page()
+        self.fill()
+
+      def home_page(self):
+          home = urls["CCF"][self.params['enviroment']]
+          self.engine.get(home)
+          self.log("Geting home page")
+          try:
+              assert "Cheap" in self.engine.title
+          except AssertionError:
+              self.log("Site is down or timeout error")
+
+      def refill(self):
+        self.rs_currency()
+        self.rs_locations()
+        self.type_date()
+        self.update_results()
+
+      def rs_currency(self):
+        self.log('Setting currency')
+        cur = self.get_currency(self.params['currency'])
+        self.engine.find(name='selectCurrencyForm').click()
+        self.engine.find(link_text=cur).click()
+
+      def rs_locations(self):
+          Search.locator = self.engine.find(name='pickupLocation')
+          loc = self.type_location(self.params['pick_location'])
+          Search.locator = self.engine.find(name='dropOffLocation')
+          if self.params['drop_location']:
+             self.type_location(self.params['drop_location'])
+          else:
+             self.type_location(loc)
+
+      def update_results(self):
+          if "Compare with " in self.engine.page_source \
+          and "/results" not in self.engine.current_url:
+             self.engine.find(name='selectedPartners').uncheck()
+          self.engine.find(xpath='//div[@class="searchBtn"]//button[@type="submit"]').click()
