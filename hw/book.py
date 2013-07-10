@@ -20,7 +20,7 @@ class Book(search.Search):
 
     def type_email(self,email_class='seleniumEmailAddress',conf_em_class='seleniumConfirmEmailAddress'):
         self.log("Email: "+self.params["email"])
-        email = settings.conf_email[self.params["email"]]
+        email = settings.conf_email[self.params["email"]]['user']
         email_field = self.engine.find(class_name = email_class)
         email_field.clear()
         email_field.send_keys(email)
@@ -74,8 +74,8 @@ class BookIntl(Book):
            self.log("Filling payment fields")
            payment = self.engine.find(class_name="payment")
            if pay_type == 'random':
-              pay_type = random.choice(settings.cards['International'].keys())
-           card = settings.cards['International'][pay_type]
+              pay_type = random.choice(settings.payment_methods['International'].keys())
+           card = settings.payment_methods['International'][pay_type]
            self.set_card_vendor(card["name"])
            card_num_field = payment.find(class_name='seleniumCreditCardNumber')
            card_num_field.clear()
@@ -113,7 +113,6 @@ class BookDomestic(Book):
             assert "details-billing.jsp" in engine.current_url
         except AssertionError:
             tkMessageBox.showwarning("Error","You must be on Details page for filling")
-
         else:
             Book.engine = engine
             Book.params = params
@@ -141,7 +140,7 @@ class BookDomestic(Book):
 
     def type_email(self):
         self.log("Email: "+self.params["email"])
-        email = settings.conf_email[self.params["email"]]
+        email = settings.conf_email[self.params["email"]]['user']
         email_field = self.engine.find(id="billingForm.travelerForm._NAE_email")
         email_field.clear()
         email_field.send_keys(email)
@@ -159,7 +158,7 @@ class BookDomestic(Book):
         block = self.engine.find(id='ageAndDepositTerms')
         checks = block.find('input')
         for box in checks:
-            if box.is_displayed:
+            if box.is_displayed():
                box.check()
 
     def set_insurance(self,timer=0):
@@ -209,8 +208,8 @@ class BookDomestic(Book):
     def set_payment_info(self):
         self.log("Filling payment fields")
         if self.pay_type == 'random':
-          self.pay_type = random.choice(settings.cards['Domestic'].keys())
-        card = settings.cards['Domestic'][self.pay_type]
+          self.pay_type = random.choice(settings.payment_methods['Domestic'].keys())
+        card = settings.payment_methods['Domestic'][self.pay_type]
         self.log("Credit card: "+self.pay_type)
         if self.params['currency'] != 'USD':
           self.engine.find(xpath='//select[@id="cardTypeSelector"]/option[text()="'+self.pay_type+'"]').click()
@@ -256,7 +255,6 @@ class BookCCF(Book):
             assert "billing" in engine.current_url
         except AssertionError:
             tkMessageBox.showwarning("Error","You must be on Details page for filling")
-
         else:
             Book.engine = engine
             Book.params = params
@@ -267,7 +265,7 @@ class BookCCF(Book):
         self.type_name()
         self.type_email()
         self.type_phone()
-        self.confirm_age()
+        self.confirm_age_deposit()
         self.set_insurance()
         self.set_card()
         self.confirm_terms()
@@ -277,8 +275,13 @@ class BookCCF(Book):
         phone.clear()
         phone.send_keys(self.customer['phone'])
 
-    def confirm_age(self):
-        self.engine.find(id='driverOldEnough').check()
+    def confirm_age_deposit(self):
+        self.engine.find(name='carDriver.wantsHwNewsLetters').uncheck()
+        block = self.engine.find(class_name='ageAndDepositTerms')
+        checks = block.find('input')
+        for box in checks:
+            if box.is_displayed():
+               box.check()
 
     def set_insurance(self,timer=0):
         insurance_header =  self.engine.find(class_name='carSinglePageInsurance').text
@@ -313,11 +316,19 @@ class BookCCF(Book):
            self.log("No billing section. Retail without insurance. Skip")
 
     def set_payment_info(self):
+        if self.pay_type == "BillMeLater":
+           self.pay_by_bml()
+        elif self.pay_type == "PayPal":
+           self.pay_by_paypal()
+        else:
+           self.pay_by_card()
+
+    def pay_by_card(self):
         self.log("Filling payment fields")
         payment = self.engine.find(id="paymentWrapper")
         if self.pay_type == 'random':
-          self.pay_type = random.choice(settings.cards['Domestic'].keys())
-        card = settings.cards['Domestic'][self.pay_type]
+          self.pay_type = random.choice(settings.payment_methods['Domestic'].keys())
+        card = settings.payment_methods['Domestic'][self.pay_type]
         self.log("Credit card: "+self.pay_type)
         card_num_field = payment.find(class_name='seleniumCreditCardNumber')
         card_num_field.clear()
@@ -345,17 +356,103 @@ class BookCCF(Book):
         city.clear()
         city.send_keys(self.customer['city'])
         self.set_state()
-        zip = self.engine.find(id='creditCard.postalCode')
+        zip = self.engine.find(name='creditCard.postalCode')
         zip.clear()
         zip.send_keys(self.customer['zip'])
 
-    def set_state(self):
+    def pay_by_bml(self):
+        self.log("Filling Bill Me Later form")
+        bml = settings.BillMeLater
+        self.engine.find(xpath="//input[@id='billMeLater']").click()
+        fn = self.engine.find(id="billMeLater.holder.firstName")
+        fn.clear()
+        fn.send_keys(bml["first_name"])
+        ln = self.engine.find(id="billMeLater.holder.lastName")
+        ln.clear()
+        ln.send_keys(bml["last_name"])
+        address = self.engine.find(id="billMeLater.billingAddress.address")
+        address.clear()
+        address.send_keys(bml["address"])
+        city = self.engine.find(id="billMeLater.billingAddress.city")
+        city.clear()
+        city.send_keys(bml["city"])
+        self.engine.find(name="billMeLater.billingAddress.state").next().find('a').click()
+        self.engine.find(xpath='//li/a[text()="'+bml["state"]+'"]').click()
+        #self.set_state(bml["state"]);
+        zip = self.engine.find(name="billMeLater.billingAddress.postalCode")
+        zip.clear()
+        zip.send_keys(bml["zip"])
+        phone_reg = self.engine.find(id="billMeLater.billingPhoneRegion")
+        phone_reg.clear()
+        phone_reg.send_keys(bml["phone_region"])
+        phone_num = self.engine.find(id="billMeLater.billingPhoneNumber")
+        phone_num.clear()
+        phone_num.send_keys(bml["phone_number"])
+
+    def pay_by_paypal(self):
+        paypal = settings.PayPal
+        self.log("Filling Bill Me Later form")
+        self.engine.find(xpath="//input[@id='payPal']").click()
+        fn = self.engine.find(id="payPal.holder.firstName")
+        fn.clear()
+        fn.send_keys(paypal["first_name"])
+        ln = self.engine.find(id="payPal.holder.lastName")
+        ln.clear()
+        ln.send_keys(paypal["last_name"])
+        address = self.engine.find(id="payPal.billingAddress.address")
+        address.clear()
+        address.send_keys(paypal["address"])
+        city = self.engine.find(id="payPal.billingAddress.city")
+        city.clear()
+        city.send_keys(paypal["city"])
+        self.engine.find(name="payPal.billingAddress.state").next().find('a').click()
+        self.engine.find(xpath='//li/a[text()="'+paypal["state"]+'"]').click()
+        #self.set_state(bml["state"]);
+        zip = self.engine.find(name="payPal.billingAddress.postalCode")
+        zip.clear()
+        zip.send_keys(paypal["zip"])
+
+    def set_state(self,state="CA"):
         self.log("Set state: CA")
-        state_path = '//li/a[text()="'+self.customer['state']+'"]'
-        self.engine.find(id='stateUS-button').click()
-        self.engine.find(xpath='//li/a[text()="CA"]').click()
+        hidden_select = self.engine.find(class_name="cardState")
+        hidden_select.next().find('a').click()
+        self.engine.find(xpath='//li/a[text()="'+state+'"]').click()
 
     def submit(self):
-        self.log('Sbmit billing form')
-        self.engine.find(id="billingConfirm").click()
+        self.log('Submit billing form')
+        if self.pay_type == "BillMeLater":
+           self.confirm_bml()
+        elif self.pay_type == "PayPal":
+           self.confirm_paypal()
+        else:
+           self.engine.find(id="billingConfirm").click()
+
+    def confirm_paypal(self):
+        paypal = settings.PayPal
+        self.engine.find(id="goToPayPal").click()
+        try:
+            self.engine.find(id="loadLogin").click()
+        except:
+            self.log("Already logged in")
+        login = self.engine.find(id='login_email')
+        login.clear()
+        login.send_keys(paypal["user"])
+        passd = self.engine.find(id='login_password')
+        passd.clear()
+        passd.send_keys(paypal["password"])
+        self.engine.find(id="submitLogin").click()
+        self.engine.find(id="continue").click()
+
+    def confirm_bml(self):
+        bml = settings.BillMeLater
+        self.engine.find(id="goToBillMeLater").click()
+        self.engine.find(id='date_of_birth_month').send_keys(bml["birth_mon"])
+        self.engine.find(id='date_of_birth_day').send_keys(bml["birth_date"])
+        self.engine.find(id='date_of_birth_year').send_keys(bml["birth_year"])
+        ssn = self.engine.find(name='ssn')
+        ssn.clear()
+        ssn.send_keys(bml["ssn"])
+        self.engine.find(id="esign_consent").click()
+        self.engine.execute_javascript("document.getElementById('terms').contentWindow.scrollTo(0,50000);");
+        self.engine.find(id="submit_button").click()
 

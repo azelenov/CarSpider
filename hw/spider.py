@@ -6,12 +6,16 @@ import tkMessageBox
 import os
 from settings import main_config
 from engine import Engine
+from email import Email
+from selenium.webdriver.common.keys import Keys
+from c3 import C3
 import settings
 import search
 import results
 import book
 import json
 import random
+import re
 
 class CarSpider:
     def __init__(self):
@@ -19,7 +23,7 @@ class CarSpider:
         self.list = StringVar()
         self.payment = StringVar()
         #print os.listdir(os.curdir)
-        os.chdir('hw')
+        #os.chdir('hw')
         self.root.wm_title("HW CarSpider 2.0 Beta")
         self.root.wm_iconbitmap('static/spider.ico')
         self.root.geometry("+200+200")
@@ -164,6 +168,7 @@ class CarSpider:
                self.search()
                self.details()
                self.fill(True)
+               #self.clear_cookies()
 
     def details(self):
         attemps = int(self.scenario["retry"])
@@ -176,6 +181,56 @@ class CarSpider:
             elif item['domain'] == 'CCF':
                r = results.ResultsCCF(item,engine,attemps)
             r.get_details()
+
+    def show_details(self):
+        self.scenario = self.make_scenario()
+        repeat = int(self.scenario["repeat"])
+        attemps = int(self.scenario["retry"])
+        for i in range(repeat+1):
+            print "Run #:",i
+            self.search()
+            self.details()
+            #self.clear_cookies()
+
+    def verify_email(self):
+        self.scenario = self.make_scenario()
+        for item in self.scenario["browsers"]:
+            engine = self.run(item)
+            e = Email(item,engine)
+
+    def refresh_util(self):
+        self.scenario = self.make_scenario()
+        item = self.scenario["browsers"][0]
+        item["browser"] = "firefox"
+        engine = self.run(item)
+        engine.find('body').send_keys(Keys.CONTROL +"t")
+        self.urls = settings.urls[item['domain']]
+        url = self.urls[item['enviroment']]
+        ru_url = self.extract_domain(url)+'/test/refreshUtil.jsp'
+        print ru_url
+        engine.get(ru_url)
+
+    def login_c3(self):
+        self.scenario = self.make_scenario()
+        item = self.scenario["browsers"][0]
+        item["browser"] = "firefox"
+        engine = self.run(item)
+        engine.find('body').send_keys(Keys.CONTROL +"t")
+        self.urls = settings.urls[item['domain']]
+        url = self.urls[item['enviroment']]
+        c3_url = self.extract_domain(url)+'/ccc/login.jsp'
+        engine.get(c3_url)
+        c = C3(item,engine)
+
+##    def open_service(self,service):
+##        if service == 'refresh_util':
+
+
+
+
+
+    def extract_domain(self,url):
+        return "/".join(url.split('/')[:-2])
 
     def make_scenario(self):
        if self.template.get():
@@ -191,6 +246,7 @@ class CarSpider:
             if self.firefox.get() == 1: browsers.append({"browser":"firefox"})
             if self.chrome.get() == 1: browsers.append({"browser":"chrome"})
             if self.ie.get() == 1: browsers.append({"browser":"ie"})
+            if self.phantomjs.get() == 1: browsers.append({"browser":"phantomjs"})
             if browsers:
                for browser in browsers:
                    browser['domain'] = self.domain.get()
@@ -247,6 +303,7 @@ class CarSpider:
         self.firefox = IntVar()
         self.chrome = IntVar()
         self.ie = IntVar()
+        self.phantomjs = IntVar()
         br = main_config['default_browser']
         if br == 'chrome':
            self.chrome.set(1)
@@ -254,6 +311,9 @@ class CarSpider:
            self.firefox.set(1)
         elif br == 'ie':
            self.ie.set(1)
+        elif br == 'phantomjs':
+           self.phantomjs.set(1)
+        #browsers = {'Firefox':self.firefox,'Chrome':self.chrome,'IE':self.ie,'Silent':self.phantomjs}
         browsers = {'Firefox':self.firefox,'Chrome':self.chrome,'IE':self.ie}
         BrowTypeFrame = LabelFrame(self.root,relief = RAISED,
         borderwidth=1,text = "Browsers:",padx=7,pady=7)
@@ -301,9 +361,12 @@ class CarSpider:
         Button(FuncFrame, text="Home",command=self.start).pack(side = 'left')
         Button(FuncFrame, text="Search",command=self.search).pack(side = 'left')
         Button(FuncFrame, text="Update",command=self.udate_results).pack(side = 'left')
+        Button(FuncFrame, text="Details",command=self.show_details).pack(side = 'left')
         Button(FuncFrame, text="Fill",command=self.fill).pack(side = 'left')
         Button(FuncFrame, text="Book",command=self.book).pack(side = 'left')
-        Button(FuncFrame, text="Full",state=DISABLED).pack(side = 'left')
+        Button(FuncFrame, text="Email",command=self.verify_email).pack(side = 'left')
+        Button(FuncFrame, text="Utils",command=self.refresh_util).pack(side = 'left')
+        Button(FuncFrame, text="C3",command=self.login_c3).pack(side = 'left')
 
     def domains_widget(self):
         self.domain = StringVar()
@@ -333,11 +396,13 @@ class CarSpider:
         OptionMenu(self.ListFrame,self.list,*self.lists,
                   command=self.change_list).grid(row = 2,column = 1,sticky='W')
         OptionMenu(self.ListFrame, self.pickup,*self.get_lists()).grid(row = 2,column = 2,sticky='W')
-        self.money = settings.cards[self.domain.get()].keys()
+        self.payment.set('Visa')
+        self.money = settings.payment_methods[self.domain.get()].keys()
         om = apply(OptionMenu, (self.PayFrame, self.payment) + tuple(self.money))
         om.grid(row=0,column=1,sticky='W')
         results = settings.solutions[self.domain.get()]['result']
         self.res_menu.forget()
+        self.solution.set("first")
         self.res_menu = OptionMenu(self.r_frame, self.solution,*results)
         self.res_menu.pack(side='left')
         self.start()
@@ -444,7 +509,7 @@ class CarSpider:
         #Label(CurFrame,text = "Currency:").grid(row=0,column=0)
         money = main_config['currency']
         self.currency = StringVar()
-        self.currency.set('GBP')
+        self.currency.set(main_config['default_currency'])
         Radiobutton(CurFrame,text='USD',variable = self.currency,value='USD').grid(row = 0,column = 0,sticky='W')
         Radiobutton(CurFrame,text='EUR',variable = self.currency,value='EUR').grid(row = 0,column = 1,sticky='W')
         Radiobutton(CurFrame,text='GBP',variable = self.currency,value='GBP').grid(row = 0,column = 2,sticky='W')
@@ -475,8 +540,8 @@ class CarSpider:
         self.solution.set('first')
         self.r_frame = LabelFrame(ResFrame,text = "Result:")
         self.r_frame.grid(row=0,column=0)
-        c_frame = LabelFrame(ResFrame,text = "Check:")
-        c_frame.grid(row=0,column=1)
+       # c_frame = LabelFrame(ResFrame,text = "Check:")
+        #c_frame.grid(row=0,column=1)
         retry_frame = LabelFrame(ResFrame,text = "Retry:")
         retry_frame.grid(row=0,column=2)
         repeat_frame = LabelFrame(ResFrame,text = "Repeat:")
@@ -485,9 +550,9 @@ class CarSpider:
         results = settings.solutions[self.domain.get()]['result']
         self.res_menu = OptionMenu(self.r_frame, self.solution,*results)
         self.res_menu.pack(side='left')
-        checks = settings.solutions[self.domain.get()]['check']
-        self.check = StringVar()
-        OptionMenu(c_frame, self.check,*checks).pack(side='left')
+       # checks = settings.solutions[self.domain.get()]['check']
+        #self.check = StringVar()
+        #OptionMenu(c_frame, self.check,*checks).pack(side='left')
         attempts= StringVar()
         attempts.set("3")
         self.retry = Spinbox(retry_frame, from_=0, to=10,width=3,textvariable=attempts)
@@ -573,9 +638,9 @@ class CarSpider:
     def payment_widget(self):
         self.PayFrame = Frame(self.OptionsFrame,relief = RAISED,borderwidth=1)
         self.PayFrame.pack(side = 'top',pady=5)
-        self.money = settings.cards[self.domain.get()].keys()
+        self.money = settings.payment_methods[self.domain.get()].keys()
         self.payment.set('Visa')
-        Label(self.PayFrame,text = "Pyment method:").grid(row=0,column=0,sticky='W')
+        Label(self.PayFrame,text = "Payment method:").grid(row=0,column=0,sticky='W')
         om = apply(OptionMenu, (self.PayFrame, self.payment) + tuple(self.money))
         om.grid(row=0,column=1,sticky='W')
         self.rand_payment = BooleanVar()

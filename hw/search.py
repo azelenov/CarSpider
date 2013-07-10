@@ -14,16 +14,9 @@ class Search():
         name = self.engine.name
         print "[{}]<{}> {}".format(t,name,message)
 
-    def load_test(self,timer=0):
-        if timer == 0: self.log("Waiting...")
-        mask = self.engine.find(class_name="mask")
-        flag = mask.is_displayed
-        if flag:
-            time.sleep(1)
-            timer += 1
-            self.load_test(timer=timer)
-        else:
-            self.log("Page loaded. Load time: ~"+str(timer)+" seconds")
+    def get_version_tests(self,evar='eVar1'):
+        version_tests = self.engine.execute_script("return AnalyticsSupport.getAnalyticsContextVariable('"+evar+"');")
+        return version_tests
 
     def retry(self):
         if self.attemps >0:
@@ -49,6 +42,10 @@ class Search():
              self.log("Default currency")
 
     def get_dates(self):
+        if self.params["payment"] in ["PayPal","BillMeLater"] :
+           self.params['solution'] = 'opaque'
+           self.params['insurance'] = False
+           self.log("Switching to opaque solution for PayPal or BML")
         start = self.params['days_left']
         long = self.params['trip_duration']
         while True:
@@ -151,6 +148,7 @@ class SearchIntl(Search):
           #if not self.engine.current_url.endswith("/car"):
           home = urls["International"][self.params['enviroment']]
           self.engine.get(home)
+          print self.get_version_tests()
           self.log("Geting home page")
           try:
               assert "Car Hire" in self.engine.title
@@ -222,6 +220,7 @@ class SearchDomestic(Search):
           #if not 'index.jsp' in self.engine.current_url:
           home = urls["Domestic"][self.params['enviroment']]
           self.engine.get(home)
+          print self.get_version_tests()
           self.log("Geting home page")
           try:
               assert "Cheap" in self.engine.title
@@ -278,6 +277,7 @@ class SearchCCF(SearchDomestic):
       def home_page(self):
           home = urls["CCF"][self.params['enviroment']]
           self.engine.get(home)
+          print self.get_version_tests()
           self.log("Geting home page")
           try:
               assert "Cheap" in self.engine.title

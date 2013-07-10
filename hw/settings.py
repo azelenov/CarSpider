@@ -1,15 +1,16 @@
 #MAIN script configuration
 main_config = {
 "ui_wait":1, #time in seconds for watching on ui elements
-"wait_element":5,
+"wait_element":15,
 "wait_on_page":1,
 "loc_list":"United Kingdom",
 "default_loc":"LHR",
 "domains":["International","Domestic","CCF"],
-"default_domain":"International",
+"default_domain":"CCF",
 "attempts":2,
 "currency":["AUD","NZD","GBP","NOK","CHF","DKK","SEK","EUR","USD"],
-"default_browser":"chrome",
+"default_currency":"USD",
+"default_browser":"firefox",
 "default_email":"gmail",
 "default_card":"visa",
 "autocomplete":True,
@@ -67,40 +68,33 @@ urls = {
     'qaci':'http://www.qaci.hotwire.com/intl/car',
     'myVM':'http://sfo-5ozelenov-v:7001/intl/car',
     'local':'http://localhost:7001/intl/car',
-    'dev':'http://dev05.dev.hotwire.com:7001/intl/uk/car',
+    'dev01':'http://dev01.dev.hotwire.com:7001/intl/uk/car',
+    'dev05':'http://dev05.dev.hotwire.com:7001/intl/uk/car',
     'preprod':'http://www.preprod.hotwire.com/uk/car',
     'prod':'http://www.hotwire.com/uk/car',
     },
 
     'Domestic':{
-    'qa':'http://www.qa.hotwire.com/car/index.jsp?vt.CCF13=0',
+    'qa':'http://www.qa.hotwire.com/car/index.jsp?useCluster=1',
     'qaci':'http://www.qaci.hotwire.com/car/index.jsp?vt.CCF13=0',
     'myVM':'http://sfo-5ozelenov-v:7001/car/index.jsp?vt.CCF13=0',
     'local':'http://localhost:7001/car/index.jsp?vt.CCF13=0',
-    'dev':'http://dev05.dev.hotwire.com:7001/car/index.jsp?vt.CCF13=0',
+    'dev01':'http://dev01.dev.hotwire.com:7001/car/index.jsp?vt.CCF13=0',
+    'dev05':'http://dev05.dev.hotwire.com:7001/car/index.jsp?vt.CCF13=0',
     'preprod':'http://www.preprod.hotwire.com/car/index.jsp?vt.CCF13=0',
     'prod':'http://www.hotwire.com/car/index.jsp?vt.CCF13=0',
     },
 
     'CCF': {
-    'qa':'http://www.qa.hotwire.com/car/index.jsp?vt.CCF13=2',
-    'dev':'http://dev05.dev.hotwire.com:7001/car/index.jsp?vt.CCF13=2',
-    'qaci':'http://www.qaci.hotwire.com/car/index.jsp?vt.CCF13=2',
-    'myVM':'http://sfo-5ozelenov-v:7001/car/index.jsp?vt.CCF13=2',
-    'local':'http://localhost:7001/car/index.jsp?vt.CCF13=2',
-    'preprod':'http://www.preprod.hotwire.com/car/index.jsp?vt.CCF13=2',
-    'prod':'http://www.hotwire.com/car/index.jsp?vt.CCF13=2'
+    'qa':'http://www.qa.hotwire.com/car/index.jsp?useCluster=1&vt.CCF13=4',
+    'dev01':'http://dev01.dev.hotwire.com:7001/car/index.jsp?vt.CCF13=4',
+    'dev05':'http://dev05.dev.hotwire.com:7001/car/index.jsp?vt.CCF13=4',
+    'qaci':'http://www.qaci.hotwire.com/car/index.jsp?vt.CCF13=4',
+    'myVM':'http://sfo-5ozelenov-v:7001/car/index.jsp?vt.CCF13=4',
+    'local':'http://localhost:7001/car/index.jsp?vt.CCF13=4',
+    'preprod':'http://www.preprod.hotwire.com/car/index.jsp?vt.CCF13=4',
+    'prod':'http://www.hotwire.com/car/index.jsp?vt.CCF13=4'
     }
-}
-
-#refreshUtil urls
-ref_urls =  {
-'qa':'http://www.qa.hotwire.com/test/refreshUtil.jsp',
-'qaci':'http://www.qaci.hotwire.com/test/refreshUtil.jsp',
-'sfo':'http://sfo-5ozelenov-v:7001/test/refreshUtil.jspr',
-'local':'http://localhost:7001/test/refreshUtil.jsp',
-'dev':'http://dev05.dev.hotwire.com:7001/test/refreshUtil.jsp',
-'preprod':'http://www.preprod.hotwire.com/test/refreshUtil.jsp'
 }
 
 
@@ -120,46 +114,53 @@ solutions = {
         }
 }
 
-#Login options
-accounts = {
-       'no_account':{
-                     'login':None
-                     },
-       'gmail': {
-                'type':'regular',
-                'login':'alex.hotwire@gmail.com',
-                'pass':'password'
-       },
-       'yahoo':{
-                'type':'regular',
-                'login':'alex.hotwire@yahoo.com',
-                'pass':'password'
-       },
-       'forC3':{
-                'type':'regular',
-                'login':'ozelenov@luxoft.com',
-                'pass':'password'
-       },
-       'guest_visa':{
-                'type':'guest',
-                'login':'alex.hotwire@gmail.com',
-                'pass':'01307'
-       }
+#emails types
+conf_email = {
+    'gmail':{'user':'carspider1@gmail.com','pass':'car@spider'},
+    'yahoo':{'user':'carspider1@yahoo.com','pass':'car@spider'},
+    'outlook':{'user':'v-ozelenov@hotwire.com','pass':None}
 }
+
+###Login options
+##accounts = {
+##       'no_account':{
+##                     'login':None
+##                     },
+##       'gmail': {
+##                'type':'regular',
+##                'login':'alex.hotwire@gmail.com',
+##                'pass':'password'
+##       },
+##       'yahoo':{
+##                'type':'regular',
+##                'login':'alex.hotwire@yahoo.com',
+##                'pass':'password'
+##       },
+##       'forC3':{
+##                'type':'regular',
+##                'login':'ozelenov@luxoft.com',
+##                'pass':'password'
+##       },
+##       'guest_visa':{
+##                'type':'guest',
+##                'login':'alex.hotwire@gmail.com',
+##                'pass':'01307'
+##       }
+##}
 
 
 #Driver info fields
 driver_info =  {
     'International':{
-    'first_name':'Selenium',
-    'last_name':'Hotwire',
+    'first_name':'CarSpider',
+    'last_name':'TestBooking',
     'phone':'44-20-8203-6420',
     'address':'44a Albert Rd',
     'city':'London'
     },
     'Domestic':{
-    'first_name':'Selenium',
-    'last_name':'Hotwire',
+    'first_name':'CarSpider',
+    'last_name':'TestBooking',
     'phone':'2525252500',
     'address':'655 Montgomery Street Suite 600',
     'city':'San Francisco',
@@ -167,8 +168,8 @@ driver_info =  {
     'zip':'94111'
     },
     'CCF':{
-    'first_name':'Selenium',
-    'last_name':'Hotwire',
+    'first_name':'CarSpider',
+    'last_name':'TestBooking',
     'phone':'2525252500',
     'address':'655 Montgomery Street Suite 600',
     'city':'San Francisco',
@@ -177,15 +178,10 @@ driver_info =  {
     }
 }
 
-#emails types
-conf_email = {
-    'gmail':'carspider1@gmail.com',
-    'yahoo':'carspider1@yahoo.com',
-    'outlook':'v-ozelenov@hotwire.com'
-}
 
-#credit card types
-cards = {
+
+#payment types
+payment_methods = {
     'International':{
     'Visa':{
     'name':['VISA','VISA DEBIT','VISA ELECTRON'],
@@ -201,7 +197,9 @@ cards = {
      'number':'373235387881007',
      'code':'1111'},
      'Discover':{'number':'6011000990139424'},
-     'JCB Card':{'number':'3566111111111113'}
+     'JCB Card':{'number':'3566111111111113'},
+     #'BillMeLater':None,
+     #'PayPal':None
      },
      'CCF':{
      'Visa':{'number':'4111111111111111'},
@@ -210,9 +208,39 @@ cards = {
      'number':'373235387881007',
      'code':'1111'},
      'Discover':{'number':'6011000990139424'},
-     'JCB Card':{'number':'3566111111111113'}
+     'JCB Card':{'number':'3566111111111113'},
+     'BillMeLater':None,
+     'PayPal':None
      }
 }
 
+BillMeLater = {
+    'first_name':'BARBARA',
+    'last_name':'MERCHANTC',
+    'address':'2306 YORK ROAD',
+    'city':'TIMONIUM',
+    'state':'MD',
+    'zip':'21093',
+    'phone_region':'443',
+    'phone_number':'9211900',
+    'birth_date':'02',
+    'birth_mon':'Aug',
+    'birth_year':'1971',
+    'ssn':'4002'
+     }
 
+PayPal = {
+        'first_name':'PayPal',
+        'last_name':'TestBooking',
+        'address':'2306 YORK ROAD',
+        'city':'TIMONIUM',
+        'state':'MD',
+       'zip':'21093',
+       'user':'hotwire@paypal.com',
+       'password':'expedia1'
+       }
 
+c3_user = {
+    'user':'csrcroz1',
+    'password':'Admin1234!'
+}

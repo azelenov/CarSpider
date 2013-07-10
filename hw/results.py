@@ -17,10 +17,6 @@ class Results(search.Search):
            _car = self.last_solution(results)
         elif sol == 'random':
            _car = self.rand_solution(results)
-        elif sol == 'opaque':
-           _car = self.opaque_solution(results)
-        elif sol == 'retail':
-           _car = self.retail_solution(results)
         else:
            print "This solution is not availale yet"
         return _car
@@ -44,7 +40,7 @@ class ResultsIntl(search.SearchIntl):
           self.attemps = attemps
 
       def get_details(self):
-         self.load_test()
+         self.engine.wait_for(class_name="centerWrapper")
          results = self.get_results()
          if results:
              self.log("Found "+str(len(results))+" results")
@@ -53,6 +49,7 @@ class ResultsIntl(search.SearchIntl):
              car.find(link_text='Continue').click()
 
       def get_results(self):
+          print self.get_version_tests()
           self.log("Verifing results")
           try:
               _rs = self.engine.find(class_name='seleniumResultItem')
@@ -85,7 +82,7 @@ class ResultsDomestic(search.SearchDomestic):
            self.fill()
 
       def get_details(self):
-          self.load_test()
+          self.engine.wait_for(class_name="commonResultsPage")
           results = self.get_results()
           self.log("Found "+str(len(results))+" results/opaque results")
           if self.res_type == 'opaque':
@@ -100,6 +97,7 @@ class ResultsDomestic(search.SearchDomestic):
              car.find(class_name='continueBtn').click()
 
       def get_results(self):
+          print self.get_version_tests()
           self.log("Verifing results")
           try:
               _rs = self.engine.find(class_name='resultWrapper')
@@ -144,21 +142,33 @@ class ResultsCCF(search.SearchCCF):
            self.fill()
 
       def get_details(self):
-          self.load_test()
+          self.engine.wait_for(class_name="content")
           results = self.get_results()
           self.log("Found "+str(len(results))+" results")
           if self.res_type == 'opaque':
              car = self.opaque_solution(results)
+
           elif self.res_type == 'retail':
              car = self.retail_solution(results)
           else:
              r=Results()
-             car = r.choose_car(results)
+             res = r.choose_car(results)
+             car = res.parent().parent()
           if car:
-             car.parent().parent().click()
-             self.engine.find(xpath='//div[@class="innerContent"]//a').click()
+             car_type = car.find(class_name="carTypeName").text
+             self.log("Car type: "+car_type)
+             car_url = car.get_attribute('href')
+             print car_url
+             car.click()
+             billing_url = car_url.replace('details','billing')
+             print billing_url
+             time.sleep(1)
+             self.engine.find(xpath='//a[@href="'+billing_url+'"]').click()
+##             self.engine.wait_for(xpath='"//div[@id="carDetails"]//h3[@class="carTypeName"][text()='+car_type+']"')
+##             self.engine.find(link_text_contains='Continue').click()
 
       def get_results(self):
+          print self.get_version_tests()
           self.log("Verifing results")
           try:
               _rs = self.engine.find(class_name='resultWrapper')
@@ -170,7 +180,7 @@ class ResultsCCF(search.SearchCCF):
       def opaque_solution(self,results):
           self.log("Opaque solution")
           try:
-              _rs = results.find(class_name="hotRate")
+              _rs = self.engine.find('a').filter(".hotRate")
               _result = random.choice(_rs)
               return _result
           except:
@@ -180,14 +190,9 @@ class ResultsCCF(search.SearchCCF):
       def retail_solution(self,results):
           self.log("Retail solution")
           try:
-                  _rs = self.engine.find(class_name="retailGray")
-                  _result = random.choice(_rs)
-                  return _result
+              _rs = self.engine.find('a').filter(".retailGray")
+              _result = random.choice(_rs)
+              return _result
           except:
-              try:
-                  _rs = self.engine.find(class_name="priceDetails").exclude(".hotRate")
-                  _result = random.choice(_rs)
-                  return _result
-              except:
-                  self.log("No retail solutions")
-                  self.retry()
+              self.log("No retail solutions")
+              self.retry()
