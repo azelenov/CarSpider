@@ -426,6 +426,7 @@ class BookCCF(Book):
            self.confirm_paypal()
         else:
            self.engine.find(id="billingConfirm").click()
+        self.log(self.engine.current_url)
 
     def confirm_paypal(self):
         paypal = settings.PayPal

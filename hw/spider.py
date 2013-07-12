@@ -23,7 +23,7 @@ class CarSpider:
         self.list = StringVar()
         self.payment = StringVar()
         #print os.listdir(os.curdir)
-        #os.chdir('hw')
+        os.chdir('hw')
         self.root.wm_title("HW CarSpider 2.0 Beta")
         self.root.wm_iconbitmap('static/spider.ico')
         self.root.geometry("+200+200")
@@ -47,6 +47,19 @@ class CarSpider:
 
         self.root.config(menu=menubar)
         #self.root.protocol("WM_DELETE_WINDOW", self.quit)
+        self.set_hot_keys()
+
+    def set_hot_keys(self):
+        keys = settings.hot_keys
+        self.root.bind_all(keys["home_page"],lambda e: self.start())
+        self.root.bind_all(keys["search"],lambda e: self.search())
+        self.root.bind_all(keys["show_details"],lambda e: self.show_details())
+        self.root.bind_all(keys["update_results"],lambda e: self.udate_results())
+        self.root.bind_all(keys["fill_details"],lambda e: self.fill())
+        self.root.bind_all(keys["book"],lambda e: self.book())
+        self.root.bind_all(keys["email"],lambda e: self.open_service("email"))
+        self.root.bind_all(keys["c3"],lambda e: self.open_service("c3"))
+        self.root.bind_all(keys["refresh_utils"],lambda e: self.open_service("refresh_utils"))
 
     def about(self):
         about_msg = "CarSpider 2.0\nAuthor:Alexandr Zelenov\nSupport:v-ozelenov@hotwire.com"
@@ -102,17 +115,18 @@ class CarSpider:
         self.urls = settings.urls[item['domain']]
         url = self.urls[item['enviroment']]
         eng.get(url)
-        print "Geting home page"
+        self.log("Home Page loaded")
 
     def start(self):
-       self.log("Starting browsers...")
        self.scenario = self.make_scenario()
        print self.scenario
        for item in self.scenario['browsers']:
            print item
            self.urls = settings.urls[item['domain']]
            engine = self.run(item)
+           self.log("Browsers started")
            self.home_page(engine,item)
+
 
     def search(self):
         self.scenario = self.make_scenario()
@@ -125,9 +139,9 @@ class CarSpider:
                s = search.SearchDomestic(item,engine)
             elif item['domain'] == 'CCF':
                s = search.SearchCCF(item,engine)
+            self.log("Search request sent")
 
     def udate_results(self):
-        self.log("Updating results")
         self.scenario = self.make_scenario()
         attemps = int(self.scenario["retry"])
         for item in self.scenario["browsers"]:
@@ -139,9 +153,9 @@ class CarSpider:
             elif item['domain'] == 'CCF':
                r = results.ResultsCCF(item,engine,attemps)
             r.update()
+            self.log("Results updated")
 
     def fill(self,confirm=False):
-        self.log("Filling booking info...")
         self.scenario = self.make_scenario()
         for item in self.scenario["browsers"]:
             engine = self.run(item)
@@ -151,9 +165,12 @@ class CarSpider:
                b = book.BookDomestic(item,engine)
             elif item['domain'] == 'CCF':
                b = book.BookCCF(item,engine)
+            self.log("The billing form is filled")
             if confirm: b.submit()
 
+
     def book(self):
+        self.log("Booking...")
         self.scenario = self.make_scenario()
         repeat = int(self.scenario["repeat"])
         attemps = int(self.scenario["retry"])
@@ -166,8 +183,11 @@ class CarSpider:
                    prod_flag =  True
             if not prod_flag:
                self.search()
+               self.log("Search request was sent")
                self.details()
+               self.log("Car details opened")
                self.fill(True)
+               self.log("Car booked")
                #self.clear_cookies()
 
     def details(self):
@@ -181,6 +201,7 @@ class CarSpider:
             elif item['domain'] == 'CCF':
                r = results.ResultsCCF(item,engine,attemps)
             r.get_details()
+        self.log("Car details opened")
 
     def show_details(self):
         self.scenario = self.make_scenario()
@@ -192,42 +213,27 @@ class CarSpider:
             self.details()
             #self.clear_cookies()
 
-    def verify_email(self):
-        self.scenario = self.make_scenario()
-        for item in self.scenario["browsers"]:
-            engine = self.run(item)
-            e = Email(item,engine)
-
-    def refresh_util(self):
+    def open_service(self,service):
         self.scenario = self.make_scenario()
         item = self.scenario["browsers"][0]
         item["browser"] = "firefox"
         engine = self.run(item)
-        engine.find('body').send_keys(Keys.CONTROL +"t")
+        #engine.find('body').send_keys(Keys.CONTROL +"t")
         self.urls = settings.urls[item['domain']]
         url = self.urls[item['enviroment']]
-        ru_url = self.extract_domain(url)+'/test/refreshUtil.jsp'
-        print ru_url
-        engine.get(ru_url)
-
-    def login_c3(self):
-        self.scenario = self.make_scenario()
-        item = self.scenario["browsers"][0]
-        item["browser"] = "firefox"
-        engine = self.run(item)
-        engine.find('body').send_keys(Keys.CONTROL +"t")
-        self.urls = settings.urls[item['domain']]
-        url = self.urls[item['enviroment']]
-        c3_url = self.extract_domain(url)+'/ccc/login.jsp'
-        engine.get(c3_url)
-        c = C3(item,engine)
-
-##    def open_service(self,service):
-##        if service == 'refresh_util':
-
-
-
-
+        if service == 'refresh_utils':
+           ru_url = self.extract_domain(url)+'/test/refreshUtil.jsp'
+           print ru_url
+           engine.get(ru_url)
+           self.log("Refresh Utils loaded")
+        elif service == 'c3':
+           c3_url = self.extract_domain(url)+'/ccc/login.jsp'
+           engine.get(c3_url)
+           c = C3(item,engine)
+           self.log("C3 loaded")
+        elif service == 'email':
+           e = Email(item,engine)
+           self.log("Email inbox loaded")
 
     def extract_domain(self,url):
         return "/".join(url.split('/')[:-2])
@@ -357,16 +363,16 @@ class CarSpider:
            FuncFrame.grid(row = 5,column = 0,columnspan=2)
         elif frame == 'options':
            FuncFrame = Frame(self.OptionsFrame,relief = RAISED)
-           FuncFrame.pack(side = 'top',pady=5)
+           FuncFrame.pack(side = 'top',pady=5,padx=5)
         Button(FuncFrame, text="Home",command=self.start).pack(side = 'left')
         Button(FuncFrame, text="Search",command=self.search).pack(side = 'left')
         Button(FuncFrame, text="Update",command=self.udate_results).pack(side = 'left')
         Button(FuncFrame, text="Details",command=self.show_details).pack(side = 'left')
         Button(FuncFrame, text="Fill",command=self.fill).pack(side = 'left')
         Button(FuncFrame, text="Book",command=self.book).pack(side = 'left')
-        Button(FuncFrame, text="Email",command=self.verify_email).pack(side = 'left')
-        Button(FuncFrame, text="Utils",command=self.refresh_util).pack(side = 'left')
-        Button(FuncFrame, text="C3",command=self.login_c3).pack(side = 'left')
+        Button(FuncFrame, text="Email",command=lambda:self.open_service("email")).pack(side = 'left')
+        Button(FuncFrame, text="Utils",command=lambda:self.open_service("refresh_utils")).pack(side = 'left')
+        Button(FuncFrame, text="C3",command=lambda:self.open_service("c3")).pack(side = 'left')
 
     def domains_widget(self):
         self.domain = StringVar()

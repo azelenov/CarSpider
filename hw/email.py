@@ -7,8 +7,6 @@ import tkMessageBox
 class Email():
     def __init__(self,params,engine):
         self.engine = engine
-        if params["browser"] == 'firefox':
-            self.engine.find('body').send_keys(Keys.CONTROL +"t")
         self.email = params['email']
         if self.email == 'gmail':
             self.login_gmail()

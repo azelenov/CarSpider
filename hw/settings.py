@@ -19,6 +19,18 @@ main_config = {
 "lists_dir":"lists"
 }
 
+hot_keys = {
+    'home_page':'<Control-h>',
+    'search':'<Control-s>',
+    'show_details':'<Control-d>',
+    'update_results':'<Control-r>',
+    'fill_details':'<Control-f>',
+    'book':'<Control-b>',
+    'email':'<Control-e>',
+    'c3':'<Control-c>',
+    'refresh_utils':'<Control-u>'
+}
+
 #Browser positions according to screen resolution
 browser_positions = [
     {
@@ -120,34 +132,6 @@ conf_email = {
     'yahoo':{'user':'carspider1@yahoo.com','pass':'car@spider'},
     'outlook':{'user':'v-ozelenov@hotwire.com','pass':None}
 }
-
-###Login options
-##accounts = {
-##       'no_account':{
-##                     'login':None
-##                     },
-##       'gmail': {
-##                'type':'regular',
-##                'login':'alex.hotwire@gmail.com',
-##                'pass':'password'
-##       },
-##       'yahoo':{
-##                'type':'regular',
-##                'login':'alex.hotwire@yahoo.com',
-##                'pass':'password'
-##       },
-##       'forC3':{
-##                'type':'regular',
-##                'login':'ozelenov@luxoft.com',
-##                'pass':'password'
-##       },
-##       'guest_visa':{
-##                'type':'guest',
-##                'login':'alex.hotwire@gmail.com',
-##                'pass':'01307'
-##       }
-##}
-
 
 #Driver info fields
 driver_info =  {
