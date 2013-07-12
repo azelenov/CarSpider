@@ -454,6 +454,6 @@ class BookCCF(Book):
         ssn.clear()
         ssn.send_keys(bml["ssn"])
         self.engine.find(id="esign_consent").click()
-        self.engine.execute_javascript("document.getElementById('terms').contentWindow.scrollTo(0,50000);");
+        self.engine.execute_script("document.getElementById('terms').contentWindow.scrollTo(0,50000);");
         self.engine.find(id="submit_button").click()
 

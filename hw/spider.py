@@ -24,7 +24,7 @@ class CarSpider:
         self.payment = StringVar()
         #print os.listdir(os.curdir)
         os.chdir('hw')
-        self.root.wm_title("HW CarSpider 2.0 Beta")
+        self.root.wm_title("HW CarSpider 2.1 Beta")
         self.root.wm_iconbitmap('static/spider.ico')
         self.root.geometry("+200+200")
         #self.root.geometry("250x150+300+300")
