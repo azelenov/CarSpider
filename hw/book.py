@@ -3,6 +3,7 @@ from selenium.common.exceptions import NoSuchElementException
 import random
 import time
 import tkMessageBox
+from selenium.webdriver.common.keys import Keys
 
 import settings
 import search
@@ -82,8 +83,10 @@ class BookIntl(Book):
            card_num_field.send_keys(card['number'])
            payment.find(id="cardExpiryMonth-button").click()
            payment.find(link_text='01').click()
-           payment.find(id="cardExpiryYear-button").click()
-           payment.find(link_text='2017').click()
+           year = payment.find(id="cardExpiryYear-button")
+           year.click()
+           year.send_keys(Keys.PAGE_DOWN)
+           self.engine.find(link_text='2017').click()
            code_field = payment.find(id='creditCard.securityCode')
            code_field.clear()
            if card.get('code'):

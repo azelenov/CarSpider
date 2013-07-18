@@ -285,7 +285,7 @@ class SearchCCF(SearchDomestic):
               self.log("Site is down or timeout error")
 
       def refill(self):
-        self.rs_currency()
+        #self.rs_currency()
         self.rs_locations()
         self.type_date()
         self.update_results()
