@@ -156,7 +156,7 @@ class SearchIntl(Search):
               self.log("Site is down or timeout error")
 
       def fill (self,rs_flag = False):
-          self.set_currency()
+          if not rs_flag: self.set_currency()
           self.set_locations()
           self.type_date()
           if not rs_flag:

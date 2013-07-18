@@ -435,7 +435,7 @@ class CarSpider:
         self.env_menu = OptionMenu(self.EnvFrame, self.env, *envs)
         self.env_menu.pack(side='left')
         Label(self.EnvFrame,text="Timeout:").pack(side='left')
-        self.timeout_field = Spinbox(self.EnvFrame, from_=5, to=60,width=3)
+        self.timeout_field = Spinbox(self.EnvFrame, from_=10, to=60,width=3)
         self.timeout_field.pack(side='left')
         Label(self.EnvFrame,text="seconds").pack(side='left')
         #Checkbutton(self.EnvFrame,text = 'Check all servers in tabs',
