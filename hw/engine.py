@@ -9,13 +9,15 @@ from webdriverplus import WebDriver
 class Engine:
     def __init__(self,br):
         self.br_name = br['browser']
+        self.timeout = br.get('timeout')
+        if not self.timeout: self.timeout = main_config["wait_element"]
         self.move_flag = br['arrange']
 
     def run(self,num):
         try:
             engine = WebDriver(self.br_name ,
             reuse_browser=True,
-            wait=main_config["wait_element"],
+            wait=self.timeout,
             quit_on_exit=True)
             if self.move_flag: self.move(engine,num)
             print

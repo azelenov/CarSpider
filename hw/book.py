@@ -364,10 +364,10 @@ class BookCCF(Book):
         self.log("Filling Bill Me Later form")
         bml = settings.BillMeLater
         self.engine.find(xpath="//input[@id='billMeLater']").click()
-        fn = self.engine.find(id="billMeLater.holder.firstName")
+        fn = self.engine.find(name="billMeLater.holder.firstName")
         fn.clear()
         fn.send_keys(bml["first_name"])
-        ln = self.engine.find(id="billMeLater.holder.lastName")
+        ln = self.engine.find(name="billMeLater.holder.lastName")
         ln.clear()
         ln.send_keys(bml["last_name"])
         address = self.engine.find(id="billMeLater.billingAddress.address")
@@ -454,6 +454,6 @@ class BookCCF(Book):
         ssn.clear()
         ssn.send_keys(bml["ssn"])
         self.engine.find(id="esign_consent").click()
-        self.engine.execute_javascript("document.getElementById('terms').contentWindow.scrollTo(0,50000);");
+        self.engine.execute_script("document.getElementById('terms').contentWindow.scrollTo(0,50000);");
         self.engine.find(id="submit_button").click()
 

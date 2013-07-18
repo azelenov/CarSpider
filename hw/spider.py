@@ -18,13 +18,15 @@ import random
 import re
 
 class CarSpider:
+    version = "2.11"
+
     def __init__(self):
         self.root = Tk()
         self.list = StringVar()
         self.payment = StringVar()
         #print os.listdir(os.curdir)
         os.chdir('hw')
-        self.root.wm_title("HW CarSpider 2.0 Beta")
+        self.root.wm_title("HW CarSpider"+self.version+" Beta")
         self.root.wm_iconbitmap('static/spider.ico')
         self.root.geometry("+200+200")
         #self.root.geometry("250x150+300+300")
@@ -62,7 +64,7 @@ class CarSpider:
         self.root.bind_all(keys["refresh_utils"],lambda e: self.open_service("refresh_utils"))
 
     def about(self):
-        about_msg = "CarSpider 2.0\nAuthor:Alexandr Zelenov\nSupport:v-ozelenov@hotwire.com"
+        about_msg = "CarSpider "+self.version+"\nAuthor:Alexandr Zelenov\nSupport:v-ozelenov@hotwire.com"
         tkMessageBox.showinfo("About",about_msg)
 
     def save_scenario(self):
@@ -118,14 +120,16 @@ class CarSpider:
         self.log("Home Page loaded")
 
     def start(self):
-       self.scenario = self.make_scenario()
-       print self.scenario
-       for item in self.scenario['browsers']:
-           print item
-           self.urls = settings.urls[item['domain']]
-           engine = self.run(item)
-           self.log("Browsers started")
-           self.home_page(engine,item)
+       self.clear_cookies()
+##       self.scenario = self.make_scenario()
+##       print self.scenario
+##       for item in self.scenario['browsers']:
+##           print item
+##           self.urls = settings.urls[item['domain']]
+##           engine = self.run(item)
+##           self.log("Browsers started")
+##
+##           #self.home_page(engine,item)
 
 
     def search(self):
@@ -236,7 +240,8 @@ class CarSpider:
            self.log("Email inbox loaded")
 
     def extract_domain(self,url):
-        return "/".join(url.split('/')[:-2])
+        parts = url.split('/')
+        return "http://"+parts[2]
 
     def make_scenario(self):
        if self.template.get():
@@ -292,6 +297,7 @@ class CarSpider:
                    else:
                       browser['email'] = self.email.get()
                    browser['arrange'] = self.arrange.get()
+                   browser['timeout'] = int(self.timeout_field.get())
                scenario['browsers'] = browsers
                return scenario
             else:
@@ -428,10 +434,12 @@ class CarSpider:
         Label(self.EnvFrame,text="Enviroment:").pack(side='left')
         self.env_menu = OptionMenu(self.EnvFrame, self.env, *envs)
         self.env_menu.pack(side='left')
-        self.all_env = BooleanVar()
-        self.all_env.set(False)
-        Checkbutton(self.EnvFrame,text = 'Check all servers in tabs',
-        variable=self.all_env,state=DISABLED).pack(side='left')
+        Label(self.EnvFrame,text="Timeout:").pack(side='left')
+        self.timeout_field = Spinbox(self.EnvFrame, from_=5, to=60,width=3)
+        self.timeout_field.pack(side='left')
+        Label(self.EnvFrame,text="seconds").pack(side='left')
+        #Checkbutton(self.EnvFrame,text = 'Check all servers in tabs',
+        #variable=self.all_env,state=DISABLED).pack(side='left')
 
     def scenario_widget(self):
         ScenarioFrame = Frame(self.root,relief = RIDGE,borderwidth=2)
