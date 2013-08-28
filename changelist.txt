@@ -1,0 +1,9 @@
+CarSpider 2.25
+
+Fixed:
+- Chrome webdriver issues
+- Bookings in loggedIn mode
+Added:
+- Hotkey (Ctrl+X) for deleting all cookies
+- SavedCreditCard booking for CCF
+- SavedBML booking for CCF
