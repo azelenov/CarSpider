@@ -1,0 +1,445 @@
+Aberdeen, SD
+Abilene, TX
+Akron, OH
+Alamosa, CO
+Albany, GA
+Albany, NY
+Albuquerque, NM
+Alexandria, LA
+Allentown, PA
+Alliance, NE
+Alpena, MI
+Altoona, PA
+Amarillo, TX
+Anchorage, AK
+Appleton, WI
+Asheville, NC
+Aspen, CO
+Athens, GA
+Atlanta, GA
+Atlantic City, NJ
+Augusta, GA
+Augusta, ME
+Austin, TX
+Bakersfield, CA
+Baltimore, MD
+Bangor, ME
+Bar Harbor, ME
+Barrow, AK
+Baton Rouge, LA
+Beaumont, TX
+Beckley, WV
+Bedford, MA
+Bellingham, WA
+Bemidji, MN
+Bethel, AK
+Bettles, AK
+Billings, MT
+Binghamton, NY
+Birmingham, AL
+Bismarck, ND
+Bloomington, IL
+Bloomington, IN
+Bluefield, WV
+Boise, ID
+Boston, MA
+Bozeman, MT
+Brookings, SD
+Brownsville, TX
+Brunswick, GA
+Buffalo, NY
+Burbank, CA
+Burlington, IA
+Burlington, MA
+Burlington, VT
+Butte, MT
+Cape Girardeau, MO
+Carlsbad, CA
+Carlsbad, NM
+Casper, WY
+Cedar Rapids, IA
+Champaign, IL
+Charleston, SC
+Charleston, WV
+Charlotte, NC
+Charlottesville, VA
+Chattanooga, TN
+Cheyenne, WY
+Chicago, IL
+Chicago, IL
+Chicago, IL
+Chico, CA
+Cincinnati, OH
+Clarksburg, WV
+Cleveland, OH
+Clovis, NM
+Cody, WY
+College Station, TX
+Colorado Springs, CO
+Columbia, MO
+Columbia, SC
+Columbus, GA
+Columbus, IN
+Columbus, MS
+Columbus, NE
+Columbus, OH
+Cordova, AK
+Corpus Christi, TX
+Dallas, TX
+Dallas, TX
+Dayton, OH
+Daytona Beach, FL
+Decatur, IL
+Denver, CO
+Des Moines, IA
+Detroit, MI
+Detroit, MI
+Devils Lake, ND
+Dickinson, ND
+Dillingham, AK
+Dodge City, KS
+Dothan, AL
+Du Bois, PA
+Dubuque, IA
+Duluth, MN
+Durango, CO
+Dutch Harbor, Un Island, AK
+Eau Claire, WI
+Eek, AK
+El Centro, CA
+El Dorado, AR
+El Paso, TX
+Elko, NV
+Elmira, NY
+Enid, OK
+Erie, PA
+Escanaba, MI
+Eugene, OR
+Eureka, CA
+Evansville, IN
+Fairbanks, AK
+Fargo, ND
+Farmington, NM
+Fayetteville, AR
+Fayetteville, NC
+Flagstaff, AZ
+Flint, MI
+Florence, SC
+Fort Dodge, IA
+Fort Lauderdale, FL
+Fort Leonard Wood, MO
+Fort Myers, FL
+Fort Smith, AR
+Fort Walton Beach, FL
+Fort Wayne, IN
+Fort Yukon, AK
+Fresno, CA
+Gainesville, FL
+Garden City, KS
+Gillette, WY
+Glendive, MT
+Grand Forks, ND
+Grand Island, NE
+Grand Junction, CO
+Grand Rapids, MI
+Great Bend, KS
+Great Falls, MT
+Green Bay, WI
+Greenbrier, WV
+Greensboro, NC
+Greenville, MS
+Greenville, NC
+Greenville, SC
+Gulfport, MS
+Gunnison, CO
+Hagerstown, MD
+Hana, Maui, HI
+Hancock, MI
+Harlingen, TX
+Harrisburg, PA
+Harrison, AR
+Hartford, CT
+Havre, MT
+Hays, KS
+Helena, MT
+Hibbing, MN
+Hilo, Hawaii
+Hilton Head Island, SC
+Hobbs, NM
+Homer, AK
+Honolulu, Oahu, HI
+Hoolehua, Molokai, HI
+Hot Springs, AR
+Houston, TX
+Houston, TX
+Houston, TX
+Huntington, WV
+Huntsville, AL
+Huron, SD
+Hyannis, MA
+Idaho Falls, ID
+Indianapolis, IN
+International Falls, MN
+Inyokern, CA
+Iron Mountain, MI
+Ironwood, MI
+Islip, NY
+Ithaca, NY
+Jackson Hole, WY
+Jackson, MS
+Jackson, TN
+Jacksonville, FL
+Jacksonville, NC
+Jamestown, ND
+Jamestown, NY
+Johnstown, PA
+Jonesboro, AR
+Joplin, MO
+Juneau, AK
+Kahului, Maui, HI
+Kailua-Kona, Hawaii
+Kalamazoo, MI
+Kalaupapa, Molokai, HI
+Kalispell, MT
+Kamuela, Hawaii
+Kansas City, MO
+Kapalua, Maui, HI
+Kearney, NE
+Kenai, AK
+Ketchikan, AK
+Key West, FL
+Killeen, TX
+King Salmon, AK
+Kingman, AZ
+Kirksville, MO
+Klamath Falls, OR
+Knoxville, TN
+Kodiak, AK
+La Crosse, WI
+Lafayette, LA
+Lake Charles, LA
+Lake Havasu City, AZ
+Lanai City, Lanai, HI
+Lancaster, PA
+Lansing, MI
+Laramie, WY
+Laredo, TX
+Las Cruces, NM
+Las Vegas, NV
+Latrobe, PA
+Laurel, MS
+Lawton, OK
+Lebanon, NH
+Lewiston, ID
+Lewiston, ME
+Lewistown, MT
+Lexington, KY
+Liberal, KS
+Lihue, Kauai, HI
+Lincoln, NE
+Little Rock, AR
+Long Beach, CA
+Longview, TX
+Los Angeles, CA
+Los Angeles, CA
+Louisville, KY, USA
+Lubbock, TX
+Lynchburg, VA
+Macon, GA
+Madison, WI
+Manchester, NH
+Manhattan, KS
+Manistee, MI
+Marion, IL
+Marquette, MI
+Martha's Vineyard, MA
+Mason City, IA
+Massena, NY
+McAllen, TX
+McCook, NE
+Medford, OR
+Melbourne, FL
+Memphis, TN
+Meridian, MS
+Miami, FL
+Midland, TX
+Miles City, MT
+Milwaukee, WI
+Minneapolis, MN
+Minot, ND
+Missoula, MT
+Mobile, AL
+Modesto, CA
+Moline, IL
+Monroe, LA
+Monterey, CA
+Montgomery, AL
+Montrose, CO
+Morgantown, WV
+Moses Lake, WA
+Muscle Shoals, AL
+Muskegon, MI
+Myrtle Beach, SC
+Nantucket, MA
+Naples, FL
+Nashville, TN
+New Bern, NC
+New Haven, CT
+New Orleans, LA
+New York, NY
+New York, NY
+New York, NY
+Newark, NJ
+Newburgh, NY
+Newport News, VA
+Nome, AK
+Norfolk, VA
+North Bend, OR
+North Platte, NE
+Oakland, CA
+Ogdensburg, NY
+Oklahoma City, OK
+Omaha, NE
+Ontario, CA
+Orange County, CA
+Orlando, FL
+Oshkosh, WI
+Owensboro, KY
+Oxnard, CA
+Paducah, KY
+Page, AZ
+Palm Springs, CA
+Panama City, FL
+Parkersburg, WV
+Pasco, WA
+Pellston, MI
+Pendleton, OR
+Pensacola, FL
+Peoria, IL
+Philadelphia, PA
+Phoenix, AZ
+Pierre, SD
+Pinehurst, NC
+Pittsburgh, PA
+Pocatello, ID
+Ponca City, OK
+Portland, ME
+Portland, OR
+Portsmouth, NH
+Prescott, AZ
+Presque Isle, ME
+Providence, RI
+Provincetown, MA
+Pueblo, CO
+Pullman, WA
+Quincy, IL
+Raleigh, NC
+Rapid City, SD
+Redding, CA
+Redmond, OR
+Reno, NV
+Rhinelander, WI
+Richmond, VA
+Riverton, WY
+Roanoke, VA
+Rochester, MN
+Rochester, NY
+Rock Springs, WY
+Rockford, IL
+Rockland, ME
+Roswell, NM
+Rutland, VT
+Sacramento, CA
+Saginaw, MI
+Salina, KS
+Salisbury, MD
+Salt Lake City, UT
+San Angelo, TX
+San Antonio, TX
+San Diego, CA
+San Francisco, CA
+San Francisco, CA
+San Jose, CA
+San Luis Obispo, CA
+Sand Point, AK
+Santa Barbara, CA
+Santa Fe, NM
+Santa Maria, CA
+Santa Rosa, CA
+Saranac Lake, NY
+Sarasota, FL
+Sault Ste. Marie, MI
+Savannah, GA
+Scottsbluff, NE
+Seattle, WA
+Shenandoah Valley Airport, VA
+Sheridan, WY
+Shreveport, LA
+Sidney, MT
+Silver City, NM
+Sioux City, IA
+Sioux Falls, SD
+Sitka, AK
+Skagway, AK
+South Bend, IN
+Spokane, WA
+Springfield, IL
+Springfield, MA
+Springfield, MO
+Springfield, VT
+St. Cloud, MN
+St. George, UT
+St. Louis, MO
+St. Petersburg, FL
+State College, PA
+Steamboat Springs, CO
+Sun Valley, ID
+Syracuse, NY
+Tallahassee, FL
+Tampa, FL
+Telluride, CO
+Texarkana, AR
+Thief River Falls, MN
+Toksook Bay, AK
+Toledo, OH
+Topeka, KS
+Traverse City, MI
+Trenton, NJ
+Tri-City Airport, TN
+Tucson, AZ
+Tulsa, OK
+Tupelo, MS
+Twin Falls, ID
+Tyler, TX
+Unalakleet, AK
+Vail, CO
+Valdez, AK
+Valdosta, GA
+Victoria, TX
+Visalia, CA
+Waco, TX
+Walla Walla, WA
+Washington DC
+Washington DC
+Washington DC
+Waterloo, IA
+Watertown, NY
+Watertown, SD
+Wausau, WI
+Wenatchee, WA
+West Palm Beach, FL
+West Yellowstone, MT
+White Plains, NY
+Wichita Falls, TX
+Wichita, KS
+Wilkes-Barre, PA
+Williamsport, PA
+Williston, ND
+Wilmington, DE
+Wilmington, NC
+Wolf Point, MT
+Worland, WY
+Wrangell, AK
+Yakima, WA
+Yakutat, AK
+Yuma, AZ

@@ -1,0 +1,77 @@
+[0.001][INFO]:      ChromeDriver 26.0.1383.0 C:\Documents and Settings\v-ozelenov\My Documents\Google Drive\Python\App\chromedriver.exe
+[0.407][FINE]:      Initializing session with capabilities {
+   "browserName": "chrome",
+   "chromeOptions": {
+      "args": [  ],
+      "binary": "",
+      "extensions": [  ]
+   },
+   "javascriptEnabled": true,
+   "platform": "ANY",
+   "version": ""
+}
+
+[0.407][INFO]:      Launching chrome: "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe" --disable-hang-monitor --disable-prompt-on-repost --dom-automation --full-memory-crash-report --no-default-browser-check --no-first-run --disable-background-networking --disable-sync --disable-translate --disable-web-resources --safebrowsing-disable-auto-update --safebrowsing-disable-download-protection --disable-client-side-phishing-detection --disable-component-update --disable-default-apps --enable-logging --log-level=1 --ignore-certificate-errors about:blank
+[1.512][INFO]:      Connected to Chrome successfully. Version: 24.0.1312.57
+[1.516][FINE]:      Command received (/session/3a5e67833910ec0023c0f99c17b77793)
+[1.516][FINE]:      Command finished (/session/3a5e67833910ec0023c0f99c17b77793) with response {
+   "sessionId": "3a5e67833910ec0023c0f99c17b77793",
+   "status": 0,
+   "value": {
+      "acceptSslCerts": false,
+      "applicationCacheEnabled": false,
+      "browserConnectionEnabled": false,
+      "browserName": "chrome",
+      "chrome.chromedriverVersion": "26.0.1383.0",
+      "cssSelectorsEnabled": true,
+      "databaseEnabled": false,
+      "handlesAlerts": true,
+      "javascriptEnabled": true,
+      "locationContextEnabled": false,
+      "nativeEvents": true,
+      "platform": "windows",
+      "rotatable": false,
+      "takesScreenshot": true,
+      "version": "24.0.1312.57",
+      "webStorageEnabled": true
+   }
+}
+
+[1.519][FINE]:      Command received (/session/3a5e67833910ec0023c0f99c17b77793/window/current/size) with params {
+   "height": 1080,
+   "sessionId": "3a5e67833910ec0023c0f99c17b77793",
+   "width": 960,
+   "windowHandle": "current"
+}
+
+[1.519][FINER]:     Waiting for all views to stop loading...
+[1.519][FINER]:     Done waiting for all views to stop loading
+[1.580][FINER]:     Waiting for all views to stop loading...
+[1.627][FINER]:     Done waiting for all views to stop loading
+[1.627][FINE]:      Command finished (/session/3a5e67833910ec0023c0f99c17b77793/window/current/size) with response {
+   "sessionId": "3a5e67833910ec0023c0f99c17b77793",
+   "status": 0,
+   "value": {
+
+   }
+}
+
+[1.640][FINE]:      Command received (/session/3a5e67833910ec0023c0f99c17b77793/window/current/position) with params {
+   "sessionId": "3a5e67833910ec0023c0f99c17b77793",
+   "windowHandle": "current",
+   "x": 960,
+   "y": 0
+}
+
+[1.640][FINER]:     Waiting for all views to stop loading...
+[1.645][FINER]:     Done waiting for all views to stop loading
+[1.680][FINER]:     Waiting for all views to stop loading...
+[1.695][FINER]:     Done waiting for all views to stop loading
+[1.695][FINE]:      Command finished (/session/3a5e67833910ec0023c0f99c17b77793/window/current/position) with response {
+   "sessionId": "3a5e67833910ec0023c0f99c17b77793",
+   "status": 0,
+   "value": {
+
+   }
+}
+

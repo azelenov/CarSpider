@@ -1,0 +1,63 @@
+Anaheim, CA
+Asheville, NC
+Atlanta,GA
+Atlantic City, NJ
+Austin, TX
+Baltimore, MD
+Boston, MA
+Buffalo, NY
+Charleston, SC
+Charlotte, NC
+Chicago,IL
+Clearwater Beach, FL
+Columbus, OH
+Dallas,TX
+Daytona Beach, FL
+Denver,CO
+Destin, FL
+Edmonton, KY
+Fort Lauderdale, FL
+Fort Myers,FL
+Galveston, TX
+Honolulu, Oahu
+Houston,TX
+Indianapolis, IN
+Kansas City, KS
+Key West, FL
+Las Vegas, NV
+Los Angeles,CA
+Louisville, KY
+Manhattan, NY
+Maui, HI
+Memphis, TN
+Miami, FL
+Milwaukee, WI
+Minneapolis, MN
+Montreal, MO
+Myrtle Beach, SC
+Nashville, TN
+New Orleans, LA
+New York City, NY
+Niagara Falls, NY
+Oahu, HI
+Orlando, FL
+Ottawa Lake, MI
+Palm Springs, CA
+Panama City Beach, FL
+Philadelphia, PA
+Phoenix, AZ
+Pittsburgh, PA
+Portland, OR
+Reno, NV
+Saint Louis, MO
+San Antonio, TX
+San Diego, CA
+San Francisco, CA
+San Juan Capistrano, CA
+Savannah, GA
+Scottsdale, AZ
+Seattle, WA
+Tampa,FL
+Vancouver, WA
+Virginia Beach, VA
+Washington, DC
