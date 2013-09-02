@@ -4,14 +4,15 @@ from time import asctime
 from settings import browser_positions, main_config
 import os
 from webdriverplus import WebDriver
-
+import tkMessageBox
+import psutil
 
 class Engine:
-    def __init__(self,br):
+    def __init__(self,br,arrange,timeout):
         self.br_name = br['browser']
-        self.timeout = br.get('timeout')
+        self.timeout = timeout
         if not self.timeout: self.timeout = main_config["wait_element"]
-        self.move_flag = br['arrange']
+        self.move_flag = arrange
 
     def run(self,num):
         try:
@@ -23,14 +24,21 @@ class Engine:
             print
         except Exception  as e:
             print "ERROR:"+str(e)
-            print self.br_name+" was closed. Reopening..."
+            #print self.br_name+" was closed. Reopening..."
             print "You should relaunch app for reusing browser"
-            #self.kill_driver()
+            answer = tkMessageBox.askokcancel("Browser Closed!",
+            "Browser window closed manually.\
+            \nWebdriver connection refused...\
+            \nRelaunch the app for using "+self.br_name+" browser?")
+            self.kill_drivers()
+            if answer:
+                print os.listdir(os.curdir)
+                os.execl('..\App\python.exe','python','spider.py')
+
 ##            engine = WebDriver(self.br_name,
 ##            reuse_browser=False,
 ##            wait=main_config["wait_element"],
 ##            quit_on_exit=True)
-            if self.move_flag: self.move(engine,num)
         return engine
 
     def move(self,engine,position):
@@ -44,15 +52,9 @@ class Engine:
         engine.set_window_position(pos["xpos"],pos["ypos"])
 
 
-##    def kill_driver(self):
-##        print "kill the browser driver"
-##        if self.br_name == 'chrome':
-##           process = 'chromedriver.exe'
-##        elif self.br_name == 'ie':
-##           process = 'IEDriverServer.exe'
-##        elif self.br_name == 'firefox':
-##           process = 'none'
-##        for proc in psutil.process_iter():
-##           if proc.name == process:
-##              proc.kill()
+    def kill_drivers(self):
+        print "kill browsers driver"
+        for proc in psutil.process_iter():
+           if proc.name in ['chromedriver.exe','IEDriverServer.exe']:
+              proc.kill()
 

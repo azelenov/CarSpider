@@ -292,9 +292,8 @@ class SearchDomestic(Search):
           if "Compare with " in self.engine.page_source \
           and not rs_flag:
              self.engine.find(name='selectedPartners').uncheck()
-          self.engine.find(
-                    xpath='//form[@name="carIndexForm"]//button[@type="submit"]'
-                     ).click()
+          time.sleep(0.5)
+          self.engine.find(id='findCarButton').click()
 
 class SearchCCF(SearchDomestic):
       def __init__(self,params,engine):
@@ -344,6 +343,8 @@ class SearchCCF(SearchDomestic):
           if "Compare with " in self.engine.page_source \
           and "/results" not in self.engine.current_url:
              self.engine.find(name='selectedPartners').uncheck()
-          self.engine.find(
-                    xpath='//div[@class="searchBtn"]//button[@type="submit"]'
-                    ).click()
+          time.sleep(0.5)
+          self.engine.find(id='findCarButton').click()
+##          self.engine.find(
+##                    xpath='//div[@class="searchBtn"]//button[@type="submit"]'
+##                    ).click()

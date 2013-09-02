@@ -1,0 +1,57 @@
+{
+    "browsers": [
+        {
+            "browser": "firefox",
+            "currency": "random",
+            "days_left": "random",
+            "domain": "International",
+            "driver_age": "random",
+            "drop_location": "",
+            "email": "gmail",
+            "enviroment": "qa",
+            "insurance": 0,
+            "location_list": "United Kingdom",
+            "logged": 0,
+            "payment": "Visa",
+            "pick_location": "random",
+            "solution": "random",
+            "trip_duration": "random"
+        },
+        {
+            "browser": "chrome",
+            "currency": "random",
+            "days_left": "random",
+            "domain": "International",
+            "driver_age": "random",
+            "drop_location": "",
+            "email": "gmail",
+            "enviroment": "dev05",
+            "insurance": 0,
+            "location_list": "United Kingdom",
+            "logged": 0,
+            "payment": "Visa",
+            "pick_location": "random",
+            "solution": "random",
+            "trip_duration": "random"
+        },
+        {
+            "browser": "ie",
+            "currency": "random",
+            "days_left": "random",
+            "domain": "International",
+            "driver_age": "random",
+            "drop_location": "",
+            "email": "gmail",
+            "enviroment": "preprod",
+            "insurance": 0,
+            "location_list": "United Kingdom",
+            "logged": 0,
+            "payment": "Visa",
+            "pick_location": "random",
+            "solution": "random",
+            "trip_duration": "random"
+        }
+    ],
+    "repeat": "0",
+    "retry": "3"
+}

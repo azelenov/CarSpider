@@ -78,13 +78,13 @@ default_lists = {
 urls = {
      'International':
     {
-    'qa':'http://www.qa.hotwire.com/uk/car',
+    'qa':'http://www.qa.hotwire.com/uk/car?useCluster=1',
     'qaci':'http://www.qaci.hotwire.com/intl/uk/car',
     'myVM':'http://sje-ozelenov-v:7001/intl/uk/car',
     'local':'http://localhost:7001/intl/uk/car',
     'dev01':'http://dev01.dev.hotwire.com:7001/intl/uk/car',
     'dev05':'http://dev05.dev.hotwire.com:7001/intl/uk/car',
-    'preprod':'http://www.preprod.hotwire.com/uk/car',
+    'preprod':'http://www.preprod.hotwire.com/uk/car?useCluster=1',
     'prod':'http://www.hotwire.com/uk/car',
     },
 
@@ -95,7 +95,7 @@ urls = {
     'local':'http://localhost:7001/car/index.jsp?vt.CCF13=0',
     'dev01':'http://dev01.dev.hotwire.com:7001/car/index.jsp?vt.CCF13=0',
     'dev05':'http://dev05.dev.hotwire.com:7001/car/index.jsp?vt.CCF13=0',
-    'preprod':'http://www.preprod.hotwire.com/car/index.jsp?vt.CCF13=0',
+    'preprod':'http://www.preprod.hotwire.com/car/index.jsp?useCluster=1&vt.CCF13=0',
     'prod':'http://www.hotwire.com/car/index.jsp?vt.CCF13=0',
     },
 

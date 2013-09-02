@@ -164,8 +164,6 @@ class ResultsCCF(search.SearchCCF):
              print billing_url
              time.sleep(1)
              self.engine.find(xpath='//a[@href="'+billing_url+'"]').click()
-##             self.engine.wait_for(xpath='"//div[@id="carDetails"]//h3[@class="carTypeName"][text()='+car_type+']"')
-##             self.engine.find(link_text_contains='Continue').click()
 
       def get_results(self):
           print self.get_version_tests()
@@ -179,7 +177,6 @@ class ResultsCCF(search.SearchCCF):
           else:
               _rs = self.engine.find('a').filter(".result")
               return _rs
-
 
       def opaque_solution(self,results):
           self.log("Opaque solution")

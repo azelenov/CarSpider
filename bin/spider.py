@@ -19,14 +19,16 @@ import random
 import re
 
 class CarSpider:
-    version = "2.25"
+    '''Portable selenium script for semi-automation'''
+    version = "2.3"
 
     def __init__(self):
+        '''GUI app initialization'''
         self.root = Tk()
         self.list = StringVar()
         self.payment = StringVar()
         #print os.listdir(os.curdir)
-        os.chdir('bin')
+        #os.chdir('bin')
         self.root.wm_title("HW CarSpider "+self.version+" Beta")
         self.root.wm_iconbitmap('static/spider.ico')
         self.root.geometry("+200+200")
@@ -35,6 +37,7 @@ class CarSpider:
         self.create_widgets()
 
     def menu_bar(self):
+        '''Configure and show bar on the top'''
         menubar = Menu(self.root)
         filemenu = Menu(menubar, tearoff=0)
         filemenu = Menu(menubar, tearoff=0)
@@ -53,6 +56,7 @@ class CarSpider:
         self.set_hot_keys()
 
     def set_hot_keys(self):
+        '''Configuring app hot keys using settings'''
         keys = settings.hot_keys
         self.root.bind_all(keys["home_page"],lambda e: self.start())
         self.root.bind_all(keys["search"],lambda e: self.search())
@@ -74,20 +78,10 @@ class CarSpider:
         tkMessageBox.showinfo("About",about_msg)
 
     def save_scenario(self):
-        scenario = '['
-        #scenario_order = ['browser','domain','enviroment','account',
-                         # 'days_left','trip_duration','driver_age',
-                          #'currency','pick_location','drop_location',
-                         # 'solution','payment','email','insurance']
-        #scenario = self.make_scenario()
-
-
-
-        scenario = str(self.make_scenario()) \
-                .replace(',',',\n').replace('},','},\n') \
-                .replace("'",'"').replace("[{","\n[{\n") \
-                .replace("}],","\n}],\n")
-
+        '''Saving browser paramets to json file'''
+        scenario = str(json.dumps(self.make_scenario(), sort_keys=True,
+                        indent=4, separators=(',', ': '))
+                        )
         fileName = tkFileDialog.asksaveasfilename(parent=self.root,
                    filetypes=[('JSON format','*.json')] ,
                    title="Save the scenario as...",
@@ -97,6 +91,7 @@ class CarSpider:
              f.write(scenario)
 
     def create_widgets(self):
+        '''Show all the options widgets on main frame'''
         self.browsers_widget()
         self.browser_features()
         self.domains_widget()
@@ -107,10 +102,12 @@ class CarSpider:
         self.status_bar()
 
     def log(self,var):
+        '''Logging to status bar'''
         info = var
         self.status.config(text=info)
 
     def warning(self,title,msg):
+        '''Showing warning message'''
         tkMessageBox.showwarning(title,msg)
 
     def destroy_buts(self,buts):
@@ -118,11 +115,15 @@ class CarSpider:
             b.destroy()
 
     def run(self,params):
-        e = Engine(params)
+        '''Initialize the browser instance'''
+        arrange = self.arrange.get()
+        timeout = int(self.timeout_field.get())
+        e = Engine(params,arrange,timeout)
         e = e.run(self.scenario['browsers'].index(params))
         return e
 
     def home_page(self,eng,item):
+        '''Going to specified enviroment/domain home page'''
         self.urls = settings.urls[item['domain']]
         url = self.urls[item['enviroment']]
         eng.get(url)
@@ -130,18 +131,9 @@ class CarSpider:
 
     def start(self):
        self.clear_cookies()
-##       self.scenario = self.make_scenario()
-##       print self.scenario
-##       for item in self.scenario['browsers']:
-##           print item
-##           self.urls = settings.urls[item['domain']]
-##           engine = self.run(item)
-##           self.log("Browsers started")
-##
-##           #self.home_page(engine,item)
-
 
     def search(self):
+        '''Creating scenario and run search for all selected browsers'''
         self.scenario = self.make_scenario()
         repeat = int(self.scenario["repeat"])
         for item in self.scenario["browsers"]:
@@ -155,6 +147,7 @@ class CarSpider:
             self.log("Search request sent")
 
     def udate_results(self):
+        '''refresihng results from results page Fare Finder'''
         self.scenario = self.make_scenario()
         attemps = int(self.scenario["retry"])
         for item in self.scenario["browsers"]:
@@ -169,6 +162,7 @@ class CarSpider:
             self.log("Results updated")
 
     def fill(self,confirm=False):
+        '''Filling the billing page without clicking on confirm button'''
         self.scenario = self.make_scenario()
         for item in self.scenario["browsers"]:
             engine = self.run(item)
@@ -181,8 +175,8 @@ class CarSpider:
             self.log("The billing form is filled")
             if confirm: b.submit()
 
-
     def book(self):
+        '''Full booking action. Use for booking all soecified parameters'''
         self.log("Booking...")
         self.scenario = self.make_scenario()
         repeat = int(self.scenario["repeat"])
@@ -205,6 +199,8 @@ class CarSpider:
                #self.clear_cookies()
 
     def details(self):
+        '''Go to details/billing page of specified solution
+         without filling the form'''
         attemps = int(self.scenario["retry"])
         for item in self.scenario["browsers"]:
             engine = self.run(item)
@@ -228,13 +224,16 @@ class CarSpider:
             #self.clear_cookies()
 
     def my_account(self):
-        print "my account"
+        '''Go to hotwire my account of specified user'''
         self.clear_cookies()
         for item in self.scenario["browsers"]:
             m = MyAccount(item,self.engine)
             m.go_to_account()
+        self.log("My account opening.")
 
     def open_service(self,service):
+        '''Open hotwire internal applications such as c3
+         and external services such as email'''
         self.scenario = self.make_scenario()
         item = self.scenario["browsers"][0]
         item["browser"] = "firefox"
@@ -257,16 +256,31 @@ class CarSpider:
            self.log("Email inbox loaded")
 
     def extract_domain(self,url):
+        '''Extracting domain from enviroment home page'''
         parts = url.split('/')
         return "http://"+parts[2]
 
+    def update_scenario(self,scenario):
+        '''Update json scenario according to
+        current Domain and Enviroment options'''
+        for browser in scenario['browsers']:
+            num = scenario['browsers'].index(browser)
+            if not self.domain_ovewrite.get():
+                scenario['browsers'][num]['domain'] = self.domain.get()
+            if not self.env_ovewrite.get():
+                scenario['browsers'][num]['enviroment'] = self.env.get()
+        return scenario
+
     def make_scenario(self):
        if self.template.get():
+           '''Reading scenario from json file from scenarious folder'''
            path = main_config["scenarios_dir"] + "/" + self.json.get()
            with open (path) as js:
                 scenario = json.load(js)
-                return scenario
+                scenario = self.update_scenario(scenario)
+           return scenario
        else:
+            '''Creating scenario from GUI application'''
             scenario = {}
             scenario["repeat"] = self.repeat.get()
             scenario["retry"] = self.retry.get()
@@ -280,7 +294,6 @@ class CarSpider:
                for browser in browsers:
                    browser['domain'] = self.domain.get()
                    browser['enviroment'] = self.env.get()
-                   #browser['account'] = self.account.get()
                    if self.rand_dates.get():
                       browser['days_left'] = 'random'
                       browser['trip_duration'] = 'random'
@@ -309,7 +322,8 @@ class CarSpider:
                       browser['payment'] = 'random'
                    else:
                       browser['payment'] = self.payment.get()
-                   if browser['payment'] in ['HotDollars','SavedCard','SavedBML']:
+                   if browser['payment'] in [
+                                        'HotDollars','SavedCard','SavedBML']:
                       self.logged.set(True)
                    browser['insurance'] = self.insurance.get()
                    if self.rand_email.get():
@@ -317,24 +331,24 @@ class CarSpider:
                    else:
                       browser['email'] = self.email.get()
                    browser['logged'] = self.logged.get()
-                   browser['arrange'] = self.arrange.get()
-                   browser['timeout'] = int(self.timeout_field.get())
                scenario['browsers'] = browsers
-               print scenario
                return scenario
             else:
                self.warning("No browsers",
-               "No browser selected!\nPlease select a browser!")
+               "No browser selected!\nPlease select a browser.")
 
     def select_browsers(self):
+        '''Selecting all browsers'''
         for a in self.br_buttons:
             a.select()
 
     def deselect_browsers(self):
+        '''Unchecking all browser in browsers frame'''
         for a in self.br_buttons:
             a.deselect()
 
     def browsers_widget(self):
+        '''Configuring and showing browsers frame'''
         self.firefox = IntVar()
         self.chrome = IntVar()
         self.ie = IntVar()
@@ -351,17 +365,18 @@ class CarSpider:
         #browsers = {'Firefox':self.firefox,'Chrome'
         #:self.chrome,'IE':self.ie,'Silent':self.phantomjs}
         browsers = {'Firefox':self.firefox,'Chrome':self.chrome,'IE':self.ie}
-        BrowTypeFrame = LabelFrame(self.root,relief = RAISED,
-        borderwidth=1,text = "Browsers:",padx=7,pady=7)
-        BrowTypeFrame.grid(row = 0,column = 0,columnspan=2)
-        self.br_buttons = self.create_checks(BrowTypeFrame,browsers)
-        all_br = Button(BrowTypeFrame,text='All',command=self.select_browsers)
+        self.BrowsersFrame = LabelFrame(self.root,relief = RAISED,
+        borderwidth=1,text = "Browsers",padx=7,pady=7)
+        self.BrowsersFrame.grid(row = 0,column = 0,columnspan=2)
+        self.br_buttons = self.create_checks(self.BrowsersFrame,browsers)
+        all_br = Button(self.BrowsersFrame,text='All',command=self.select_browsers)
         all_br.pack(side="left")
-        none_br = Button(BrowTypeFrame,text='None',
+        none_br = Button(self.BrowsersFrame,text='None',
                         command=self.deselect_browsers)
         none_br.pack(side="left")
 
     def browser_features(self):
+        '''Additional features on browsers frame'''
         self.arrange = BooleanVar()
         self.arrange.set(True)
         BrowFeaturesFrame = Frame(self.root,relief = GROOVE,
@@ -375,6 +390,7 @@ class CarSpider:
         del_cookies.pack(side="left")
 
     def clear_cookies(self):
+        '''Delete all cookies in all selected browsers'''
         self.scenario = self.make_scenario()
         for item in self.scenario["browsers"]:
             self.engine = self.run(item)
@@ -391,9 +407,10 @@ class CarSpider:
         return cbuts
 
     def buttons_widget(self,frame = 'root'):
+        '''Configuring main functional buttons'''
         if frame == 'root':
            FuncFrame = Frame(self.root,relief = RAISED)
-           FuncFrame.grid(row = 5,column = 0,columnspan=2)
+           FuncFrame.grid(row = 5,column = 0,columnspan=2,padx=3,pady=3)
         elif frame == 'options':
            FuncFrame = Frame(self.OptionsFrame,relief = RAISED)
            FuncFrame.pack(side = 'top',pady=5,padx=5)
@@ -416,10 +433,11 @@ class CarSpider:
                 command=lambda:self.open_service("c3")).pack(side = 'left')
 
     def domains_widget(self):
+        '''Configuring domain frame'''
         self.domain = StringVar()
         DomainFrame = Frame(self.root)
         DomainFrame.grid(row = 2,column = 0,columnspan=2,padx=5,pady=5)
-        Label(DomainFrame,text="Domain:").pack(side='left')
+        Label(DomainFrame,text="Domain").pack(side='left')
         domains = main_config['domains']
         self.domain.set(main_config['default_domain'])
         self.urls = settings.urls[self.domain.get()]
@@ -427,12 +445,14 @@ class CarSpider:
         self.show_domains(DomainFrame,domains,self.domain)
 
     def show_domains(self,frame,args,var):
+        '''Creating domains buttons'''
         for d in args:
             r = Radiobutton(frame,text=d,variable = var,
             value=d,indicatoron = 0,
             command=self.change_domain).pack(side='left')
 
     def change_domain(self):
+        '''Action on changing domain.'''
         try:
             self.engine.delete_all_cookies()
         except:
@@ -468,10 +488,10 @@ class CarSpider:
         self.env.set('qa')
         self.EnvFrame = Frame(self.root)
         self.EnvFrame.grid(row = 3,column = 0,columnspan=2,padx=5,pady=5)
-        Label(self.EnvFrame,text="Enviroment:").pack(side='left')
+        Label(self.EnvFrame,text="Enviroment").pack(side='left')
         self.env_menu = OptionMenu(self.EnvFrame, self.env, *envs)
         self.env_menu.pack(side='left')
-        Label(self.EnvFrame,text="Timeout:").pack(side='left')
+        Label(self.EnvFrame,text="Timeout").pack(side='left')
         self.timeout_field = Spinbox(self.EnvFrame, from_=10, to=60,width=3)
         self.timeout_field.pack(side='left')
         Label(self.EnvFrame,text="seconds").pack(side='left')
@@ -479,27 +499,55 @@ class CarSpider:
         #variable=self.all_env,state=DISABLED).pack(side='left')
 
     def scenario_widget(self):
-        ScenarioFrame = Frame(self.root,relief = RIDGE,borderwidth=2)
-        ScenarioFrame.grid(row = 4,column = 0,columnspan=2,padx = 40,pady = 5)
+        '''Read json scenarious if activated'''
+        self.ScenarioFrame = Frame(self.root,relief = RIDGE,borderwidth=2)
+        self.ScenarioFrame.grid(row = 4,column = 0,columnspan=2,padx = 40,pady = 5)
         self.template = BooleanVar()
         self.template.set(False)
-        Checkbutton(ScenarioFrame,text = 'Scenario template',
-        variable=self.template,command=self.hide_options).pack(side='left')
+        Checkbutton(self.ScenarioFrame,text = 'Scenario template',
+        variable=self.template,command=self.hide_options).grid(row=0,column=0)
+        self.refresh_scenarious()
+
+    def refresh_scenarious(self):
         self.json =  StringVar()
         temps = os.listdir(main_config['scenarios_dir'])
         self.json.set(temps[0])
-        om = apply(OptionMenu, (ScenarioFrame, self.json) + tuple(temps))
-        om.pack(side='left')
-        self.all_scenario = BooleanVar()
-        self.all_scenario.set(False)
-        Checkbutton(ScenarioFrame,text = 'All',
-        variable=self.all_scenario,state=DISABLED).pack(side='left')
+        self.scenarious_om = apply(
+                    OptionMenu, (self.ScenarioFrame, self.json) + tuple(temps))
+        self.scenarious_om.grid(row=0,column=1)
 
     def hide_options(self):
+        '''Hide scenario options if scenario template mode is activated'''
         if self.template.get():
            self.OptionsFrame.grid_forget()
+           self.BrowsersFrame.grid_forget()
+           '''Refresh scenarious button'''
+           self.refresh_scenario_btn = Button(self.ScenarioFrame,text='Refresh',
+                command=self.refresh_scenarious)
+           self.refresh_scenario_btn.grid(row=1,column=0)
+
+           self.refresh_scenarious()
+           self.domain_ovewrite = BooleanVar()
+           self.env_ovewrite = BooleanVar()
+           self.domain_ovewrite.set(False)
+           self.env_ovewrite.set(False)
+           self.domain_ow_cb = Checkbutton(
+                    self.ScenarioFrame,text = 'Domain overwrite',
+                    variable=self.domain_ovewrite
+                    )
+           self.domain_ow_cb.grid(row=1,column=1,sticky='W')
+           self.env_ow_cb = Checkbutton(
+                    self.ScenarioFrame,text = 'Enviroment overwrite',
+                    variable=self.env_ovewrite
+                    )
+           self.env_ow_cb.grid(row=2,column=1,sticky='W')
         else:
-             self.OptionsFrame.grid(row = 5,column = 0,columnspan=2,padx = 40)
+           self.refresh_scenario_btn.grid_forget()
+           self.domain_ow_cb.grid_forget()
+           self.env_ow_cb.grid_forget()
+           self.scenarious_om.grid_forget()
+           self.browsers_widget()
+           self.options_widget()
 
     def options_widget(self):
         self.OptionsFrame = LabelFrame(self.root,
@@ -531,10 +579,10 @@ class CarSpider:
     def days_widget(self):
         DayFrame = Frame(self.OptionsFrame,relief = RAISED,borderwidth=1)
         DayFrame.pack(side = 'top',padx=3,pady=3)
-        Label(DayFrame,text = "Days left:").grid(row=0,column=0)
+        Label(DayFrame,text = "Days left").grid(row=0,column=0)
         self.days_left = Spinbox(DayFrame, from_=1, to=60,width=3)
         self.days_left.grid(row = 0,column=1)
-        Label(DayFrame,text = "Trip duration:").grid(row=0,column=2)
+        Label(DayFrame,text = "Trip duration").grid(row=0,column=2)
         self.trip_duration = Spinbox(DayFrame, from_=1, to=351,width=3)
         self.trip_duration.grid(row = 0,column=3)
         self.rand_dates = BooleanVar()
@@ -545,7 +593,7 @@ class CarSpider:
     def age_widget(self):
         AgeFrame = Frame(self.OptionsFrame,relief = RAISED,borderwidth=1)
         AgeFrame.pack(side = 'top',padx=3,pady=3)
-        Label(AgeFrame,text = "Driver age:").grid(row=0,column=0)
+        Label(AgeFrame,text = "Driver age").grid(row=0,column=0)
         self.age = IntVar()
         self.age.set(25)
         Entry(AgeFrame, textvariable = self.age,width =3).grid(row=0,column=1)
@@ -588,24 +636,30 @@ class CarSpider:
         self.pickup = StringVar()
         ChoiceFrame = Frame(self.SearchFrame)
         ChoiceFrame.grid(row=0)
-        airCodeFrame = LabelFrame(ChoiceFrame,text='air code:')
-        airCodeFrame.grid(row=0,column=0,sticky='W',padx=1,pady=1)
-        Checkbutton(airCodeFrame,variable=self.air_code).pack(side="left")
+        '''Search by pickup airport code'''
+        airCodeFrame = LabelFrame(ChoiceFrame,text='Air Code')
+        airCodeFrame.grid(row=0,column=0,sticky='W',padx=2,pady=2)
+        Checkbutton(airCodeFrame,variable=self.air_code,
+                    command=self.hide_location_lists).pack(side="left")
         Entry(airCodeFrame,width=4,
         textvariable = self.air_field).pack(side="left",padx=2)
+        self.search_results_frame()
+
+    def search_results_frame(self):
+        '''Search results option frame'''
         ResFrame = LabelFrame(self.SearchFrame,relief = RAISED,
         borderwidth=1,text = "Solution",labelanchor='n')
-        ResFrame.grid(row=0,column=1,padx=1,pady=1)
+        ResFrame.grid(row=0,column=1,padx=2,pady=2)
         self.solution = StringVar()
         self.solution.set('first')
-        self.r_frame = LabelFrame(ResFrame,text = "Result:")
-        self.r_frame.grid(row=0,column=0)
+        self.r_frame = LabelFrame(ResFrame,text = "Result")
+        self.r_frame.grid(row=0,column=0,padx=1,pady=1)
        # c_frame = LabelFrame(ResFrame,text = "Check:")
         #c_frame.grid(row=0,column=1)
-        retry_frame = LabelFrame(ResFrame,text = "Retry:")
-        retry_frame.grid(row=0,column=2)
-        repeat_frame = LabelFrame(ResFrame,text = "Repeat:")
-        repeat_frame.grid(row=0,column=3)
+        retry_frame = LabelFrame(ResFrame,text = "Retry")
+        retry_frame.grid(row=0,column=2,padx=1,pady=1)
+        repeat_frame = LabelFrame(ResFrame,text = "Repeat")
+        repeat_frame.grid(row=0,column=3,padx=1,pady=1)
 
         results = settings.solutions[self.domain.get()]['result']
         self.res_menu = OptionMenu(self.r_frame, self.solution,*results)
@@ -620,8 +674,11 @@ class CarSpider:
         self.retry.pack(side='left')
         self.repeat = Spinbox(repeat_frame, from_=0, to=100,width=3)
         self.repeat.pack(side='left')
+        self.location_lists_widget()
 
-        self.ListFrame = LabelFrame(self.SearchFrame,text='Lists:')
+    def location_lists_widget(self):
+        '''Search using location lists'''
+        self.ListFrame = LabelFrame(self.SearchFrame,text='Lists')
         self.ListFrame.grid(row=1,columnspan=2,padx=1,pady=1,sticky='W')
         self.one_way = BooleanVar()
         self.one_way.set(False)
@@ -652,6 +709,13 @@ class CarSpider:
         Checkbutton(self.ListFrame,text = 'Whole list',
                    variable=self.whole_list,state=DISABLED).grid(
                    row = 4,column = 2,sticky='W')
+
+    def hide_location_lists(self):
+        '''Hide location lists if air code search is activated'''
+        if self.air_code.get():
+            self.ListFrame.grid_forget()
+        else:
+            self.location_lists_widget()
 
     def change_list(self,event):
         OptionMenu(self.ListFrame,self.pickup,
@@ -711,7 +775,7 @@ class CarSpider:
         self.PayFrame.pack(side = 'top',pady=5)
         self.money = settings.payment_methods[self.domain.get()].keys()
         self.payment.set('Visa')
-        Label(self.PayFrame,text = "Payment method:").grid(
+        Label(self.PayFrame,text = "Payment method").grid(
                 row=0,column=0,sticky='W')
         om = apply(OptionMenu, (self.PayFrame, self.payment)
                     + tuple(self.money))
@@ -738,7 +802,7 @@ class CarSpider:
         self.email = StringVar()
         self.emails = sorted(settings.conf_email.keys())
         self.email.set('gmail')
-        Label(EmailFrame,text = "Email type:").grid(row=0,column=0,sticky='W')
+        Label(EmailFrame,text = "Email type").grid(row=0,column=0)
         om = apply(OptionMenu, (EmailFrame, self.email) + tuple(self.emails))
         om.grid(row=0,column=1,sticky='W')
         self.rand_email = BooleanVar()

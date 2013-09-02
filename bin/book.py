@@ -245,9 +245,15 @@ class BookDomestic(Book):
                                 id='billingForm.paymentForm._NAE_acctNumber')
         card_num_field.clear()
         card_num_field.send_keys(card['number'])
-        self.engine.find(xpath="//select[@name='billingForm.paymentForm.cardMonth']/option[text()='05']").click()
-        self.engine.find(xpath="//select[@name='billingForm.paymentForm.cardYear']/option[text()='2017']").click()
-        code_field = self.engine.find(id="billingForm.paymentForm._NAE_cpvNumber").exclude('[disabled]')
+        self.engine.find(
+                    xpath="//select[@name='billingForm.paymentForm.cardMonth']\
+                    /option[text()='05']").click()
+        self.engine.find(
+                    xpath="//select[@name='billingForm.paymentForm.cardYear']\
+                    /option[text()='2017']").click()
+        code_field = self.engine.find(
+                    id="billingForm.paymentForm._NAE_cpvNumber")\
+                    .exclude('[disabled]')
         code_field.clear()
         if card.get('code'):
           code_field.send_keys(card['code'])
@@ -409,7 +415,9 @@ class BookCCF(Book):
         self.engine.find(xpath='//li/a[text()="2017"]').click()
         code_field = self.engine.find(class_name='seleniumSecurityCode')
         if len(code_field)>1:
-            code_field = self.engine.find(class_name='seleniumSecurityCode').exclude('[disabled]')
+            code_field = self.engine.find(
+            class_name='seleniumSecurityCode'
+            ).exclude('[disabled]')
         code_field.clear()
         if card.get('code'):
           code_field.send_keys(card['code'])
@@ -448,7 +456,9 @@ class BookCCF(Book):
         city = self.engine.find(id="billMeLater.billingAddress.city")
         city.clear()
         city.send_keys(bml["city"])
-        self.engine.find(name="billMeLater.billingAddress.state").next().find('a').click()
+        self.engine.find(
+                name="billMeLater.billingAddress.state"
+                ).next().find('a').click()
         self.engine.find(xpath='//li/a[text()="'+bml["state"]+'"]').click()
         #self.set_state(bml["state"]);
         zip = self.engine.find(name="billMeLater.billingAddress.postalCode")
@@ -477,7 +487,8 @@ class BookCCF(Book):
         city = self.engine.find(id="payPal.billingAddress.city")
         city.clear()
         city.send_keys(paypal["city"])
-        self.engine.find(name="payPal.billingAddress.state").next().find('a').click()
+        self.engine.find(
+                name="payPal.billingAddress.state").next().find('a').click()
         self.engine.find(xpath='//li/a[text()="'+paypal["state"]+'"]').click()
         #self.set_state(bml["state"]);
         zip = self.engine.find(name="payPal.billingAddress.postalCode")
@@ -535,7 +546,9 @@ class BookCCF(Book):
         ssn = self.engine.find(name='ssn')
         ssn.clear()
         ssn.send_keys(bml["ssn"])
-        self.engine.execute_script("document.getElementById('terms').contentWindow.scrollTo(0,50000);");
+        self.engine.execute_script(
+            "document.getElementById('terms').contentWindow.scrollTo(0,50000);"
+            );
         self.engine.find(id="esign_consent").click()
         self.engine.find(id="submit_button").click()
 

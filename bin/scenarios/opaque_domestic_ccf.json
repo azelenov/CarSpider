@@ -1,0 +1,40 @@
+{
+    "browsers": [
+        {
+            "browser": "firefox",
+            "currency": "USD",
+            "days_left": "random",
+            "domain": "Domestic",
+            "driver_age": "random",
+            "drop_location": "",
+            "email": "gmail",
+            "enviroment": "qa",
+            "insurance": 0,
+            "location_list": "CCF",
+            "logged": 0,
+            "payment": "Visa",
+            "pick_location": "random",
+            "solution": "opaque",
+            "trip_duration": "random"
+        },
+        {
+            "browser": "chrome",
+            "currency": "USD",
+            "days_left": "random",
+            "domain": "CCF",
+            "driver_age": "random",
+            "drop_location": "",
+            "email": "gmail",
+            "enviroment": "qa",
+            "insurance": 0,
+            "location_list": "CCF",
+            "logged": 0,
+            "payment": "Visa",
+            "pick_location": "random",
+            "solution": "opaque",
+            "trip_duration": "random"
+        }
+    ],
+    "repeat": "0",
+    "retry": "3"
+}
