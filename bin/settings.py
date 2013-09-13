@@ -1,8 +1,5 @@
 #MAIN script configuration
 main_config = {
-"ui_wait":1, #time in seconds for watching on ui elements
-"wait_element":20,
-"wait_on_page":1,
 "loc_list":"United Kingdom",
 "default_loc":"LHR",
 "domains":["International","Domestic","CCF"],
@@ -33,7 +30,8 @@ hot_keys = {
     'clear_cookies':'<Control-x>'
 }
 
-#Browser positions according to screen resolution
+#Browser positions according to screen resolution,
+#common multimonitor configuration, left monitor is a main
 browser_positions = [
     {
     "id":0,
@@ -65,7 +63,7 @@ browser_positions = [
     },
 
 ]
-
+#Default list for each Domain
 default_lists = {
 'International':'United Kingdom',
 'Domestic':'Domestic Popular',
@@ -74,9 +72,8 @@ default_lists = {
 
 
 #Specify testing eviroments urls
-
 urls = {
-     'International':
+    'International':
     {
     'qa':'http://www.qa.hotwire.com/uk/car?useCluster=1',
     'qaci':'http://www.qaci.hotwire.com/intl/uk/car',
@@ -84,55 +81,58 @@ urls = {
     'local':'http://localhost:7001/intl/uk/car',
     'dev01':'http://dev01.dev.hotwire.com:7001/intl/uk/car',
     'dev05':'http://dev05.dev.hotwire.com:7001/intl/uk/car',
-    'preprod':'http://www.preprod.hotwire.com/uk/car?useCluster=1',
+    'preprod':'http://www.preprod.hotwire.com/uk/car',
     'prod':'http://www.hotwire.com/uk/car',
     },
 
     'Domestic':{
-    'qa':'http://www.qa.hotwire.com/car/index.jsp?useCluster=1&vt.CCF13=0',
-    'qaci':'http://www.qaci.hotwire.com/car/index.jsp?vt.CCF13=0',
-    'myVM':'http://sje-ozelenov-v:7001/car/index.jsp?vt.CCF13=0',
-    'local':'http://localhost:7001/car/index.jsp?vt.CCF13=0',
-    'dev01':'http://dev01.dev.hotwire.com:7001/car/index.jsp?vt.CCF13=0',
-    'dev05':'http://dev05.dev.hotwire.com:7001/car/index.jsp?vt.CCF13=0',
-    'preprod':'http://www.preprod.hotwire.com/car/index.jsp?useCluster=1&vt.CCF13=0',
-    'prod':'http://www.hotwire.com/car/index.jsp?vt.CCF13=0',
+    'qa':'http://www.qa.hotwire.com/car/index.jsp?useCluster=1&vt.CCF13=0&vt.NSI13=1',
+    'qaci':'http://www.qaci.hotwire.com/car/index.jsp?vt.CCF13=0&vt.NSI13=1',
+    'myVM':'http://sje-ozelenov-v:7001/car/index.jsp?vt.CCF13=0&vt.NSI13=1',
+    'local':'http://localhost:7001/car/index.jsp?vt.CCF13=0&vt.NSI13=1',
+    'dev01':'http://dev01.dev.hotwire.com:7001/car/index.jsp?vt.CCF13=0&vt.NSI13=1',
+    'dev05':'http://dev05.dev.hotwire.com:7001/car/index.jsp?vt.CCF13=0&vt.NSI13=1',
+    'preprod':'http://www.preprod.hotwire.com/car/index.jsp?vt.CCF13=0&vt.NSI13=1',
+    'prod':'http://www.hotwire.com/car/index.jsp?vt.CCF13=0&vt.NSI13=1',
     },
 
     'CCF': {
-    'qa':'http://www.qa.hotwire.com/car/index.jsp?useCluster=1&vt.CCF13=4',
-    'dev01':'http://dev01.dev.hotwire.com:7001/car/index.jsp?vt.CCF13=4',
-    'dev05':'http://dev05.dev.hotwire.com:7001/car/index.jsp?vt.CCF13=4',
-    'qaci':'http://www.qaci.hotwire.com/car/index.jsp?vt.CCF13=4',
-    'myVM':'http://sje-ozelenov-v:7001/car/index.jsp?vt.CCF13=4',
-    'local':'http://localhost:7001/car/index.jsp?vt.CCF13=4',
-    'preprod':'http://www.preprod.hotwire.com/car/index.jsp?vt.CCF13=4',
-    'prod':'http://www.hotwire.com/car/index.jsp?vt.CCF13=4'
+    'qa':'http://www.qa.hotwire.com/car/index.jsp?useCluster=1&vt.CCF13=4&vt.NSI13=1&vt.CLS13=2',
+    'dev01':'http://dev01.dev.hotwire.com:7001/car/index.jsp?vt.CCF13=4&vt.NSI13=1&vt.CLS13=2',
+    'dev05':'http://dev05.dev.hotwire.com:7001/car/index.jsp?vt.CCF13=4&vt.NSI13=1&vt.CLS13=2',
+    'qaci':'http://www.qaci.hotwire.com/car/index.jsp?vt.CCF13=4&vt.NSI13=1&vt.CLS13=2',
+    'myVM':'http://sje-ozelenov-v:7001/car/index.jsp?vt.CCF13=4&vt.NSI13=1&vt.CLS13=2',
+    'local':'http://localhost:7001/car/index.jsp?vt.CCF13=4&vt.NSI13=1&vt.CLS13=2',
+    'preprod':'http://www.preprod.hotwire.com/car/index.jsp?vt.CCF13=4&vt.NSI13=1',
+    'prod':'http://www.hotwire.com/car/index.jsp?vt.CCF13=4&vt.NSI13=1&vt.CLS13=2'
     }
 }
+#Read only documents
+help_urls = {
+'manual':'https://docs.google.com/document/d/1_AjKDU7TztVdt5XDNDQkOzuwfUgbpOaudYg5rz9i7rE/edit?usp=sharing',
+'backlog':'https://docs.google.com/spreadsheet/ccc?key=0AmxBNf0BrexydC11djJYNm92eEprdGRSX0RCVnA3bXc&usp=sharing'
+}
 
-
+#which result is available in Results widget
 solutions = {
         'International':{
-        'result':['first','last','random'],
-        #'check':['none','policy','amenities','all_policy','all_amenities']
-        'check':['none']
+        'result':['first','last','random']
         },
         'Domestic':{
-        'result':['first','last','random','opaque','retail'],
-
-        'check':['none']},
+        'result':['first','last','random','opaque','retail']
+        },
         'CCF':{
-        'result':['first','last','random','opaque','retail'],
-        'check':['none']
+        'result':['first','last','random','opaque','retail']
         }
 }
 
-#emails types
+#emails types (use the same password for my account and email
 conf_email = {
     'gmail':{'user':'carspider1@gmail.com','pass':'car@spider'},
     'yahoo':{'user':'carspider1@yahoo.com','pass':'car@spider'},
-    'outlook':{'user':'v-ozelenov@hotwire.com','pass':None}
+    'outlook':{'user':'v-ozelenov@hotwire.com','pass':None},
+    'payableUser':{'user':'payableUser3@hotwire.com','pass':'testing'},
+    'qa_regression':{'user':'qa_regression@hotwire.com','pass':'hotwire333'}
 }
 
 #Driver info fields
@@ -164,9 +164,7 @@ driver_info =  {
     }
 }
 
-
-
-#payment types
+#payment types (security code if not specified 111
 payment_methods = {
     'International':{
     'Visa':{
@@ -183,9 +181,7 @@ payment_methods = {
      'number':'373235387881007',
      'code':'1111'},
      'Discover':{'number':'6011000990139424'},
-     'JCB Card':{'number':'3566111111111113'},
-     #'BillMeLater':None,
-     #'PayPal':None
+     'JCB Card':{'number':'3566111111111113'}
      },
      'CCF':{
      'Visa':{'number':'4111111111111111'},

@@ -50,6 +50,7 @@ class BookIntl(Book):
             self.fill()
 
     def fill(self):
+        self.log(self.get_version_tests())
         self.log("Fill INTL")
         self.type_name()
         self.type_email()
@@ -132,6 +133,7 @@ class BookDomestic(Book):
             self.fill()
 
     def fill(self):
+        self.log(self.get_version_tests())
         self.log("Fill Domestic")
         if not self.is_logged():
             self.type_name()
@@ -300,6 +302,7 @@ class BookCCF(Book):
             self.fill()
 
     def fill(self):
+        self.log(self.get_version_tests())
         self.log("Fill CCF")
         if not self.is_logged():
             self.type_name()

@@ -6,6 +6,7 @@ class MyAccount():
         self.engine = engine
         domain = params['domain']
         self.email = conf_email[params["email"]]['user']
+        self.password = conf_email[params["email"]]['pass']
         if domain == "International":
             self.domain = MyAccountIntl(params,engine)
         else:
@@ -32,7 +33,7 @@ class MyAccount():
         email.send_keys(self.email)
         passwd = self.domain.get_passwd_field(form)
         passwd.clear()
-        passwd.send_keys("password")
+        passwd.send_keys(self.password)
         form.submit()
 
     def is_logged(self):

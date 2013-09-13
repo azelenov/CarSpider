@@ -6,9 +6,11 @@ import os
 from webdriverplus import WebDriver
 import tkMessageBox
 import psutil
+import threading
 
-class Engine:
+class Engine(threading.Thread):
     def __init__(self,br,arrange,timeout):
+        threading.Thread.__init__(self)
         self.br_name = br['browser']
         self.timeout = timeout
         if not self.timeout: self.timeout = main_config["wait_element"]
@@ -58,3 +60,7 @@ class Engine:
            if proc.name in ['chromedriver.exe','IEDriverServer.exe']:
               proc.kill()
 
+##e1 = Engine({'browser':'firefox'},1,10)
+##e2 = Engine({'browser':'chrome'},1,10)
+##e1.run(0)
+##e2.run(1)

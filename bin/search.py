@@ -16,8 +16,9 @@ class Search():
         print "[{}]<{}> {}".format(t,name,message)
 
     def get_version_tests(self,evar='eVar1'):
-        version_tests = self.engine.execute_script(
-            "return AnalyticsSupport.getAnalyticsContextVariable('"+evar+"');")
+        version_tests = "Version tests on page:" + \
+            str(self.engine.execute_script(
+            "return AnalyticsSupport.getAnalyticsContextVariable('"+evar+"');"))
         return version_tests
 
     def retry(self):
@@ -44,7 +45,7 @@ class Search():
              self.log("Default currency")
 
     def get_dates(self):
-        if self.params["payment"] in ["PayPal","BillMeLater","HotDollars"] :
+        if self.params["payment"] in ["PayPal","BillMeLater","HotDollars","SavedBML"] :
            self.params['solution'] = 'opaque'
            self.params['insurance'] = False
            self.log("Switching to opaque solution for PayPal, BML or HotDollars")
@@ -168,7 +169,7 @@ class SearchIntl(Search):
           #if not self.engine.current_url.endswith("/car"):
           home = urls["International"][self.params['enviroment']]
           self.engine.get(home)
-          print self.get_version_tests()
+          self.log(self.get_version_tests())
           self.log("Geting home page")
           try:
               assert "Car Hire" in self.engine.title
@@ -240,14 +241,13 @@ class SearchDomestic(Search):
             self.sign_in()
           else:
             self.sign_out()
-          self.home_page()
           self.fill()
 
       def home_page(self):
           #if not 'index.jsp' in self.engine.current_url:
           home = urls["Domestic"][self.params['enviroment']]
           self.engine.get(home)
-          print self.get_version_tests()
+          self.log(self.get_version_tests())
           self.log("Geting home page")
           try:
               assert "Cheap" in self.engine.title
@@ -305,13 +305,12 @@ class SearchCCF(SearchDomestic):
             self.sign_in()
         else:
             self.sign_out()
-        self.home_page()
         self.fill()
 
       def home_page(self):
           home = urls["CCF"][self.params['enviroment']]
           self.engine.get(home)
-          print self.get_version_tests()
+          self.log(self.get_version_tests())
           self.log("Geting home page")
           try:
               assert "Cheap" in self.engine.title
@@ -344,7 +343,7 @@ class SearchCCF(SearchDomestic):
           and "/results" not in self.engine.current_url:
              self.engine.find(name='selectedPartners').uncheck()
           time.sleep(0.5)
-          self.engine.find(id='findCarButton').click()
-##          self.engine.find(
-##                    xpath='//div[@class="searchBtn"]//button[@type="submit"]'
-##                    ).click()
+##          self.engine.find(id='findCarButton').click()
+          self.engine.find(
+                    xpath='//div[@class="searchBtn"]//button[@type="submit"]'
+                    ).click()

@@ -20,7 +20,7 @@ import re
 
 class CarSpider:
     '''Portable selenium script for semi-automation'''
-    version = "2.3"
+    version = "2.33"
 
     def __init__(self):
         '''GUI app initialization'''
@@ -29,12 +29,12 @@ class CarSpider:
         self.payment = StringVar()
         #print os.listdir(os.curdir)
         #os.chdir('bin')
-        self.root.wm_title("HW CarSpider "+self.version+" Beta")
+        self.root.wm_title("HW CarSpider "+self.version)
         self.root.wm_iconbitmap('static/spider.ico')
         self.root.geometry("+200+200")
         #self.root.geometry("250x150+300+300")
-        self.menu_bar()
         self.create_widgets()
+        self.menu_bar()
 
     def menu_bar(self):
         '''Configure and show bar on the top'''
@@ -48,6 +48,8 @@ class CarSpider:
         menubar.add_cascade(label="File", menu=filemenu)
 
         helpmenu = Menu(menubar, tearoff=0)
+        helpmenu.add_command(label="Manual",
+                            command=lambda: self.open_service("help"))
         helpmenu.add_command(label="About",command=self.about)
         menubar.add_cascade(label="Help", menu=helpmenu)
 
@@ -74,7 +76,7 @@ class CarSpider:
 
     def about(self):
         about_msg = "CarSpider "+self.version \
-            +"\nAuthor:Alexandr Zelenov\nSupport:v-ozelenov@hotwire.com"
+            +"\nAuthor: Alexandr Zelenov\nSupport: v-ozelenov@hotwire.com"
         tkMessageBox.showinfo("About",about_msg)
 
     def save_scenario(self):
@@ -254,6 +256,10 @@ class CarSpider:
         elif service == 'email':
            e = Email(item,engine)
            self.log("Email inbox loaded")
+        elif service == 'help':
+            help_url = settings.help_urls['manual']
+            engine.get(help_url)
+
 
     def extract_domain(self,url):
         '''Extracting domain from enviroment home page'''
@@ -377,6 +383,7 @@ class CarSpider:
 
     def browser_features(self):
         '''Additional features on browsers frame'''
+        #cookies_image = PhotoImage(file="static/cookies.gif",width=20, height=20)
         self.arrange = BooleanVar()
         self.arrange.set(True)
         BrowFeaturesFrame = Frame(self.root,relief = GROOVE,
@@ -387,6 +394,7 @@ class CarSpider:
         MoveCheck.pack(side="left")
         del_cookies = Button(BrowFeaturesFrame,
                             text='Clear Cookies',command=self.clear_cookies)
+        #del_cookies.img = cookies_image
         del_cookies.pack(side="left")
 
     def clear_cookies(self):
@@ -664,7 +672,7 @@ class CarSpider:
         results = settings.solutions[self.domain.get()]['result']
         self.res_menu = OptionMenu(self.r_frame, self.solution,*results)
         self.res_menu.pack(side='left')
-       # checks = settings.solutions[self.domain.get()]['check']
+        #checks = settings.solutions[self.domain.get()]['check']
         #self.check = StringVar()
         #OptionMenu(c_frame, self.check,*checks).pack(side='left')
         attempts= StringVar()
@@ -687,9 +695,9 @@ class CarSpider:
                     row = 1,column = 0,sticky='W')
         Label(self.ListFrame,text='Location list').grid(
         row = 1,column = 1,sticky='W')
-        Label(self.ListFrame,text='Location/Search type').grid(
+        Label(self.ListFrame,text='Search type').grid(
         row = 1,column = 2,sticky='W')
-        Label(self.ListFrame,text='Pickup location:').grid(
+        Label(self.ListFrame,text='Pickup location').grid(
         row = 2,column = 0,sticky='W')
         self.pickup.set('random')
         self.lists = os.listdir(main_config['lists_dir'])
@@ -734,7 +742,7 @@ class CarSpider:
 
     def show_dropoff(self):
         if self.one_way.get():
-            self.dropLabel = Label(self.ListFrame,text='Dropoff location:')
+            self.dropLabel = Label(self.ListFrame,text='Dropoff location')
             self.dropLabel.grid(row = 3,column = 0,sticky='W')
             self.dropoff.set('random')
             self.dropFile = OptionMenu(self.ListFrame,
@@ -752,9 +760,9 @@ class CarSpider:
         self.sipp = StringVar()
         self.solution.set('first')
         self.sipp.set('EBMN')
-        r_frame = LabelFrame(ResFrame,text = "Result:")
+        r_frame = LabelFrame(ResFrame,text = "Result")
         r_frame.grid(row=0,column=0)
-        c_frame = LabelFrame(ResFrame,text = "Check:")
+        c_frame = LabelFrame(ResFrame,text = "Check")
         c_frame.grid(row=0,column=1)
         results = settings.solutions[self.domain.get()]['result']
         self.res_menu = OptionMenu(r_frame, self.solution,*results)

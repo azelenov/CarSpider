@@ -49,7 +49,7 @@ class ResultsIntl(search.SearchIntl):
              car.find(link_text='Continue').click()
 
       def get_results(self):
-          print self.get_version_tests()
+          self.log(self.get_version_tests())
           self.log("Verifing results")
           try:
               _rs = self.engine.find(class_name='seleniumResultItem')
@@ -97,7 +97,7 @@ class ResultsDomestic(search.SearchDomestic):
              car.find(class_name='continueBtn').click()
 
       def get_results(self):
-          print self.get_version_tests()
+          self.log(self.get_version_tests())
           self.log("Verifing results")
           try:
               _rs = self.engine.find(class_name='resultWrapper')
@@ -166,7 +166,7 @@ class ResultsCCF(search.SearchCCF):
              self.engine.find(xpath='//a[@href="'+billing_url+'"]').click()
 
       def get_results(self):
-          print self.get_version_tests()
+          self.log(self.get_version_tests())
           self.log("Verifing results")
           try:
               self.engine.wait_for(".result")
