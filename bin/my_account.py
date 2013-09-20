@@ -1,21 +1,22 @@
 from settings import conf_email
 from time import asctime
+import locators
 
-class MyAccount():
-    def __init__(self,params,engine):
+
+class MyAccount:
+    def __init__(self, params, engine):
         self.engine = engine
-        domain = params['domain']
         self.email = conf_email[params["email"]]['user']
         self.password = conf_email[params["email"]]['pass']
-        if domain == "International":
-            self.domain = MyAccountIntl(params,engine)
+        if params['domain'] == "International":
+            self.path = locators.my_account['International']
         else:
-            self.domain = MyAccountDomestic(params,engine)
+            self.path = locators.my_account['Domestic']
 
-    def log(self,message):
+    def log(self, message):
         t = asctime()
         name = self.engine.name
-        print "[{}]<{}> {}".format(t,name,message)
+        print "[{}]<{}> {}".format(t, name, message)
 
     def go_to_account(self):
         self.log("Go to My Account")
@@ -27,60 +28,20 @@ class MyAccount():
     def sign_in(self):
         self.log("Signing in")
         self.engine.find(link_text="My Account").click()
-        form = self.domain.get_login_form()
-        email = self.domain.get_email_field(form)
+        form = self.engine.find(**self.path['form'])
+        email = form.find(**self.path['email'])
         email.clear()
         email.send_keys(self.email)
-        passwd = self.domain.get_passwd_field(form)
+        passwd = form.find(**self.path['password'])
         passwd.clear()
         passwd.send_keys(self.password)
         form.submit()
 
     def is_logged(self):
-        header = self.domain.get_header()
+        header = self.engine.find(**self.path['header'])
         if "Sign in" in header:
             self.log("User is NOT logged")
             return False
         elif "Sign out" in header:
             self.log("User is logged")
             return True
-
-class MyAccountIntl(MyAccount):
-    def __init__(self,params,engine):
-        self.engine = engine
-        domain = params['domain']
-        self.email = conf_email[params["email"]]['user']
-
-    def get_login_form(self):
-        return self.engine.find(class_name="signInModule").find("form")
-
-    def get_email_field(self,login_form):
-        return login_form.find(id="email")
-
-    def get_passwd_field(self,login_form):
-        return login_form.find(id="password")
-
-    def get_header(self):
-        return self.engine.find(class_name = "account").text
-
-class MyAccountDomestic(MyAccount):
-    def __init__(self,params,engine):
-        self.engine = engine
-        domain = params['domain']
-        self.email = conf_email[params["email"]]['user']
-
-    def get_login_form(self):
-        return self.engine.find(name="myLoginForm")
-
-    def get_email_field(self,login_form):
-        return login_form.find(name="_NAE_emailLogin")
-
-    def get_passwd_field(self,login_form):
-        return login_form.find(name="_NAE_passwordLogin")
-
-    def get_header(self):
-        return self.engine.find(id = "globalAccountStatusMessaging").text
-
-
-
-

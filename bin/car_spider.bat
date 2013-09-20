@@ -1,1 +1,1 @@
-..\App\python.exe spider.py 
+../App/python.exe spider.py 

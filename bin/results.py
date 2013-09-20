@@ -6,195 +6,180 @@ from time import asctime
 import search
 import re
 import time
+import locators
 
-'''Car results page classes'''
+
 class Results(search.Search):
-    def choose_car(self,results):
+    '''Car results page classes'''
+    def choose_car(self, results):
         sol = self.params['solution']
         if sol == 'first':
-           _car = self.first_solution(results)
+            _car = self.first_solution(results)
         elif sol == 'last':
-           _car = self.last_solution(results)
+            _car = self.last_solution(results)
         elif sol == 'random':
-           _car = self.rand_solution(results)
+            _car = self.rand_solution(results)
+        elif sol == 'opaque':
+            _car = self.opaque_solution(results)
+        elif sol == 'retail':
+            _car = self.retail_solution(results)
         else:
-           print "This solution is not availale yet"
+            print "This solution is not availale yet"
         return _car
 
-    def first_solution(self,results):
+    def first_solution(self, results):
         self.log("First solution")
         return results[0]
 
-    def last_solution(self,results):
+    def last_solution(self, results):
         self.log("Last solution")
         return results[-1]
 
-    def rand_solution(self,results):
+    def rand_solution(self, results):
         self.log("Random solution")
         return random.choice(results)
 
-class ResultsIntl(search.SearchIntl):
-      def __init__(self,params,engine,attemps):
-          self.engine = engine
-          self.params = params
-          self.attemps = attemps
+    def get_results(self):
+        self.log(self.get_version_tests())
+        self.log("Verifing results")
+        try:
+            _rs = self.engine.find(**self.path['result'])
+            return _rs
+        except:
+            self.log("No results")
+            self.retry()
 
-      def get_details(self):
-         self.engine.wait_for(class_name="centerWrapper")
-         results = self.get_results()
-         if results:
-             self.log("Found "+str(len(results))+" results")
-             r=Results()
-             car = r.choose_car(results)
-             car.find(link_text='Continue').click()
+    def retry(self):
+        if self.attemps > 0:
+            self.attemps -= 1
+            self.log("Retring search. Attemps left: " + str(self.attemps))
+            self.re_fill()
+            self.get_details()
+        else:
+            self.log("Can't find results. No attemps left")
 
-      def get_results(self):
-          self.log(self.get_version_tests())
-          self.log("Verifing results")
-          try:
-              _rs = self.engine.find(class_name='seleniumResultItem')
-              return _rs
-          except:
-              self.log("No results")
-              self.retry()
+    def update(self):
+        url = self.engine.current_url
+        if re.search(self.url_pattern, url):
+            self.re_fill()
+            return True
+        else:
+            return False
 
-      def update(self):
-          url = self.engine.current_url
-          if "/results/" in url:
-           self.fill(rs_flag=True)
-          else:
-           self.home_page()
-           self.fill()
+    def re_fill(self):
+        self.set_locations()
+        self.type_date()
+        self.find()
 
-class ResultsDomestic(search.SearchDomestic):
-      def __init__(self,params,engine,attemps):
-          self.engine = engine
-          self.params = params
-          self.attemps = attemps
-          self.res_type = params['solution']
 
-      def update(self):
-          url = self.engine.current_url
-          if "results.jsp" in url:
-           self.fill(rs_flag=True)
-          else:
-           self.home_page()
-           self.fill()
+class ResultsIntl(search.SearchIntl, Results):
+    def __init__(self, params, engine, attemps):
+        self.engine = engine
+        self.params = params
+        self.attemps = attemps
+        self.url_pattern = "/results/"
+        self.path = locators.search['International']
+        self.path.update(locators.results['International'])
 
-      def get_details(self):
-          #self.engine.wait_for(class_name="commonResultsPage")
-          results = self.get_results()
-          self.log("Found "+str(len(results))+" results/opaque results")
-          if self.res_type == 'opaque':
-             car = self.opaque_solution()
-             car.click()
-          elif self.res_type == 'retail':
-             car = self.retail_solution()
-             car.click()
-          else:
-             r=Results()
-             car = r.choose_car(results)
-             car.find(class_name='continueBtn').click()
+    def get_details(self):
+        results = self.get_results()
+        if results:
+            self.log("Found " + str(len(results)) + " results")
+            car = self.choose_car(results)
+            car.find(**self.path['continue']).click()
 
-      def get_results(self):
-          self.log(self.get_version_tests())
-          self.log("Verifing results")
-          try:
-              _rs = self.engine.find(class_name='resultWrapper')
-              return _rs
-          except:
-              self.log("No results")
-              self.retry()
 
-      def opaque_solution(self):
-          self.log("Opaque solution")
-          try:
-             _rs = self.engine.find(
-                    xpath="//input[@data-retail='false']/following::input[2]")
-             _result = random.choice(_rs)
-             return _result
-          except:
-              self.log("No opaque solutions")
-              self.retry()
+class ResultsDomestic(search.SearchDomestic, Results):
+    def __init__(self, params, engine, attemps):
+        self.engine = engine
+        self.params = params
+        self.attemps = attemps
+        self.url_pattern = "results.jsp"
+        self.path = locators.search['Domestic']
+        self.path.update(locators.results['Domestic'])
+        self.res_type = params['solution']
 
-      def retail_solution(self):
-          self.log("Retail solution")
-          try:
-              _rs = self.engine.find(
-                    xpath="//input[@data-retail='true']/following::input[2]")
-              _result = random.choice(_rs)
-              return _result
-          except:
-              self.log("No retail solutions")
-              self.retry()
+    def get_details(self):
+        #self.engine.wait_for(class_name="commonResultsPage")
+        results = self.get_results()
+        self.log("Found "+str(len(results))+" results/opaque results")
+        car = self.choose_car(results)
+        if car:
+            car.find(**self.path['continue']).click()
 
-class ResultsCCF(search.SearchCCF):
-      def __init__(self,params,engine,attemps):
-          self.engine = engine
-          self.params = params
-          self.attemps = attemps
-          self.res_type = params['solution']
+    def opaque_solution(self, results):
+        self.log("Opaque solution")
+        try:
+            _rs = results.find(*self.path['retail'])
+            opaque = results - _rs.parent().parent()
+            _result = random.choice(opaque)
+            return _result
+        except:
+            self.log("No opaque solutions")
+            self.retry()
 
-      def update(self):
-          url = self.engine.current_url
-          if re.search('/(results|details|billing)/',url):
-           self.refill()
-          else:
-           self.home_page()
-           self.fill()
+    def retail_solution(self, results):
+        self.log("Retail solution")
+        try:
+            _rs = results.find(**self.path['retail'])
+            _result = random.choice(_rs)
+            return _result
+        except:
+            self.log("No retail solutions")
+            self.retry()
 
-      def get_details(self):
-          self.engine.wait_for(class_name="content")
-          results = self.get_results()
-          self.log("Found "+str(len(results))+" results")
-          if self.res_type == 'opaque':
-             car = self.opaque_solution(results)
-          elif self.res_type == 'retail':
-             car = self.retail_solution(results)
-          else:
-             r=Results()
-             car = r.choose_car(results)
-          if car:
-             car_type = car.find(class_name="carTypeName").text
-             self.log("Car type: "+car_type)
-             car_url = car.get_attribute('href')
-             print car_url
-             car.click()
-             billing_url = car_url.replace('details','billing')
-             print billing_url
-             time.sleep(1)
-             self.engine.find(xpath='//a[@href="'+billing_url+'"]').click()
+    def find(self):
+        self.engine.find(**self.path['search']).click()
 
-      def get_results(self):
-          self.log(self.get_version_tests())
-          self.log("Verifing results")
-          try:
-              self.engine.wait_for(".result")
 
-          except:
-              self.log("No results")
-              self.retry()
-          else:
-              _rs = self.engine.find('a').filter(".result")
-              return _rs
+class ResultsCCF(search.SearchCCF, Results):
+    def __init__(self, params, engine, attemps):
+        self.engine = engine
+        self.params = params
+        self.attemps = attemps
+        self.url_pattern = '/(results|details|billing)/'
+        self.res_type = params['solution']
+        self.path = locators.search['CCF']
+        self.path.update(locators.results['CCF'])
 
-      def opaque_solution(self,results):
-          self.log("Opaque solution")
-          try:
-              _rs = results.filter(".hotRate")
-              _result = random.choice(_rs)
-              return _result
-          except:
-              self.log("No opaque solutions")
-              self.retry()
+    def get_details(self):
+        #self.engine.wait_for(class_name="content")
+        results = self.get_results()
+        self.log("Found "+str(len(results))+" results")
+        car = self.choose_car(results)
+        if car:
+            car.click()
+            time.sleep(1)
+            self.engine.find(**self.path['continue']).click()
 
-      def retail_solution(self,results):
-          self.log("Retail solution")
-          try:
-            _op = results.filter(".hotRate")
+    def opaque_solution(self, results):
+        self.log("Opaque solution")
+        try:
+            _rs = results.find(**self.path['opaque'])
+            _result = random.choice(_rs)
+            return _result
+        except:
+            self.log("No opaque solutions")
+            self.retry()
+
+    def retail_solution(self, results):
+        self.log("Retail solution")
+        try:
+            _op = results.filter(**self.path['opaque'])
             _rs = results - _op
             assert len(_rs) > 0
-          except:
+        except:
             _rs = results
-          _result = random.choice(_rs)
-          return _result
+            _result = random.choice(_rs)
+        return _result
+
+    def set_locations(self):
+        self.locator = self.engine.find(**self.path['pickup_loc'])
+        if self.params['drop_location']:
+            self.type_location(self.params['pick_location'])
+            self.locator = self.engine.find(**self.path['dropoff_loc'])
+            self.type_location(self.params['drop_location'])
+        else:
+            pick_loc = self.type_location(self.params['pick_location'])
+            self.locator = self.engine.find(**self.path['dropoff_loc'])
+            self.type_location(pick_loc)
